@@ -10,9 +10,9 @@ const db = new sqlite3.Database(
     }
 );
 
-db.run(`create table if not exists data (
+db.run(`create table if not exists data(
         'data_id' varchar(36) primary key,
-        'Date' varchar(30),
+        'date' varchar(30),
         'temp' float,
         'air_humidity' float,
         'solo_humidity' float,
@@ -20,7 +20,21 @@ db.run(`create table if not exists data (
         'pluviosidade' float,
         'vel_vento' float,
         'dir_vento' varchar(10),
-        'radiacao' float
-)`);
+        'radiacao' float)`
+);
+
+db.run(`create table if not exists user(
+        'user_id' varchar(36) primary key,
+        'name' varchar(30),
+        'email' varchar(30),
+        'password' varchar(30),
+        'username' varchar(30))`
+);
+
+db.run(`create table if not exists module(
+        'module_id' varchar(36) primary key,
+        'localizacao' varchar(30),
+        'dono' varchar(30))`
+);
 
 module.exports = db;
