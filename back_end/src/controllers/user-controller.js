@@ -18,11 +18,11 @@ exports.insertUser = (req, res) => {
     .catch(err => res.status(500).send(err.message));
 };
 
-/*exports.updateData = (req, res) => {
-    dataService.updatedata(req.params.id, req.body)
+exports.updateUser = (req, res) => {
+    userService.updateUser(req.params.id, req.body)
     .then(result => res.json(result))
     .catch(err => res.status(500).send(err.message));
-};*/
+};
 
 exports.removeUser = (req, res) => {
     userService.removeUser(req.params.id)

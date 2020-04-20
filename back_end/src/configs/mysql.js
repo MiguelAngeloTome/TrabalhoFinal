@@ -37,4 +37,12 @@ db.run(`create table if not exists module(
         'dono' varchar(30))`
 );
 
+db.run(`create table if not exists user_module(
+        'user_id' varchar(36),
+        'module_id' varchar(36),
+        primary key (user_id, module_id),
+        foreign key (user_id) REFERENCES user(user_id),
+        foreign key (module_id) REFERENCES module(module_id))`
+);
+
 module.exports = db;

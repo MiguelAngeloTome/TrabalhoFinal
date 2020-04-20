@@ -4,7 +4,17 @@ const uuid = require('uuid').v4;
 
 exports.getData = () =>{
     return new Promise((resolve,reject)=>{
-        db.all(`Select * From data`,(err,row)=>{
+        db.all(`select * from data`,(err,row)=>{
+            if(err) reject (err);
+            resolve(row);
+        });
+    });
+}
+
+exports.getDataSingle = id =>{
+    return new Promise((resolve,reject)=>{
+        db.all(`select * from data where data_id = ?`, [id],
+        (err,row)=>{
             if(err) reject (err);
             resolve(row);
         });
@@ -14,7 +24,7 @@ exports.getData = () =>{
 exports.insertData = body =>{
     return new Promise((resolve,reject)=>{
         const id = uuid();
-        db.run(`INSERT INTO data(data_id, date, temp, air_humidity, solo_humidity, isWet, pluviosidade, vel_vento, dir_vento, radiacao) VALUES(?,?,?,?,?,?,?,?,?,?)`,
+        db.run(`insert into data(data_id, date, temp, air_humidity, solo_humidity, isWet, pluviosidade, vel_vento, dir_vento, radiacao) VALUES(?,?,?,?,?,?,?,?,?,?)`,
         [id, body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao],
         err=>{
             if(err) reject (err);
@@ -25,7 +35,7 @@ exports.insertData = body =>{
 
 exports.removeData = id =>{
     return new Promise((resolve,reject)=>{
-        db.run(`DELETE FROM data where data_id = ?`, [id],
+        db.run(`delete from data where data_id = ?`, [id],
         err=>{
             if(err) reject (err);
             resolve({removed:1, data_id: id});
@@ -33,7 +43,13 @@ exports.removeData = id =>{
     });
 };
 
-/*
-getdata singlevalue
-updateData
-*/
+exports.updateData = (id, body) =>{
+    return new Promise((resolve,reject)=>{
+        db.run(`update data set date = ?, temp = ?, air_humidity = ?, solo_humidity = ?, isWet = ?, pluviosidade = ?, vel_vento = ?, dir_vento = ?, radiacao = ? where data_id = ?`,
+        [body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao, id],
+        err=>{
+            if(err) reject (err);
+            resolve({updated:1, data_id: id});
+        });
+    });
+};

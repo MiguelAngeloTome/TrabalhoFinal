@@ -43,6 +43,13 @@ exports.removeUser = id =>{
     });
 };
 
-/*
-updateData
-*/
+exports.updateUser = (id, body) =>{
+    return new Promise((resolve,reject)=>{
+        db.run(`update user set name = ?, email = ?, password = ?, username = ? where user_id = ?`,
+        [body.name, body.email, body.password, body.username, id],
+        err=>{
+            if(err) reject (err);
+            resolve({updated:1, user_id: id});
+        });
+    });
+};
