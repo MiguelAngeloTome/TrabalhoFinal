@@ -25,10 +25,11 @@ db.run(`create table if not exists data(
 
 db.run(`create table if not exists user(
         'user_id' varchar(36) primary key,
-        'name' varchar(30),
+        'username' varchar(30),
+        'password' varchar(200),
         'email' varchar(30),
-        'password' varchar(30),
-        'username' varchar(30))`
+        'dataIv' varchar(200),
+        'name' varchar(30))`
 );
 
 db.run(`create table if not exists module(

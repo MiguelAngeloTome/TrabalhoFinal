@@ -1,6 +1,40 @@
 const db = require('../configs/mysql.js');
+const cipher = require('../helpers/cipher.js')
+const roles = require('../helpers/roles.js')
 
 const uuid = require('uuid').v4;
+
+
+exports.register = (username, rawPassword, email, name, ) =>{
+        return new Promise((resolve, reject) =>{
+            const id = uuid();
+            try{
+                db.all(`Select * from user where username = ?`, [username],
+                (err,row)=>{
+                    if(err){
+                        reject (err);
+                    } 
+                     if(row.length < 1){
+                        if (/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d$@$!%*#?&-.]{8,}$/.test(rawPassword)) {
+                            const dataIv = cipher.generateIv();
+                            const password = cipher.encrypt(rawPassword, dataIv);
+                            db.run(`insert into user(user_id, username,password, email, dataIv, name) VALUES(?,?,?,?,?,?)`,
+                            [id, username, password,  email, dataIv, name], 
+                            err=>{
+                                if(err) reject (err);
+                                resolve({inserted:1, user_id: id});
+                            });
+                    }else reject("invalid password")
+                }else reject("username in use")
+                
+            });
+            }catch(error){
+
+            }
+        })
+
+};
+
 
 exports.getUser = () =>{
     return new Promise((resolve,reject)=>{

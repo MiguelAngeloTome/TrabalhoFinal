@@ -1,5 +1,12 @@
 const userService = require("../services/user-Service.js");
 
+exports.register = (req, res) => {
+    userService
+      .register(req.body.username, req.body.password, req.body.email, req.body.name)
+      .then(() => res.sendStatus(200))
+      .catch((message) => res.status(500).send(message));
+  };
+
 exports.getUser = (req, res) => {
     userService.getUser()
     .then(result => res.json(result))
