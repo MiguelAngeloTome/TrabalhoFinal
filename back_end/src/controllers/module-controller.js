@@ -12,6 +12,12 @@ exports.getModuleSingle = (req, res) => {
     .catch(err => res.status(500).send(err.message));
 };
 
+exports.getModuleVinha = (req, res) => {
+    moduleService.getModuleVinha(req.params.id)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).send(err.message));
+};
+
 exports.insertModule = (req, res) => {
     moduleService.insertModule(req.body)
     .then(result => res.json(result))

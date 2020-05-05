@@ -21,11 +21,21 @@ exports.getModuleSingle = id =>{
     });
 }
 
+exports.getModuleVinha = id =>{
+    return new Promise((resolve,reject)=>{
+        db.all(`Select * from module where vinha_id = ?`, [id],
+        (err,row)=>{
+            if(err) reject (err);
+            resolve(row);
+        });
+    });
+}
+
 exports.insertModule = body =>{
     return new Promise((resolve,reject)=>{
         const id = uuid();
-        db.run(`insert into module(module_id, localizacao, dono) VALUES(?,?,?)`,
-        [id, body.localizacao, body.dono],
+        db.run(`insert into module(module_id, vinha_id, localizacao) VALUES(?,?,?)`,
+        [id, body.vinha_id, body.localizacao],
         err=>{
             if(err) reject (err);
             resolve({inserted:1, module_id: id});
@@ -45,8 +55,8 @@ exports.removeModule = id =>{
 
 exports.updateModule = (id, body) =>{
     return new Promise((resolve,reject)=>{
-        db.run(`update module set localizacao = ?, dono = ? where module_id = ?`,
-        [body.localizacao, body.dono, id],
+        db.run(`update module set vinha_id = ?, localizacao = ? where module_id = ?`,
+        [body.vinha_id, body.localizacao, id],
         err=>{
             if(err) reject (err);
             resolve({updated:1, module_id: id});

@@ -24,8 +24,8 @@ exports.getDataSingle = id =>{
 exports.insertData = body =>{
     return new Promise((resolve,reject)=>{
         const id = uuid();
-        db.run(`insert into data(data_id, date, temp, air_humidity, solo_humidity, isWet, pluviosidade, vel_vento, dir_vento, radiacao) VALUES(?,?,?,?,?,?,?,?,?,?)`,
-        [id, body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao],
+        db.run(`insert into data(data_id, module_id, date, temp, air_humidity, solo_humidity, isWet, pluviosidade, vel_vento, dir_vento, radiacao) VALUES(?,?,?,?,?,?,?,?,?,?,?)`,
+        [id, body.module_id, body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao],
         err=>{
             if(err) reject (err);
             resolve({inserted:1, data_id: id});
@@ -45,8 +45,8 @@ exports.removeData = id =>{
 
 exports.updateData = (id, body) =>{
     return new Promise((resolve,reject)=>{
-        db.run(`update data set date = ?, temp = ?, air_humidity = ?, solo_humidity = ?, isWet = ?, pluviosidade = ?, vel_vento = ?, dir_vento = ?, radiacao = ? where data_id = ?`,
-        [body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao, id],
+        db.run(`update data set module_id = ?, date = ?, temp = ?, air_humidity = ?, solo_humidity = ?, isWet = ?, pluviosidade = ?, vel_vento = ?, dir_vento = ?, radiacao = ? where data_id = ?`,
+        [body.module_id, body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao, id],
         err=>{
             if(err) reject (err);
             resolve({updated:1, data_id: id});

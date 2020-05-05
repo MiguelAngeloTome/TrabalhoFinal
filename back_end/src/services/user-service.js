@@ -5,7 +5,7 @@ const roles = require('../helpers/roles.js')
 const uuid = require('uuid').v4;
 
 
-exports.register = (username, rawPassword, email, name) => {
+exports.register = (username, rawPassword, email, name, type) => {
     return new Promise((resolve, reject) => {
         const id = uuid();
         try {
@@ -18,8 +18,8 @@ exports.register = (username, rawPassword, email, name) => {
                         if (/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d$@$!%*#?&-.]{8,}$/.test(rawPassword)) {
                             const dataIv = cipher.generateIv();
                             const password = cipher.encrypt(rawPassword, dataIv);
-                            db.run(`insert into user(user_id, username,password, email, dataIv, name) VALUES(?,?,?,?,?,?)`,
-                                [id, username, password, email, dataIv, name],
+                            db.run(`insert into user(user_id, username, password, email, dataIv, name, type) VALUES(?,?,?,?,?,?,?)`,
+                                [id, username, password, email, dataIv, name, type],
                                 err => {
                                     if (err) reject(err);
                                     resolve({ inserted: 1, user_id: id });
@@ -47,10 +47,10 @@ exports.authenticate = (username, rawPassword) => {
                     if (password == rawPassword){
                         resolve({ _id: row[0]._id});
                     } else{
-                        reject(new Error("password"));
+                        reject(new Error("Wrong password"));
                     }
                 }
-                reject(new Error("username username"));
+                reject(new Error("Username not found"));
             });
     }
     )
@@ -79,7 +79,7 @@ exports.getUserSingle = id => {
 exports.insertUser = body => {
     return new Promise((resolve, reject) => {
         const id = uuid();
-        db.run(`insert into user(user_id, name, email, password, username) VALUES(?,?,?,?,?)`,
+        db.run(`insert into user(user_id, username, password, email, dataIv, name, type) VALUES(?,?,?,?,?,?,?)`,
             [id, body.name, body.email, body.password, body.username],
             err => {
                 if (err) reject(err);
@@ -100,8 +100,8 @@ exports.removeUser = id => {
 
 exports.updateUser = (id, body) => {
     return new Promise((resolve, reject) => {
-        db.run(`update user set name = ?, email = ?, password = ?, username = ? where user_id = ?`,
-            [body.name, body.email, body.password, body.username, id],
+        db.run(`update user set username = ?, password = ?, email = ?, dataIv = ?, name = ?, type = ? where user_id = ?`,
+            [body.username, body.password, body.email, body.dataIv, body.name, body.type, id],
             err => {
                 if (err) reject(err);
                 resolve({ updated: 1, user_id: id });
