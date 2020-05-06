@@ -1,11 +1,12 @@
 const moduleController = require("../controllers/module-controller.js");
 const router = require("express").Router();
+const authorize = require("../configs/authorization");
 
-router.get("", moduleController.getModule);
-router.get("/:id",moduleController.getModuleSingle);
-router.get("/vinha/:id",moduleController.getModuleVinha);
-router.post("", moduleController.insertModule);
-router.put("/:id", moduleController.updateModule);
-router.delete("/:id", moduleController.removeModule);
+router.get("", authorize(),moduleController.getModule);
+router.get("/:id",authorize(),moduleController.getModuleSingle);
+router.get("/vinha/:id",authorize(),moduleController.getModuleVinha);
+router.post("", authorize(),moduleController.insertModule);
+router.put("/:id", authorize(),moduleController.updateModule);
+router.delete("/:id", authorize(),moduleController.removeModule);
 
 module.exports = router;

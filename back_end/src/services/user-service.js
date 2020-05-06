@@ -45,7 +45,8 @@ exports.authenticate = (username, rawPassword) => {
                 if (row.length > 0) {
                     const password = cipher.decrypt(row[0].password, row[0].dataIv);
                     if (password == rawPassword){
-                        resolve({ _id: row[0]._id});
+                        console.log(row[0].username);
+                        resolve({ id: row[0].user_id});
                     } else{
                         reject(new Error("Wrong password"));
                     }

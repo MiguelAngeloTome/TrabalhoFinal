@@ -1,10 +1,11 @@
 const dataController = require("../controllers/data-controller.js");
 const router = require("express").Router();
+const authorize = require("../configs/authorization");
 
-router.get("", dataController.getData);
-router.get("/:id",dataController.getDataSingle);
-router.post("", dataController.insertData);
-router.put("/:id", dataController.updateData);
-router.delete("/:id", dataController.removeData);
+router.get("", authorize(), dataController.getData);
+router.get("/:id", authorize(), dataController.getDataSingle);
+router.post("", authorize(), dataController.insertData);
+router.put("/:id", authorize(), dataController.updateData);
+router.delete("/:id", authorize(), dataController.removeData);
 
 module.exports = router;
