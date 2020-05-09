@@ -1,32 +1,32 @@
-import React from 'react';
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
-import {Navbar, Nav} from 'react-bootstrap';
+import React from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import NavbarComponent from "../components/global/Navbar";
+import PrivateRoute from "../components/global/PrivateRoute";
 
 import Home from '../pages/home/Home';
 import About from '../pages/about/About';
 import Data from '../pages/data/Data';
 import DataDetails from '../pages/data/Details';
+import LoginPage from "../pages/auth/Login";
+import RegisterPage from "../pages/auth/Register";
 
 
 export default class RouterComponent extends React.Component {
-  render () {
+  render() {
     return (
       <Router>
-        <Navbar bg="dark" variant="dark" expand="lg">
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto">
-              <Nav.Link href="/">Home</Nav.Link>
-              <Nav.Link href="/about">About</Nav.Link>
-              <Nav.Link href="/data">Logs</Nav.Link>
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar>
-
+        <NavbarComponent />
         <Switch>
-          <Route exact path="/" component={Home} />
+
+          <Route exact path="/register" component={RegisterPage} />
+          <Route exact path="/login" component={LoginPage} />
           <Route exact path="/about" component={About} />
-          <Route exact path="/data" component={Data} />
-          <Route exact path="/data/details/:id" component={DataDetails} />
+
+          <PrivateRoute exact path="/data" component={Data} />
+          <PrivateRoute exact path="/data/details/:id" component={DataDetails} />
+          <Route path="*" component={Home} />
+
+
         </Switch>
       </Router>
     );

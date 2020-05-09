@@ -1,6 +1,6 @@
-const url = 'http://localhost:5000';
+import { apiRequest } from "../configs/apiMiddleware";
 
-const getAll = () => {
+/*const getAll = () => {
     return new Promise ((resolve, reject)=>{
         fetch(`${url}/data`, {method : 'GET'})
         .then(res => res.json())
@@ -16,9 +16,10 @@ const getOne = id => {
         .then (books => resolve (books))
         .catch (err => reject (`error GET /book/${id}: ${err.message}`));
     });
-  };
+  };*/
+
 
 export default {
-    getAll,
-    getOne,
+  getAll: () => apiRequest("GET", "/data"),
+  getOne: (id) => apiRequest("GET", `/data/${id}`),
 }
