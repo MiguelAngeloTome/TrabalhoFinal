@@ -7,7 +7,6 @@ import Home from '../pages/home/Home';
 import About from '../pages/about/About';
 import Data from '../pages/data/Data';
 import DataDetails from '../pages/data/Details';
-import LoginPage from "../pages/auth/Login";
 import RegisterPage from "../pages/auth/Register";
 
 
@@ -19,7 +18,6 @@ export default class RouterComponent extends React.Component {
         <Switch>
 
           <Route exact path="/register" component={RegisterPage} />
-          <Route exact path="/login" component={LoginPage} />
           <Route exact path="/about" component={About} />
 
           <PrivateRoute exact path="/data" component={Data} />
