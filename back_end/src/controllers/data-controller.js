@@ -12,6 +12,12 @@ exports.getDataSingle = (req, res) => {
     .catch(err => res.status(500).send(err.message));
 };
 
+exports.getDataTimeFrame = (req, res) => {
+    dataService.getDataTimeFrame(req.body)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).send(err.message));
+};
+
 exports.insertData = (req, res) => {
     dataService.insertData(req.body)
     .then(result => res.json(result))

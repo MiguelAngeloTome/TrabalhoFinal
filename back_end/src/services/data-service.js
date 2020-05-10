@@ -21,6 +21,16 @@ exports.getDataSingle = id =>{
     });
 }
 
+exports.getDataTimeFrame = body =>{
+    return new Promise((resolve,reject)=>{
+        db.all(`select * from data where date > ? and date < ?`,
+        [body.time1, body.time2],(err,row)=>{
+            if(err) reject (err);
+            resolve(row);
+        });
+    });
+}
+
 exports.insertData = body =>{
     return new Promise((resolve,reject)=>{
         const id = uuid();

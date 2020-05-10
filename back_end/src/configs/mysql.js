@@ -36,7 +36,7 @@ db.run(`create table if not exists module(
 db.run(`create table if not exists data(
         'data_id' varchar(36) primary key,
         'module_id' varchar(36),
-        'date' varchar(30),
+        'date' datetime,
         'temp' float,
         'air_humidity' float,
         'solo_humidity' float,
