@@ -45,3 +45,9 @@ exports.removeUser = (req, res) => {
         .then(result => res.json(result))
         .catch(err => res.status(500).send(err.message));
 };
+
+exports.ligacao = (req, res) => {
+    userService.ligacao(req.body)
+        .then(result => res.json(result))
+        .catch(err => res.status(500).send(err.message));
+};

@@ -4,6 +4,7 @@ const authorize = require("../configs/authorization");
 
 router.get("", userController.getUser);
 router.post("/login", userController.login);
+router.post("/ligacao", userController.ligacao);
 router.get("/:id",userController.getUserSingle);
 router.post("", userController.register);
 router.put("/:id", userController.updateUser);
