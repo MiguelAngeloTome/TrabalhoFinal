@@ -6,6 +6,7 @@ import LoginPage from "../../pages/auth/Login"
 
 export default class NavbarComponent extends React.Component {
   static contextType = AuthContext;
+
   render() {
     const { user, logout } = this.context;
     return (
@@ -34,11 +35,19 @@ export default class NavbarComponent extends React.Component {
                   <NavDropdown.Item onClick={() => logout()}>Logout</NavDropdown.Item>
                 </NavDropdown>
               ) : (
-                  <NavDropdown title="login" alignRight>
-                    <LoginPage />
+                  <Nav>
+                     <NavDropdown title="login" alignRight>
+                    <LoginPage/>
+                    <NavDropdown.Item as={NavLink} to="/register" style={{ textAlign: "center" }}  >
+                    Register
+                  </NavDropdown.Item>
                   </NavDropdown>
 
-
+                  <Nav.Link as={NavLink} to="/register">
+                    Sign UP
+                  </Nav.Link>
+                  </Nav>
+                 
                 )}
             </Nav>
           </Navbar.Collapse>

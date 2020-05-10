@@ -8,6 +8,7 @@ import About from '../pages/about/About';
 import Data from '../pages/data/Data';
 import DataDetails from '../pages/data/Details';
 import RegisterPage from "../pages/auth/Register";
+import LoginPage from "../pages/auth/Login";
 
 
 export default class RouterComponent extends React.Component {
@@ -19,7 +20,7 @@ export default class RouterComponent extends React.Component {
 
           <Route exact path="/register" component={RegisterPage} />
           <Route exact path="/about" component={About} />
-
+          <Route exact path="/login" component={LoginPage} />
           <PrivateRoute exact path="/data" component={Data} />
           <PrivateRoute exact path="/data/details/:id" component={DataDetails} />
           <Route path="*" component={Home} />

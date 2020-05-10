@@ -48,10 +48,6 @@ export default class LoginPage extends React.Component {
               <Button variant="primary" type="submit" block>
                 Login
               </Button>
-
-              <Button variant="outline-secondary" size="sm" onClick={() => this.props.history.push("/register")} block>
-                Register
-              </Button>
             </Card.Body>
           </Form>
         </Card>
