@@ -7,7 +7,7 @@ import TextField from '@material-ui/core/TextField';
 ///import Checkbox from '@material-ui/core/Checkbox';
 //import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
+//import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
@@ -45,6 +45,9 @@ const useStyles = theme => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+  },
+  sign: {
+    margin: theme.spacing(0, 0, 2),
   },
 });
 
@@ -138,15 +141,20 @@ render(){
             variant="contained"
             color="primary"
             className={classes.submit}
-            
           >
             Sign Up
           </Button>
+          <Button
+            fullWidth
+            variant="contained"
+            color="secondary"
+            className={classes.sign}
+            onClick={() => this.props.history.push("/login")}
+          >
+            Sign In
+          </Button>
         </form>
       </div>
-      <Box mt={5}>
-    { /*   <Copyright />*/}
-      </Box>
     </Container>
   );
 }

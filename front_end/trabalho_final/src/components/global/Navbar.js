@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { Navbar, Nav, NavDropdown, Container } from "react-bootstrap";
 import AuthContext from "../../configs/authContext";
-import LoginPage from "../../pages/auth/Login"
+//import LoginPage from "../../pages/auth/Login"
 
 export default class NavbarComponent extends React.Component {
   static contextType = AuthContext;
@@ -36,12 +36,12 @@ export default class NavbarComponent extends React.Component {
                 </NavDropdown>
               ) : (
                   <Nav>
-                    <NavDropdown title="login" alignRight >
+                  {/*  <NavDropdown title="login" alignRight >
                       <LoginPage  />
-                    {/*  <NavDropdown.Item as={NavLink} to="/register" style={{ textAlign: "center",width: "18rem" }}  >
+                      <NavDropdown.Item as={NavLink} to="/register" style={{ textAlign: "center",width: "18rem" }}  >
                         Register
-              </NavDropdown.Item>*/}
-                    </NavDropdown>
+              </NavDropdown.Item>
+                    </NavDropdown>*/}
 
                     <Nav.Link as={NavLink} to="/register">
                       Sign UP
