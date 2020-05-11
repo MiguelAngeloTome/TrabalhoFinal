@@ -36,18 +36,18 @@ export default class NavbarComponent extends React.Component {
                 </NavDropdown>
               ) : (
                   <Nav>
-                     <NavDropdown title="login" alignRight>
-                    <LoginPage/>
-                    <NavDropdown.Item as={NavLink} to="/register" style={{ textAlign: "center" }}  >
-                    Register
-                  </NavDropdown.Item>
-                  </NavDropdown>
+                    <NavDropdown title="login" alignRight >
+                      <LoginPage  />
+                    {/*  <NavDropdown.Item as={NavLink} to="/register" style={{ textAlign: "center",width: "18rem" }}  >
+                        Register
+              </NavDropdown.Item>*/}
+                    </NavDropdown>
 
-                  <Nav.Link as={NavLink} to="/register">
-                    Sign UP
+                    <Nav.Link as={NavLink} to="/register">
+                      Sign UP
                   </Nav.Link>
                   </Nav>
-                 
+
                 )}
             </Nav>
           </Navbar.Collapse>

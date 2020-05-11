@@ -19,14 +19,17 @@ export default class LoginPage extends React.Component {
         this.context.login({ username: this.state.username, ...data });
         this.props.history.push("/");
       })
-      .catch((err) => {});
+      .catch((err) => { });
   }
 
   render() {
     const { username, password } = this.state;
     return (
       <div id="auth-board">
-        <Card style={{ width: "18rem" }}>
+        <Card style={{
+          width: "18rem", border: "none",
+          boxShadow: "none"
+        }}>
           <Form onSubmit={(evt) => this.handleSubmit(evt)}>
             <Card.Body>
               <Card.Title>Login</Card.Title>
