@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import NavbarComponent from "../components/global/Navbar";
 import PrivateRoute from "../components/global/PrivateRoute";
 
-import Home from '../pages/home/Home';
+import Home from '../pages/dashboard/dashboard';
 import About from '../pages/about/About';
 import Data from '../pages/data/Data';
 import DataDetails from '../pages/data/Details';
@@ -17,11 +17,9 @@ export default class RouterComponent extends React.Component {
     const { user} = this.context;
     return (
       <Router>
-         {user && (
-           <NavbarComponent />
-         )}
-        
-       
+         {/*user && (
+          <NavbarComponent />
+         )*/}
           {user ? ( 
              <Switch>
 
