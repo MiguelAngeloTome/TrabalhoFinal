@@ -17,6 +17,7 @@ exports.getDataSingle = id =>{
         (err,row)=>{
             if(err) reject (err);
             resolve(row);
+            
         });
     });
 }

@@ -22,6 +22,12 @@ import Exa from '../graphs/ex';
 import SideNav from '../../components/global/sideNav'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AuthContext from "../../configs/authContext";
+import dataService from '../../services/data';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
 const drawerWidth = 240;
 
@@ -62,6 +68,12 @@ const useStyles = theme => ({
   },
   title: {
     flexGrow: 1,
+
+  },
+  titleK:{
+    flexGrow: 1,
+    textAlign:'center',
+    color:'#2196f3',
   },
   drawerPaper: {
     position: 'relative',
@@ -100,19 +112,61 @@ const useStyles = theme => ({
     flexDirection: 'column',
   },
   fixedHeight: {
-    height: 240,
+    height: 270,
+  },
+  formControl: {
+    display: 'flex',
+    alignItems: 'right',
+    //justifyContent: 'flex-end',
+    margin: theme.spacing(1),
+    minWidth: 120,
   },
 });
+
 
 class Dashboard extends React.Component{
     constructor(props) {
         super(props);
-        this.state = {open: true};
+        this.state = {
+          open: true,
+          datas: undefined,
+        };
       }
+
+
+
       static contextType = AuthContext;
+      componentDidMount() {
+        dataService.getOne('cd49a690-5240-4b3e-9dbe-95b561011a83').then(data=>this.setState({datas: data[0]})).catch();
+        
+    }
+
 render(){
+  
+  const temp = 'Temperatura';
+  const tempColor = 'rgba(255, 0, 0, 0.7)'
+
+  const hum = 'Humidade do Ar';
+  const humColor = 'rgba(66, 245, 239, 0.7)'
+
+  const soloHum = 'Hum. do Solo';
+  const soloHumColor = 'rgba(222, 184, 135, 0.7)'
+
+  const pluv = 'Pluviosidade';
+  const pluvColor = 'rgba(0, 0, 255, 0.7)'
+
+  const velVento = 'Vel. do Vento';
+  const velColor = 'rgba(230, 230, 250, 0.7)'
+
+  const rad = 'Radiação Solar';
+  const radColor = 'rgba(255, 255, 0, 1)'
+
+
+
+
+  const {datas} = this.state;
   const {logout } = this.context;
-    const { classes } = this.props;
+  const { classes } = this.props;
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -159,44 +213,98 @@ render(){
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
+        <FormControl className={classes.formControl}>
+        <InputLabel htmlFor="grouped-select">Modulo</InputLabel>
+        <Select defaultValue="" id="grouped-select">
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          <ListSubheader>Vinha 1</ListSubheader>
+          <MenuItem value={1}>modulo 1</MenuItem>
+          <MenuItem value={2}>modulo 2</MenuItem>
+          <ListSubheader>Vinha 2</ListSubheader>
+          <MenuItem value={3}>Modulo 3</MenuItem>
+          <MenuItem value={4}>Modulo 4</MenuItem>
+        </Select>
+      </FormControl>
         <Container maxWidth="lg" className={classes.container}>
+        
           <Grid container spacing={3}>
             {/* Chart */}
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={6} lg={6} >
               <Paper className={clsx(classes.paper)}>
-                <Exa />
+              {datas !== undefined &&
+               <Typography component="h1" variant="h6" noWrap className={classes.titleK}>
+                 {datas.isWet ?(
+                   'Folha Molhada'
+                 ):(
+                  'Folha Seca'
+                 )
+                 }
+             </Typography>
+              }  
+              </Paper>
+            </Grid>
+            <Grid item xs={12} md={6} lg={6} >
+              <Paper className={clsx(classes.paper)}>
+              {datas !== undefined &&
+                <Typography component="h1" variant="h6" noWrap className={classes.titleK}>
+                  
+                  Direção do Vento: {datas.dir_vento} 
+                  
+              </Typography>
+              }  
+              </Paper>
+            </Grid>
+            <Grid item xs={12} md={6} lg={4} >
+              <Paper className={clsx(classes.paper)}>
+              {datas !== undefined &&
+                <Exa valor={datas.temp} rest={80-datas.temp} title={temp} color = {tempColor}/>
+              }  
               </Paper>
             </Grid>
             {/* Recent Deposits */}
             <Grid item xs={12} md={6} lg={4}>
               <Paper className={clsx(classes.paper)}>
-                <Exa />
+              {datas !== undefined &&
+                <Exa valor={datas.air_humidity} rest={80-datas.air_humidity} title={hum} color = {humColor}/>
+              }
               </Paper>
             </Grid>
             {/* Recent Orders */}
             <Grid item xs={12} md={6} lg={4}>
               <Paper className={classes.paper}>
-                <Exa />
+              {datas !== undefined &&
+                <Exa valor={datas.solo_humidity} rest={80-datas.solo_humidity} title={soloHum} color = {soloHumColor}/>
+              }
               </Paper>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
               <Paper className={classes.paper}>
-                <Exa />
+              {datas !== undefined &&
+                <Exa valor={datas.pluviosidade} rest={80-datas.pluviosidade} title={pluv} color = {pluvColor}/>
+              }
               </Paper>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
               <Paper className={classes.paper}>
-                <Exa />
+              {datas !== undefined &&
+                <Exa valor={datas.vel_vento} rest={80-datas.vel_vento} title={velVento} color = {velColor}/>
+              }
               </Paper>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
               <Paper className={classes.paper}>
-                <Exa />
+              {datas !== undefined &&
+                <Exa valor={datas.temp} rest={80-datas.temp} title={rad} color = {radColor}/>
+              }
               </Paper>
             </Grid>
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <Exa />
+              {datas !== undefined &&
+                <Exa valor={datas.radiacao} rest={80-datas.radiacao} title={temp} color = {tempColor}/>
+              }
               </Paper>
             </Grid>
           </Grid>

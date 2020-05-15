@@ -14,7 +14,7 @@ Chart.pluginService.register({
       ctx.font = fontSize + "em sans-serif";
       ctx.textBaseline = "middle";
   
-      var text = "27°",
+      var text = chart.config.data.text,
           textX = Math.round((width - ctx.measureText(text).width) / 2),
           textY = height / 2;
   
@@ -30,11 +30,11 @@ export default class Exa extends React.Component{
         this.state = {
             data : {
                 datasets: [{
-                    data: [27,33],
+                    data: [this.props.valor, this.props.rest],
                     backgroundColor:[
-                        'rgba(255, 0, 0, 1)',
+                        this.props.color,
                         'rgba(100, 100, 100, 0.6)',
-                        'rgba(255, 206, 86, 0.6)',
+
                     ],
                 }],
                 
@@ -44,18 +44,17 @@ export default class Exa extends React.Component{
                     'Red',
                     'Yellow',
                 ],
-                text: '23%'
+                text: this.props.valor
                 
             },
         };
     }
 
-    
  
     render(){
         return(
             <Container>
-                <h1 style={{textAlign: 'center'}}>Temperatura</h1>
+                <h2 style={{textAlign: 'center'}}>{this.props.title}</h2>
             <Doughnut style={{align: 'center'}} data={this.state.data} options={{legend: {
                 display: false
             },rotation:1.5708}} />
