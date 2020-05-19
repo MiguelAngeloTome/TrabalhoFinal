@@ -9,6 +9,7 @@ import Data from '../pages/data/Data';
 import DataDetails from '../pages/data/Details';
 import RegisterPage from "../pages/auth/Register";
 import LoginPage from "../pages/auth/Login";
+import ListaVinhas from "../pages/vinhas/ListVinhas";
 import AuthContext from "../configs/authContext";
 
 export default class RouterComponent extends React.Component {
@@ -26,6 +27,7 @@ export default class RouterComponent extends React.Component {
             <Route exact path="/about" component={About} />
              <PrivateRoute exact path="/data" component={Data} />
              <PrivateRoute exact path="/data/details/:id" component={DataDetails} />
+             <PrivateRoute exact path="/vinhas" component={ListaVinhas} />
             <Route path="*" component={Home} />
             </Switch>
           ):(

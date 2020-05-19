@@ -16,17 +16,17 @@ export default class SideNav extends React.Component{
      return(
 
         <div>
-        <ListItem button component="a" href="/about">
+        <ListItem button component="a" href="/">
           <ListItemIcon>
             <DashboardIcon />
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItem>
-        <ListItem  button component="a" href="/data">
+        <ListItem  button component="a" href="/vinhas">
           <ListItemIcon>
             <DashboardIcon />
           </ListItemIcon>
-          <ListItemText primary="Data" />
+          <ListItemText primary="Vinhas" />
         </ListItem>
         <ListItem  button component="a" href="/about">
           <ListItemIcon>

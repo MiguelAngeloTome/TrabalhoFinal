@@ -17,6 +17,7 @@ export default class DataListPage extends React.Component {
 
     render() {
             const {datas} = this.state;
+            
         return (
 
             <Container>
