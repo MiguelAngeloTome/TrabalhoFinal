@@ -172,7 +172,7 @@ const useStyles = theme => ({
 
 
 
-class ListaVinhas extends React.Component {
+class VinhasDetails extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -267,7 +267,60 @@ class ListaVinhas extends React.Component {
                                 actionsColumnIndex: -1,
 
                             }}
-                            onRowClick={(event, rowData) => this.props.history.push(`/vinhas/details/${rowData.vinha_id}`)}
+                            onRowClick={(event, rowData) => this.props.history.push('/about')}
+                            actions={[
+                                {
+                                    icon: AddBox,
+                                    tooltip: 'Add User',
+                                    isFreeAction: true,
+                                    onClick: () => this.props.history.push('/about')
+                                }
+                            ]}
+                            editable={{
+                                /*onRowAdd: (newData) =>
+                                    new Promise((resolve) => {
+                                        setTimeout(() => {
+                                            resolve();
+                                            this.setState({localizacao: newData.localizacao});
+                                            this.setState({dono:user.id});
+                                            this.submit('','add');
+                                        }, 2);
+                                    }),*/
+                                onRowUpdate: (newData, oldData) =>
+                                    new Promise((resolve) => {
+                                        setTimeout(() => {
+                                            resolve();
+                                            this.setState({ localizacao: newData.localizacao });
+                                            this.setState({ nome: newData.Nome });
+                                            this.setState({ coordenadas: newData.coordenadas })
+                                            this.submit(oldData.vinha_id, 'update');
+                                        }, 600);
+                                    }),
+                                onRowDelete: (oldData) =>
+                                    new Promise((resolve) => {
+                                        setTimeout(() => {
+                                            resolve();
+                                            this.submit(oldData.vinha_id, '');
+                                        }, 600);
+                                    }),
+                            }}
+                        />
+
+
+                    </Container>
+
+                    <Container maxWidth="lg" className={classes.container}>
+
+                        <MaterialTable
+                            icons={tableIcons}
+                            title="Lista de Vinhas"
+                            columns={this.state.columns}
+                            data={this.state.datas}
+                            options={{
+                                actionsColumnIndex: -1,
+
+                            }}
+                            onRowClick={(event, rowData) => this.props.history.push('/about')}
                             actions={[
                                 {
                                     icon: AddBox,
@@ -313,5 +366,4 @@ class ListaVinhas extends React.Component {
         )
     }
 }
-export default withStyles(useStyles)(ListaVinhas)
-
+export default withStyles(useStyles)(VinhasDetails)
