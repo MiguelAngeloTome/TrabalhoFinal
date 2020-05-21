@@ -11,6 +11,7 @@ const update = (id, body) =>{
 export default {
     getAll: () => apiRequest("GET", "/vinha"),
     getOne: (id) => apiRequest("GET", `/vinha/${id}`),
+    getAllUser: (id) => apiRequest("GET", `/vinhauser/${id}`),
     delete: (id) => apiRequest("DELETE", `/vinha/${id}`),
     add,
     update,

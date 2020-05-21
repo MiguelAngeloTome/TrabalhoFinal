@@ -24,8 +24,8 @@ exports.getVinhaSingle = id =>{
 exports.insertVinha = body =>{
     return new Promise((resolve,reject)=>{
         const id = uuid();
-        db.run(`insert into vinha(vinha_id, localizacao, dono) VALUES(?,?,?)`,
-        [id, body.localizacao, body.dono],
+        db.run(`insert into vinha(vinha_id, Nome, coordenadas, localizacao, dono) VALUES(?,?,?,?,?)`,
+        [id, body.nome ,body.coordenadas, body.localizacao, body.dono],
         err=>{
             if(err) reject (err);
             resolve({inserted:1, vinha_id: id});
@@ -45,8 +45,8 @@ exports.removeVinha = id =>{
 
 exports.updateVinha = (id, body) =>{
     return new Promise((resolve,reject)=>{
-        db.run(`update vinha set localizacao = ?, dono = ? where vinha_id = ?`,
-        [body.localizacao, body.dono, id],
+        db.run(`update vinha set localizacao = ?, Nome = ?, coordenadas = ? where vinha_id = ?`,
+        [body.localizacao, body.nome, body.coordenadas, id],
         err=>{
             if(err) reject (err);
             resolve({updated:1, vinha_id: id});

@@ -60,7 +60,7 @@ const tableIcons = {
     SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
     ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
-  };
+};
 
 
 
@@ -178,33 +178,32 @@ class ListaVinhas extends React.Component {
         this.state = {
             open: true,
             datas: [],
-            
+
             columns: [
-                { title: 'Name', field: 'vinha_id' },
-                { title: 'Location', field: 'localizacao' },
+                { title: 'Name', field: 'Nome' },
+                { title: 'Localização', field: 'localizacao' },
+                { title: 'Coordenadas', field: 'coordenadas' },
             ],
-            localizacao:"",
-            dono:"",
+            localizacao: "",
+            nome: "",
+            coordenadas: "",
         }
-        };
-        static contextType = AuthContext;
+    };
+    static contextType = AuthContext;
 
     componentDidMount() {
-        vinhaService.getAll ().then(data => this.setState({datas: data})).catch();
+        vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
     }
 
-    submit(id,type){
-        if(type == 'add'){
-          vinhaService.add({localizacao:this.state.localizacao,dono:this.state.dono});
-          vinhaService.getAll ().then(data => this.setState({datas: data})).catch();  
-        }else if(type == 'update'){
-          vinhaService.update(id,{localizacao:this.state.localizacao,dono:this.state.dono});
-          vinhaService.getAll ().then(data => this.setState({datas: data})).catch();  
-        }else{
+    submit(id, type) {
+        if (type == 'update') {
+            vinhaService.update(id, { localizacao: this.state.localizacao, nome: this.state.nome, coordenadas: this.state.coordenadas });
+            vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
+        } else {
             vinhaService.delete(id);
-            vinhaService.getAll ().then(data => this.setState({datas: data})).catch();
+            vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
         }
-        
+
     }
 
     render() {
@@ -226,7 +225,7 @@ class ListaVinhas extends React.Component {
                             <MenuIcon />
                         </IconButton>
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                            Dashboard
+                            Vinhas
           </Typography>
                         <IconButton color="inherit">
                             <Badge badgeContent={255} color="secondary">
@@ -259,47 +258,55 @@ class ListaVinhas extends React.Component {
                     <div className={classes.appBarSpacer} />
                     <Container maxWidth="lg" className={classes.container}>
 
-                            <MaterialTable
-                                icons={tableIcons}
-                                title="Vinhas"
-                                columns={this.state.columns}
-                                data={this.state.datas}
-                                options={{
-                                    actionsColumnIndex: -1,
-                                    
-                                  }}
-                                  onRowClick={(event, rowData) => this.props.history.push('/about')}
-                                editable={{
-                                    onRowAdd: (newData) =>
-                                        new Promise((resolve) => {
-                                            setTimeout(() => {
-                                                resolve();
-                                                this.setState({localizacao: newData.localizacao});
-                                                this.setState({dono:"hello"});
-                                                console.log(this.state);
-                                                this.submit('','add');
-                                            }, 600);
-                                        }),
-                                    onRowUpdate: (newData, oldData) =>
-                                        new Promise((resolve) => {
-                                            setTimeout(() => {
-                                                resolve();
-                                                this.setState({localizacao: newData.localizacao});
-                                                this.setState({dono:"hello"});
-                                                this.submit(oldData.vinha_id,'update');
-                                            }, 600);
-                                        }),
-                                    onRowDelete: (oldData) =>
-                                        new Promise((resolve) => {
-                                            setTimeout(() => {
-                                                resolve();
-                                                this.submit(oldData.vinha_id,'');
-                                            }, 600);
-                                        }),
-                                }}
-                            />
+                        <MaterialTable
+                            icons={tableIcons}
+                            title="Lista de Vinhas"
+                            columns={this.state.columns}
+                            data={this.state.datas}
+                            options={{
+                                actionsColumnIndex: -1,
 
-                        
+                            }}
+                            onRowClick={(event, rowData) => this.props.history.push('/about')}
+                            actions={[
+                                {
+                                    icon: AddBox,
+                                    tooltip: 'Add User',
+                                    isFreeAction: true,
+                                    onClick: () => this.props.history.push('/about')
+                                }
+                            ]}
+                            editable={{
+                                /*onRowAdd: (newData) =>
+                                    new Promise((resolve) => {
+                                        setTimeout(() => {
+                                            resolve();
+                                            this.setState({localizacao: newData.localizacao});
+                                            this.setState({dono:user.id});
+                                            this.submit('','add');
+                                        }, 2);
+                                    }),*/
+                                onRowUpdate: (newData, oldData) =>
+                                    new Promise((resolve) => {
+                                        setTimeout(() => {
+                                            resolve();
+                                            this.setState({ localizacao: newData.localizacao });
+                                            this.setState({ nome: newData.Nome });
+                                            this.setState({ coordenadas: newData.coordenadas })
+                                            this.submit(oldData.vinha_id, 'update');
+                                        }, 600);
+                                    }),
+                                onRowDelete: (oldData) =>
+                                    new Promise((resolve) => {
+                                        setTimeout(() => {
+                                            resolve();
+                                            this.submit(oldData.vinha_id, '');
+                                        }, 600);
+                                    }),
+                            }}
+                        />
+
+
                     </Container>
                 </main>
             </div >

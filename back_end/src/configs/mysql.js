@@ -22,8 +22,10 @@ db.run(`create table if not exists user(
 
 db.run(`create table if not exists vinha(
         'vinha_id' varchar(36) primary key,
+        'Nome' varchar(50),
+        'coordenadas' varchar(50),
         'localizacao' varchar(30),
-        'dono' varchar(30))`
+        'dono' varchar(36))`
 );
 
 db.run(`create table if not exists module(
@@ -49,11 +51,12 @@ db.run(`create table if not exists data(
 );
 
 db.run(`create table if not exists vinha_user(
+        id varchar(36) Primary Key,
         'user_id' varchar(36),
         'vinha_id' varchar(36),
-        primary key (user_id, vinha_id),
         foreign key (user_id) REFERENCES user(user_id),
         foreign key (vinha_id) REFERENCES vinha(vinha_id))`
 );
+
 
 module.exports = db;
