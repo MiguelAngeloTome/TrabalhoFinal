@@ -144,22 +144,22 @@ class Dashboard extends React.Component{
 render(){
   
   const temp = 'Temperatura';
-  const tempColor = 'rgba(255, 0, 0, 0.7)'
+  const tempColor = 'rgba(255, 0, 0, .85)'
 
   const hum = 'Humidade do Ar';
-  const humColor = 'rgba(66, 245, 239, 0.7)'
+  const humColor = 'rgba(66, 245, 239, .85)'
 
   const soloHum = 'Hum. do Solo';
-  const soloHumColor = 'rgba(222, 184, 135, 0.7)'
+  const soloHumColor = 'rgba(222, 184, 135, .85)'
 
   const pluv = 'Pluviosidade';
-  const pluvColor = 'rgba(0, 0, 255, 0.7)'
+  const pluvColor = 'rgba(0, 0, 255, .85)'
 
   const velVento = 'Vel. do Vento';
-  const velColor = 'rgba(230, 230, 250, 0.7)'
+  const velColor = 'rgba(230, 230, 250, .85)'
 
   const rad = 'Radiação Solar';
-  const radColor = 'rgba(255, 255, 0, 1)'
+  const radColor = 'rgba(255, 255, 0, .85)'
 
 
 

@@ -118,14 +118,3 @@ exports.updateUser = (id, body) => {
             });
     });
 };
-
-exports.ligacao = body => {
-    return new Promise((resolve, reject) => {
-        db.run(`insert into vinha_user(user_id, vinha_id) VALUES(?,?)`,
-            [body.user_id, body.vinha_id],
-            err => {
-                if (err) reject(err);
-                resolve({ inserted: 1, user_id: id });
-            });
-    });
-};

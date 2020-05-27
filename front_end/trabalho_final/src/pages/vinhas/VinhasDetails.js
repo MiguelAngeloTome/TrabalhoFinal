@@ -177,33 +177,44 @@ class VinhasDetails extends React.Component {
         super(props);
         this.state = {
             open: true,
-            datas: [],
+            datas1: [],
+            datas2: [],
 
-            columns: [
-                { title: 'Name', field: 'Nome' },
-                { title: 'Localização', field: 'localizacao' },
+            columns1: [
+                { title: 'Localizacao', field: 'localizacao' },
                 { title: 'Coordenadas', field: 'coordenadas' },
             ],
+            columns2: [
+                { title: 'Nome', field: 'name' },
+                { title: 'Email', field: 'email' },
+                { title: 'Tipo', field: 'type' },
+            ],
+
             localizacao: "",
-            nome: "",
             coordenadas: "",
+
+            name: "",
+            email: "",
+            type: "",
         }
     };
     static contextType = AuthContext;
-
+    
     componentDidMount() {
-        vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
+        vinhaService.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data })).catch();
+        vinhaService.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
     }
 
-    submit(id, type) {
-        if (type == 'update') {
-            vinhaService.update(id, { localizacao: this.state.localizacao, nome: this.state.nome, coordenadas: this.state.coordenadas });
-            vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
-        } else {
-            vinhaService.delete(id);
-            vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
-        }
+    submitUsers(vinha_id, user_id) {
+        vinhaService.deleteUser_vinha({vinha_id: vinha_id, user_id: user_id});
+        vinhaService.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data })).catch();
+        window.location.reload();
+    }
 
+    submitModules(module_id) {
+        vinhaService.deleteModule_vinha(module_id);
+        vinhaService.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
+        window.location.reload();
     }
 
     render() {
@@ -260,9 +271,9 @@ class VinhasDetails extends React.Component {
 
                         <MaterialTable
                             icons={tableIcons}
-                            title="Lista de Vinhas"
-                            columns={this.state.columns}
-                            data={this.state.datas}
+                            title="Lista de modulos"
+                            columns={this.state.columns1}
+                            data={this.state.datas1}
                             options={{
                                 actionsColumnIndex: -1,
 
@@ -300,7 +311,7 @@ class VinhasDetails extends React.Component {
                                     new Promise((resolve) => {
                                         setTimeout(() => {
                                             resolve();
-                                            this.submit(oldData.vinha_id, '');
+                                            this.submitModules(oldData.module_id);
                                         }, 600);
                                     }),
                             }}
@@ -313,9 +324,9 @@ class VinhasDetails extends React.Component {
 
                         <MaterialTable
                             icons={tableIcons}
-                            title="Lista de Vinhas"
-                            columns={this.state.columns}
-                            data={this.state.datas}
+                            title="Lista de utilizadores"
+                            columns={this.state.columns2}
+                            data={this.state.datas2}
                             options={{
                                 actionsColumnIndex: -1,
 
@@ -339,21 +350,21 @@ class VinhasDetails extends React.Component {
                                             this.submit('','add');
                                         }, 2);
                                     }),*/
-                                onRowUpdate: (newData, oldData) =>
+                                /*onRowUpdate: (newData, oldData) =>
                                     new Promise((resolve) => {
                                         setTimeout(() => {
                                             resolve();
-                                            this.setState({ localizacao: newData.localizacao });
-                                            this.setState({ nome: newData.Nome });
-                                            this.setState({ coordenadas: newData.coordenadas })
+                                            this.setState({ name: newData.name });
+                                            this.setState({ email: newData.email });
+                                            this.setState({ type: newData.type })
                                             this.submit(oldData.vinha_id, 'update');
                                         }, 600);
-                                    }),
+                                    }),*/
                                 onRowDelete: (oldData) =>
                                     new Promise((resolve) => {
                                         setTimeout(() => {
                                             resolve();
-                                            this.submit(oldData.vinha_id, '');
+                                            this.submitUsers(this.props.match.params.id, oldData.user_id);
                                         }, 600);
                                     }),
                             }}

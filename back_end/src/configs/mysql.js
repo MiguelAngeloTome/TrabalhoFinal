@@ -32,6 +32,7 @@ db.run(`create table if not exists module(
         'module_id' varchar(36) primary key,
         'vinha_id' varchar(36),
         'localizacao' varchar(30),
+        'coordenadas' varchar(30),
         foreign key (vinha_id) REFERENCES vinha(vinha_id))`
 );
 
