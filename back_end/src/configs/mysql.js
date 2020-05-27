@@ -17,6 +17,7 @@ db.run(`create table if not exists user(
         'email' varchar(30),
         'dataIv' varchar(200),
         'name' varchar(30),
+        'surname' varchar(30),
         'type' varchar(30))`
 );
 

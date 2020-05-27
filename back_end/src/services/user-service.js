@@ -5,7 +5,7 @@ const roles = require('../helpers/roles.js')
 const uuid = require('uuid').v4;
 
 
-exports.register = (username, rawPassword, email, name, type) => {
+exports.register = (username, rawPassword, email, name, surname, type) => {
     return new Promise((resolve, reject) => {
         const id = uuid();
         try {
@@ -20,8 +20,8 @@ exports.register = (username, rawPassword, email, name, type) => {
                         if (/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d$@$!%*#?&-.]{8,}$/.test(rawPassword)) {
                             const dataIv = cipher.generateIv();
                             const password = cipher.encrypt(rawPassword, dataIv);
-                            db.run(`insert into user(user_id, username, password, email, dataIv, name, type) VALUES(?,?,?,?,?,?,?)`,
-                                [id, username, password, email, dataIv, name, type],
+                            db.run(`insert into user(user_id, username, password, email, dataIv, name, surname, type) VALUES(?,?,?,?,?,?,?,?)`,
+                                [id, username, password, email, dataIv, name, surname, type],
                                 err => {
                                     if (err){
                                         
@@ -55,7 +55,7 @@ exports.authenticate = (username, rawPassword) => {
                 if (row.length > 0) {
                     const password = cipher.decrypt(row[0].password, row[0].dataIv);
                     if (password == rawPassword){
-                        resolve({ id: row[0].user_id});
+                        resolve({ id: row[0].user_id, name: row[0].name, surname:row[0].surname});
                     } else{
                         reject(new Error("Wrong password"));
                     }

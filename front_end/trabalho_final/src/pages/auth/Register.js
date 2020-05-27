@@ -40,7 +40,7 @@ class RegisterPage extends React.Component  {
 
   constructor(props) {
     super(props);
-    this.state = { username: "", password: "", email: "", name: "", type: "" };
+    this.state = { username: "", password: "", email: "", name: "", surname: "", type: "" };
     
   }
   handleSubmit(evt) {
@@ -91,6 +91,18 @@ render(){
                 name="Name"
                 autoComplete="name"
                 onChange={(evt) => this.setState({ name: evt.target.value })}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="surname"
+                label="surname"
+                name="Surname"
+                autoComplete="Surname"
+                onChange={(evt) => this.setState({ surname: evt.target.value })}
               />
             </Grid>
             <Grid item xs={12}>
