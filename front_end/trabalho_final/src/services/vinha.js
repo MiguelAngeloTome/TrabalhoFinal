@@ -13,6 +13,7 @@ export default {
     getOne: (id) => apiRequest("GET", `/vinha/${id}`),
     getAllUser: (id) => apiRequest("GET", `/vinhauser/getVinhaSingle/${id}`),
     getUsersVinha: (id) => apiRequest("GET", `/vinhauser/getUsersVinha/${id}`),
+    getModulesUser: (id) => apiRequest("GET", `/vinhauser/getModuleUsers/${id}`),
     getModulesVinha: (id) => apiRequest("GET", `/module/vinha/${id}`),
     delete: (id) => apiRequest("DELETE", `/vinha/${id}`),
     deleteUser_vinha: (body) => apiRequest("DELETE", `/vinhauser/delete`, body),

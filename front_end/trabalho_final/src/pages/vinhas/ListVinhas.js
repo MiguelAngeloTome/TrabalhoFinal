@@ -192,6 +192,7 @@ class ListaVinhas extends React.Component {
     static contextType = AuthContext;
 
     componentDidMount() {
+        
         vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
     }
 

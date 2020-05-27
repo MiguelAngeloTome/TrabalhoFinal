@@ -13,6 +13,12 @@ exports.getVinhaSingle = (req, res) => {
     .catch(err => res.status(500).send(err.message));
 };
 
+exports.getModuleUsers = (req, res) => {
+    vinhaUserService.getModuleUsers(req.params.id)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).send(err.message));
+};
+
 exports.getUsersVinha = (req, res) => {
     vinhaUserService.getUsersVinha(req.params.id)
     .then(result => res.json(result))
