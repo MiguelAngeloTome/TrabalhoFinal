@@ -21,6 +21,16 @@ exports.getModuleSingle = id =>{
     });
 }
 
+exports.getFirstDataModule = id =>{
+    return new Promise((resolve,reject)=>{
+        db.all(`Select * from data where module_id = ? `, [id],
+        (err,row)=>{
+            if(err) reject (err);
+            resolve(row);
+        });
+    });
+}
+
 exports.getModuleVinha = id =>{
     return new Promise((resolve,reject)=>{
         db.all(`Select * from module where vinha_id = ?`, [id],

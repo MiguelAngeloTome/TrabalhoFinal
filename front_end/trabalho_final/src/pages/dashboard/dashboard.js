@@ -140,10 +140,20 @@ class Dashboard extends React.Component {
 
   static contextType = AuthContext;
   componentDidMount() {
-    vinhaService.getModulesUser(this.context.user.id).then(data => this.setState({ vinhas: data })).catch();
+    let a;
+    vinhaService.getModulesUser(this.context.user.id)
+    .then(data =>{a=data[0].modules[0].module_id;
+      this.setState({ vinhas: data,selected:data[0].modules[0].module_id });
+      dataService.getLast(a).then(data => this.setState({ datas: data[0] })).catch();
 
-    //dataService.getOne('f1a67ac7-1ff4-47dd-b39c-1bdaf792068e').then(data => this.setState({ datas: data[0] })).catch();
+    })
+  }
 
+  upd(a){
+    console.log(a)
+    this.setState({selected: a})
+    dataService.getLast(a).then(data => this.setState({ datas: data[0] })).catch();
+    
   }
 
   render() {
@@ -219,7 +229,7 @@ class Dashboard extends React.Component {
             <FormControl className={classes.formControl}>
               <InputLabel htmlFor="grouped-native-select">Modules</InputLabel>
               <Select
-                value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.setState({ selected: evt.target.value })}
+                value={this.state.selected ? this.state.selected : ''} onChange={(evt)=>this.upd(evt.target.value)}
               >
                 {this.state.vinhas.map((vinha, index) => {
                   let a =[];
@@ -262,6 +272,7 @@ class Dashboard extends React.Component {
                       Direção do Vento: {datas.dir_vento}
 
                     </Typography>
+                    
                   }
                 </Paper>
               </Grid>
