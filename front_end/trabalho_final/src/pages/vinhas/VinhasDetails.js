@@ -142,6 +142,8 @@ const useStyles = theme => ({
     container: {
         paddingTop: theme.spacing(4),
         paddingBottom: theme.spacing(4),
+        height:"75%",
+        minHeight:"25%",
     },
     paper: {
         padding: theme.spacing(2),
@@ -321,7 +323,7 @@ class VinhasDetails extends React.Component {
 
                     </Container>
 
-                    <Container maxWidth="lg" className={classes.container}>
+                    <Container maxWidth="lg%" className={classes.container}>
 
                         <MaterialTable
                             icons={tableIcons}

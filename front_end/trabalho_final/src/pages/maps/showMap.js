@@ -3,10 +3,11 @@ import 'leaflet/dist/leaflet.css'
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
 import L from 'leaflet';
 import userLocationURL from '../../assets/vinha_location.svg';
+import Container from '@material-ui/core/Container';
 
 const mapContainerStyle = {
-    height: "70vh",
-    width: "78vw",
+    height: "100%",
+    width: "100%",
   };
 
   const myIcon = L.icon({
@@ -27,7 +28,7 @@ export default class ShowMap extends React.Component {
     render() {
         const position = [this.state.lat, this.state.lng]
         return (
-          <Map style={mapContainerStyle} center={position} zoom={this.state.zoom}>
+          <Map  style={mapContainerStyle} center={position} zoom={this.state.zoom}>
             <TileLayer
               attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
