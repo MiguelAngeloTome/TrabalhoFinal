@@ -40,6 +40,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import ShowMap from '../maps/showMap'
 
 
 const tableIcons = {
@@ -371,6 +372,10 @@ class VinhasDetails extends React.Component {
                         />
 
 
+                    </Container>
+                    <Container maxWidth="lg" className={classes.container}>
+
+                            <ShowMap />
                     </Container>
                 </main>
             </div >
