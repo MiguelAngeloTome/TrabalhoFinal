@@ -42,6 +42,13 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import ShowMap from '../maps/showMap'
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -180,6 +187,8 @@ class VinhasDetails extends React.Component {
         super(props);
         this.state = {
             open: true,
+            openDialogUser: false,
+            openDialogModule: false,
             datas1: [],
             datas2: [],
 
@@ -218,6 +227,22 @@ class VinhasDetails extends React.Component {
         vinhaService.deleteModule_vinha(module_id);
         vinhaService.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
         window.location.reload();
+    }
+
+    handleFormClickUser() {
+        this.setState({ openDialogUser: true })
+    }
+
+    handleFormcloseUser() {
+        this.setState({ openDialogUser: false })
+    }
+
+    handleFormClickModule() {
+        this.setState({ openDialogModule: true })
+    }
+
+    handleFormcloseModule() {
+        this.setState({ openDialogModule: false })
     }
 
     render() {
@@ -287,7 +312,7 @@ class VinhasDetails extends React.Component {
                                     icon: AddBox,
                                     tooltip: 'Add User',
                                     isFreeAction: true,
-                                    onClick: () => this.props.history.push('/about')
+                                    onClick: () => this.handleFormClickModule()
                                 }
                             ]}
                             editable={{
@@ -323,7 +348,7 @@ class VinhasDetails extends React.Component {
 
                     </Container>
 
-                    <Container maxWidth="lg%" className={classes.container}>
+                    <Container maxWidth="lg" className={classes.container}>
 
                         <MaterialTable
                             icons={tableIcons}
@@ -340,7 +365,7 @@ class VinhasDetails extends React.Component {
                                     icon: AddBox,
                                     tooltip: 'Add User',
                                     isFreeAction: true,
-                                    onClick: () => this.props.history.push('/about')
+                                    onClick: () => this.handleFormClickUser()
                                 }
                             ]}
                             editable={{
@@ -378,6 +403,31 @@ class VinhasDetails extends React.Component {
                     <Container maxWidth="lg" className={classes.container}>
 
                             <ShowMap />
+
+                            <Dialog open={this.state.openDialogUser} onClose={() => this.handleFormcloseUser()} aria-labelledby="form-dialog-title">
+                                <DialogTitle id="form-dialog-title">Adicionar um utilizador</DialogTitle>
+                                <DialogContent>
+                                <TextField autoFocus margin="dense" id="name" label="ID do utilizador" fullWidth />
+                                </DialogContent>
+                                <DialogActions>
+                                <Button onClick={() => this.handleFormcloseUser()} color="primary">
+                                    Adicionar
+                                </Button>
+                                </DialogActions>
+                            </Dialog>
+
+                            <Dialog open={this.state.openDialogModule} onClose={() => this.handleFormcloseModule()} aria-labelledby="form-dialog-title">
+                                <DialogTitle id="form-dialog-title">Criar um modulo</DialogTitle>
+                                <DialogContent>
+                                <TextField autoFocus margin="dense" id="name" label="Localizacao" fullWidth />
+                                <TextField autoFocus margin="dense" id="name" label="Coordenadas" fullWidth />
+                                </DialogContent>
+                                <DialogActions>
+                                <Button onClick={() => this.handleFormcloseModule()} color="primary">
+                                    Criar
+                                </Button>
+                                </DialogActions>
+                            </Dialog>
                     </Container>
                 </main>
             </div >
