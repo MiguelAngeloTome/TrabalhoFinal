@@ -4,6 +4,7 @@ import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
 import L from 'leaflet';
 import userLocationURL from '../../assets/vinha_location.svg';
 import Container from '@material-ui/core/Container';
+import vinhaService from '../../services/vinha';
 
 const mapContainerStyle = {
     height: "100%",
@@ -19,26 +20,39 @@ export default class ShowMap extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            lat: 39.23333,
-            lng: -8.68333,
-            zoom: 10,
+            zoom: 12,
+            datas:[],
+            vinha:undefined,
         }
     }
-
+    componentDidMount() {
+      vinhaService.getModulesVinha(this.props.vinha).then(data => this.setState({ datas: data })).catch();
+      vinhaService.getOne(this.props.vinha).then(data => this.setState({ vinha: data[0] })).catch();
+  }
     render() {
-        const position = [this.state.lat, this.state.lng]
         return (
-          <Map  style={mapContainerStyle} center={position} zoom={this.state.zoom}>
+          <div style={mapContainerStyle}>
+            {this.state.vinha !==undefined &&
+            <Map  style={mapContainerStyle} center={[this.state.vinha.lat, this.state.vinha.lng]} zoom={this.state.zoom}>
             <TileLayer
               attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Marker position={position} icon={myIcon}>
+           {this.state.datas.map(data => (
+            <Marker
+              key={data.module_id}
+              position={[data.lat, data.lng]}
+              icon={myIcon}>
               <Popup>
-                A pretty CSS3 popup. <br /> Easily customizable.
+                <h2>{data.localizacao}</h2>
               </Popup>
             </Marker>
+          ))}
           </Map>
+            
+            }
+          
+          </div>
         )
       }
 }

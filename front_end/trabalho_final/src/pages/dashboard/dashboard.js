@@ -139,21 +139,21 @@ class Dashboard extends React.Component {
 
 
   static contextType = AuthContext;
+
   componentDidMount() {
     let a;
     vinhaService.getModulesUser(this.context.user.id)
     .then(data =>{a=data[0].modules[0].module_id;
-      this.setState({ vinhas: data,selected:data[0].modules[0].module_id });
+      this.setState({ vinhas: data, selected:data[0].modules[0].module_id });
       dataService.getLast(a).then(data => this.setState({ datas: data[0] })).catch();
 
     })
   }
 
-  upd(a){
-    console.log(a)
+  upd= a =>{
     this.setState({selected: a})
+    this.setState({datas: undefined})
     dataService.getLast(a).then(data => this.setState({ datas: data[0] })).catch();
-    
   }
 
   render() {
@@ -176,7 +176,7 @@ class Dashboard extends React.Component {
     const rad = 'Radiação Solar';
     const radColor = 'rgba(255, 255, 0, .85)'
 
-    const { datas, vinhas, selected } = this.state;
+    const { datas, vinhas, selected} = this.state;
     const { logout } = this.context;
     const { classes } = this.props;
     return (
@@ -277,10 +277,11 @@ class Dashboard extends React.Component {
                 </Paper>
               </Grid>
               <Grid item xs={12} md={6} lg={4} >
+              
                 <Paper className={clsx(classes.paper)}>
-                  {datas !== undefined &&
-                    <Exa valor={datas.temp} rest={80 - datas.temp} title={temp} color={tempColor} />
-                  }
+                {datas !== undefined &&
+                    <Exa valor={datas.temp} rest={80 - datas.temp} title={temp} color={tempColor}/>
+                }
                 </Paper>
               </Grid>
               {/* Recent Deposits */}
@@ -294,6 +295,7 @@ class Dashboard extends React.Component {
               {/* Recent Orders */}
               <Grid item xs={12} md={6} lg={4}>
                 <Paper className={classes.paper}>
+                  {console.log(datas)}
                   {datas !== undefined &&
                     <Exa valor={datas.solo_humidity} rest={80 - datas.solo_humidity} title={soloHum} color={soloHumColor} />
                   }
@@ -316,14 +318,14 @@ class Dashboard extends React.Component {
               <Grid item xs={12} md={6} lg={4}>
                 <Paper className={classes.paper}>
                   {datas !== undefined &&
-                    <Exa valor={datas.temp} rest={80 - datas.temp} title={rad} color={radColor} />
+                    <Exa valor={datas.radiacao} rest={80 - datas.radiacao} title={rad} color={radColor} />
                   }
                 </Paper>
               </Grid>
               <Grid item xs={12}>
                 <Paper className={classes.paper}>
                   {datas !== undefined &&
-                    <Exa valor={datas.radiacao} rest={80 - datas.radiacao} title={temp} color={tempColor} />
+                    <Exa valor={datas.temp} rest={80 - datas.temp} title={temp} color={tempColor} />
                   }
                 </Paper>
               </Grid>

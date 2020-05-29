@@ -182,7 +182,6 @@ class ListaVinhas extends React.Component {
             columns: [
                 { title: 'Name', field: 'Nome' },
                 { title: 'Localização', field: 'localizacao' },
-                { title: 'Coordenadas', field: 'coordenadas' },
             ],
             localizacao: "",
             nome: "",

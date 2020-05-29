@@ -44,8 +44,8 @@ exports.getModuleVinha = id =>{
 exports.insertModule = body =>{
     return new Promise((resolve,reject)=>{
         const id = uuid();
-        db.run(`insert into module(module_id, vinha_id, localizacao, coordenadas) VALUES(?,?,?,?)`,
-        [id, body.vinha_id, body.localizacao, body.coordenadas],
+        db.run(`insert into module(module_id, vinha_id, localizacao, lat, lng) VALUES(?,?,?,?,?)`,
+        [id, body.vinha_id, body.localizacao, body.lat, body.lng],
         err=>{
             if(err) reject (err);
             resolve({inserted:1, module_id: id});

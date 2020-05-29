@@ -24,7 +24,8 @@ db.run(`create table if not exists user(
 db.run(`create table if not exists vinha(
         'vinha_id' varchar(36) primary key,
         'Nome' varchar(50),
-        'coordenadas' varchar(50),
+        'lat' varchar(30),
+        'lng' varchar(30),
         'localizacao' varchar(30),
         'dono' varchar(36))`
 );
@@ -33,7 +34,8 @@ db.run(`create table if not exists module(
         'module_id' varchar(36) primary key,
         'vinha_id' varchar(36),
         'localizacao' varchar(30),
-        'coordenadas' varchar(30),
+        'lat' varchar(30),
+        'lng' varchar(30),
         foreign key (vinha_id) REFERENCES vinha(vinha_id))`
 );
 

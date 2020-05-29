@@ -194,7 +194,8 @@ class VinhasDetails extends React.Component {
 
             columns1: [
                 { title: 'Localizacao', field: 'localizacao' },
-                { title: 'Coordenadas', field: 'coordenadas' },
+                { title: 'Latitude', field: 'lat' },
+                { title: 'Longitude', field: 'lng' },
             ],
             columns2: [
                 { title: 'Nome', field: 'name' },
@@ -402,7 +403,7 @@ class VinhasDetails extends React.Component {
                     </Container>
                     <Container maxWidth="lg" className={classes.container}>
 
-                            <ShowMap />
+                            <ShowMap vinha={this.props.match.params.id}/>
 
                             <Dialog open={this.state.openDialogUser} onClose={() => this.handleFormcloseUser()} aria-labelledby="form-dialog-title">
                                 <DialogTitle id="form-dialog-title">Adicionar um utilizador</DialogTitle>

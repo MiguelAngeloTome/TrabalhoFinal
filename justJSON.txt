@@ -1,18 +1,21 @@
 
 Vinha:
-    {
-    "nome":"Vinha do Laranjal",
-    "coordenadas":"137-143",
-    "localizacao": "Santarem",
-    "dono": "2f09d67f-58d7-4fb6-b60e-286b72cb9365"
+{
+    "nome":"Vinha da Maçã",
+    "lat":"39.20903",
+    "lng":"-8.61643",
+    "localizacao": "Almeirim",
+    "dono": "da90f8f9-97b8-4823-bf54-a1c24165afc2"
     }
 
 Module:
 
-	   {
-	"vinha_id":"f4938a81-ce2d-4603-8721-c14ea432cec6",
-    "localizacao": "la perto"
-    }
+{
+	"vinha_id":"8f0a40d4-6e3f-437d-8bfc-e1af1da923f2",
+    "localizacao": "Perto da Laranjeira",
+    "lat":"39.205705",
+    "lng":"-8.630573"
+}
 data:{
     {
 		"module_id":"4e66911a-1c6b-46bb-b7f3-4850c3cb4aed",
@@ -33,3 +36,4 @@ vinha_user:
 		"user_id":"2f09d67f-58d7-4fb6-b60e-286b72cb9365",
 		"vinha_id":"398dd0d1-0fe9-473a-88d9-1a9d4c2a3cf3"
     }
+
