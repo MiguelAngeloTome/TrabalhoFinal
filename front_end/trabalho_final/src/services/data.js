@@ -23,4 +23,5 @@ export default {
   getAll: () => apiRequest("GET", "/data"),
   getOne: (id) => apiRequest("GET", `/data/${id}`),
   getLast: (id) => apiRequest("GET", `/data/last/${id}`),
+  getTime:(id, body)=> apiRequest("POST", `/data/time/${id}`, body),
 }

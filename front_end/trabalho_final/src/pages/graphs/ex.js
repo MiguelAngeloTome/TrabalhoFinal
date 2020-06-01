@@ -13,11 +13,12 @@ Chart.pluginService.register({
       var fontSize = (height / 114).toFixed(2);
       ctx.font = fontSize + "em sans-serif";
       ctx.textBaseline = "middle";
-  
-      var text = chart.config.data.text,
+    if(chart.config.data.text !== undefined){
+        var text = chart.config.data.text,
           textX = Math.round((width - ctx.measureText(text).width) / 2),
           textY = height / 2;
-  
+    }
+      
       ctx.fillText(text, textX, textY);
       ctx.save();
     }
@@ -49,10 +50,11 @@ export default class Exa extends React.Component{
             },
         };
     }
-
+    
  
     render(){
         return(
+            
             <Container>
                 <h2 style={{textAlign: 'center'}}>{this.props.title}</h2>
             <Doughnut style={{align: 'center'}} data={this.state.data} options={{legend: {

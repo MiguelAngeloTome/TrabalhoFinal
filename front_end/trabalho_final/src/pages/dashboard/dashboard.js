@@ -19,6 +19,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Exa from '../graphs/ex';
+import CompareGrah from '../graphs/CompareGraph';
 import SideNav from '../../components/global/sideNav'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AuthContext from "../../configs/authContext";
@@ -121,6 +122,11 @@ const useStyles = theme => ({
     //justifyContent: 'flex-end',
     margin: theme.spacing(1),
     minWidth: 120,
+  },
+  menu: {
+    textAlign:'center',alignItems: 'right',
+    fontWeight:'bold',
+    fontSize:'x-large'
   },
 });
 
@@ -227,15 +233,15 @@ class Dashboard extends React.Component {
           <div className={classes.appBarSpacer} />
           {vinhas !== undefined &&
             <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="grouped-native-select">Modules</InputLabel>
-              <Select
+              <InputLabel className={classes.menu} htmlFor="grouped-native-select">Modules</InputLabel>
+              <Select className={classes.menu}
                 value={this.state.selected ? this.state.selected : ''} onChange={(evt)=>this.upd(evt.target.value)}
               >
                 {this.state.vinhas.map((vinha, index) => {
                   let a =[];
                   a.push(<ListSubheader>{vinha.nome}</ListSubheader>)
                     for(let i=0;i<vinha.modules.length;i++){
-                       a.push(<MenuItem  value={vinha.modules[i].module_id}>
+                       a.push(<MenuItem className={classes.menu}  value={vinha.modules[i].module_id}>
                         {vinha.modules[i].localizacao}
                       </MenuItem>) 
                       }
@@ -325,7 +331,7 @@ class Dashboard extends React.Component {
               <Grid item xs={12}>
                 <Paper className={classes.paper}>
                   {datas !== undefined &&
-                    <Exa valor={datas.temp} rest={80 - datas.temp} title={temp} color={tempColor} />
+                    <CompareGrah module={selected}/>
                   }
                 </Paper>
               </Grid>

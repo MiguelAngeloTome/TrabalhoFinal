@@ -32,10 +32,10 @@ exports.getDataLast = id =>{
         });
     });
 }
-exports.getDataTimeFrame = body =>{
+exports.getDataTimeFrame = (id,body) =>{
     return new Promise((resolve,reject)=>{
-        db.all(`select * from data where date > ? and date < ?`,
-        [body.time1, body.time2],(err,row)=>{
+        db.all(`select * from data where date > ? and date < ? and module_id =? order by date asc`,
+        [body.time1, body.time2, id],(err,row)=>{
             if(err) reject (err);
             resolve(row);
         });

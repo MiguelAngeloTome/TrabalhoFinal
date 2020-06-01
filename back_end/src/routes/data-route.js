@@ -6,7 +6,7 @@ router.get("", authorize(), dataController.getData);
 router.get("/:id", authorize(), dataController.getDataSingle);
 router.get("/last/:id", authorize(), dataController.getDataLast);
 router.post("", authorize(), dataController.insertData);
-router.put("/time", authorize(), dataController.getDataTimeFrame);
+router.post("/time/:id", authorize(), dataController.getDataTimeFrame);
 router.put("/:id", authorize(), dataController.updateData);
 router.delete("/:id", authorize(), dataController.removeData);
 

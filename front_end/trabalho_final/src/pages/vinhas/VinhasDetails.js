@@ -40,6 +40,9 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import ShowMap from '../maps/showMap'
 
 import Dialog from '@material-ui/core/Dialog';
@@ -79,6 +82,7 @@ const drawerWidth = 240;
 const useStyles = theme => ({
     root: {
         display: 'flex',
+        flexGrow: 1,
     },
     toolbar: {
         paddingRight: 24, // keep right padding when drawer closed
@@ -149,8 +153,12 @@ const useStyles = theme => ({
     container: {
         paddingTop: theme.spacing(4),
         paddingBottom: theme.spacing(4),
-        height:"75%",
-        minHeight:"25%",
+    },
+    containerMap: {
+        paddingTop: theme.spacing(4),
+        paddingBottom: theme.spacing(4),
+        height: "75%",
+        minHeight: "25%",
     },
     paper: {
         padding: theme.spacing(2),
@@ -176,11 +184,11 @@ const useStyles = theme => ({
     StyledTableRow: {
         backgroundColor: theme.palette.action.hover,
     },
+    Tabs: {
+        flexGrow: 1,
+    },
 
 });
-
-
-
 
 class VinhasDetails extends React.Component {
     constructor(props) {
@@ -191,6 +199,7 @@ class VinhasDetails extends React.Component {
             openDialogModule: false,
             datas1: [],
             datas2: [],
+            value: 0,
 
             columns1: [
                 { title: 'Localizacao', field: 'localizacao' },
@@ -212,14 +221,14 @@ class VinhasDetails extends React.Component {
         }
     };
     static contextType = AuthContext;
-    
+
     componentDidMount() {
         vinhaService.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data })).catch();
         vinhaService.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
     }
 
     submitUsers(vinha_id, user_id) {
-        vinhaService.deleteUser_vinha({vinha_id: vinha_id, user_id: user_id});
+        vinhaService.deleteUser_vinha({ vinha_id: vinha_id, user_id: user_id });
         vinhaService.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data })).catch();
         window.location.reload();
     }
@@ -245,6 +254,13 @@ class VinhasDetails extends React.Component {
     handleFormcloseModule() {
         this.setState({ openDialogModule: false })
     }
+
+    handleChange = (event, newValue) => {
+        console.log(newValue)
+        this.setState({ value: newValue });
+    };
+
+
 
     render() {
         const { logout, user } = this.context;
@@ -294,141 +310,174 @@ class VinhasDetails extends React.Component {
                     <Divider />
                     <SideNav />
                 </Drawer>
+
+
+
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />
+
+                    <Paper className={classes.root}>
+                        <Tabs
+                            value={this.state.value}
+                            onChange={this.handleChange}
+                            indicatorColor="primary"
+                            textColor="primary"
+                            centered
+                            className={classes.Tabs}
+                        >
+                            <Tab label="Modulos" />
+                            <Tab label="Utilizadores" />
+                            <Tab label="Localização" />
+                        </Tabs>
+                    </Paper>
+
+                    {this.state.value == 0 &&
+                        <Container maxWidth="lg" className={classes.container}>
+
+                            <MaterialTable
+                                icons={tableIcons}
+                                title="Lista de modulos"
+                                columns={this.state.columns1}
+                                data={this.state.datas1}
+                                options={{
+                                    actionsColumnIndex: -1,
+
+                                }}
+                                onRowClick={(event, rowData) => this.props.history.push(`/data/`)}
+                                actions={[
+                                    {
+                                        icon: AddBox,
+                                        tooltip: 'Add User',
+                                        isFreeAction: true,
+                                        onClick: () => this.handleFormClickModule()
+                                    }
+                                ]}
+                                editable={{
+                                    /*onRowAdd: (newData) =>
+                                        new Promise((resolve) => {
+                                            setTimeout(() => {
+                                                resolve();
+                                                this.setState({localizacao: newData.localizacao});
+                                                this.setState({dono:user.id});
+                                                this.submit('','add');
+                                            }, 2);
+                                        }),*/
+                                    onRowUpdate: (newData, oldData) =>
+                                        new Promise((resolve) => {
+                                            setTimeout(() => {
+                                                resolve();
+                                                this.setState({ localizacao: newData.localizacao });
+                                                this.setState({ nome: newData.Nome });
+                                                this.setState({ coordenadas: newData.coordenadas })
+                                                this.submit(oldData.vinha_id, 'update');
+                                            }, 600);
+                                        }),
+                                    onRowDelete: (oldData) =>
+                                        new Promise((resolve) => {
+                                            setTimeout(() => {
+                                                resolve();
+                                                this.submitModules(oldData.module_id);
+                                            }, 600);
+                                        }),
+                                }}
+                            />
+
+
+                        </Container>
+
+                    }
+
+
+                    {this.state.value == 1 &&
+                     <Container maxWidth="lg" className={classes.container}>
+
+                     <MaterialTable
+                         icons={tableIcons}
+                         title="Lista de utilizadores"
+                         columns={this.state.columns2}
+                         data={this.state.datas2}
+                         options={{
+                             actionsColumnIndex: -1,
+
+                         }}
+                         onRowClick={(event, rowData) => this.props.history.push('/about')}
+                         actions={[
+                             {
+                                 icon: AddBox,
+                                 tooltip: 'Add User',
+                                 isFreeAction: true,
+                                 onClick: () => this.handleFormClickUser()
+                             }
+                         ]}
+                         editable={{
+                             /*onRowAdd: (newData) =>
+                                 new Promise((resolve) => {
+                                     setTimeout(() => {
+                                         resolve();
+                                         this.setState({localizacao: newData.localizacao});
+                                         this.setState({dono:user.id});
+                                         this.submit('','add');
+                                     }, 2);
+                                 }),*/
+                             /*onRowUpdate: (newData, oldData) =>
+                                 new Promise((resolve) => {
+                                     setTimeout(() => {
+                                         resolve();
+                                         this.setState({ name: newData.name });
+                                         this.setState({ email: newData.email });
+                                         this.setState({ type: newData.type })
+                                         this.submit(oldData.vinha_id, 'update');
+                                     }, 600);
+                                 }),*/
+                             onRowDelete: (oldData) =>
+                                 new Promise((resolve) => {
+                                     setTimeout(() => {
+                                         resolve();
+                                         this.submitUsers(this.props.match.params.id, oldData.user_id);
+                                     }, 600);
+                                 }),
+                         }}
+                     />
+
+
+                 </Container>
+                    
+                }
+                   
+                    {this.state.value == 2 &&
+                     <Container maxWidth="lg" className={classes.containerMap}>
+
+                     <ShowMap vinha={this.props.match.params.id} />
+                     </Container>
+
+                    
+                }
+
                     <Container maxWidth="lg" className={classes.container}>
-
-                        <MaterialTable
-                            icons={tableIcons}
-                            title="Lista de modulos"
-                            columns={this.state.columns1}
-                            data={this.state.datas1}
-                            options={{
-                                actionsColumnIndex: -1,
-
-                            }}
-                            onRowClick={(event, rowData) => this.props.history.push('/about')}
-                            actions={[
-                                {
-                                    icon: AddBox,
-                                    tooltip: 'Add User',
-                                    isFreeAction: true,
-                                    onClick: () => this.handleFormClickModule()
-                                }
-                            ]}
-                            editable={{
-                                /*onRowAdd: (newData) =>
-                                    new Promise((resolve) => {
-                                        setTimeout(() => {
-                                            resolve();
-                                            this.setState({localizacao: newData.localizacao});
-                                            this.setState({dono:user.id});
-                                            this.submit('','add');
-                                        }, 2);
-                                    }),*/
-                                onRowUpdate: (newData, oldData) =>
-                                    new Promise((resolve) => {
-                                        setTimeout(() => {
-                                            resolve();
-                                            this.setState({ localizacao: newData.localizacao });
-                                            this.setState({ nome: newData.Nome });
-                                            this.setState({ coordenadas: newData.coordenadas })
-                                            this.submit(oldData.vinha_id, 'update');
-                                        }, 600);
-                                    }),
-                                onRowDelete: (oldData) =>
-                                    new Promise((resolve) => {
-                                        setTimeout(() => {
-                                            resolve();
-                                            this.submitModules(oldData.module_id);
-                                        }, 600);
-                                    }),
-                            }}
-                        />
-
-
-                    </Container>
-
-                    <Container maxWidth="lg" className={classes.container}>
-
-                        <MaterialTable
-                            icons={tableIcons}
-                            title="Lista de utilizadores"
-                            columns={this.state.columns2}
-                            data={this.state.datas2}
-                            options={{
-                                actionsColumnIndex: -1,
-
-                            }}
-                            onRowClick={(event, rowData) => this.props.history.push('/about')}
-                            actions={[
-                                {
-                                    icon: AddBox,
-                                    tooltip: 'Add User',
-                                    isFreeAction: true,
-                                    onClick: () => this.handleFormClickUser()
-                                }
-                            ]}
-                            editable={{
-                                /*onRowAdd: (newData) =>
-                                    new Promise((resolve) => {
-                                        setTimeout(() => {
-                                            resolve();
-                                            this.setState({localizacao: newData.localizacao});
-                                            this.setState({dono:user.id});
-                                            this.submit('','add');
-                                        }, 2);
-                                    }),*/
-                                /*onRowUpdate: (newData, oldData) =>
-                                    new Promise((resolve) => {
-                                        setTimeout(() => {
-                                            resolve();
-                                            this.setState({ name: newData.name });
-                                            this.setState({ email: newData.email });
-                                            this.setState({ type: newData.type })
-                                            this.submit(oldData.vinha_id, 'update');
-                                        }, 600);
-                                    }),*/
-                                onRowDelete: (oldData) =>
-                                    new Promise((resolve) => {
-                                        setTimeout(() => {
-                                            resolve();
-                                            this.submitUsers(this.props.match.params.id, oldData.user_id);
-                                        }, 600);
-                                    }),
-                            }}
-                        />
-
-
-                    </Container>
-                    <Container maxWidth="lg" className={classes.container}>
-
-                            <ShowMap vinha={this.props.match.params.id}/>
-
-                            <Dialog open={this.state.openDialogUser} onClose={() => this.handleFormcloseUser()} aria-labelledby="form-dialog-title">
-                                <DialogTitle id="form-dialog-title">Adicionar um utilizador</DialogTitle>
-                                <DialogContent>
+                        <Dialog open={this.state.openDialogUser} onClose={() => this.handleFormcloseUser()} aria-labelledby="form-dialog-title">
+                            <DialogTitle id="form-dialog-title">Adicionar um utilizador</DialogTitle>
+                            <DialogContent>
                                 <TextField autoFocus margin="dense" id="name" label="ID do utilizador" fullWidth />
-                                </DialogContent>
-                                <DialogActions>
+                            </DialogContent>
+                            <DialogActions>
                                 <Button onClick={() => this.handleFormcloseUser()} color="primary">
                                     Adicionar
                                 </Button>
-                                </DialogActions>
-                            </Dialog>
+                            </DialogActions>
+                        </Dialog>
 
-                            <Dialog open={this.state.openDialogModule} onClose={() => this.handleFormcloseModule()} aria-labelledby="form-dialog-title">
-                                <DialogTitle id="form-dialog-title">Criar um modulo</DialogTitle>
-                                <DialogContent>
+                        <Dialog open={this.state.openDialogModule} onClose={() => this.handleFormcloseModule()} aria-labelledby="form-dialog-title">
+                            <DialogTitle id="form-dialog-title">Criar um modulo</DialogTitle>
+                            <DialogContent>
                                 <TextField autoFocus margin="dense" id="name" label="Localizacao" fullWidth />
                                 <TextField autoFocus margin="dense" id="name" label="Coordenadas" fullWidth />
-                                </DialogContent>
-                                <DialogActions>
+                            </DialogContent>
+                            <DialogActions>
                                 <Button onClick={() => this.handleFormcloseModule()} color="primary">
                                     Criar
                                 </Button>
-                                </DialogActions>
-                            </Dialog>
+                            </DialogActions>
+                        </Dialog>
                     </Container>
                 </main>
             </div >

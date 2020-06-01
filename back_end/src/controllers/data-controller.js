@@ -18,7 +18,7 @@ exports.getDataLast = (req, res) => {
 };
 
 exports.getDataTimeFrame = (req, res) => {
-    dataService.getDataTimeFrame(req.body)
+    dataService.getDataTimeFrame(req.params.id, req.body)
     .then(result => res.json(result))
     .catch(err => res.status(500).send(err.message));
 };
