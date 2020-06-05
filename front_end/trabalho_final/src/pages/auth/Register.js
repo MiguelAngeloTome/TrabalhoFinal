@@ -45,9 +45,8 @@ class RegisterPage extends React.Component  {
   }
   handleSubmit(evt) {
     evt.preventDefault();
-    services.auth.register(this.state).then(() => {
-      this.props.history.push("/login");
-    });
+    services.auth.register(this.state)
+    .catch((err) => {console.log(err)})
   }
 
 render(){

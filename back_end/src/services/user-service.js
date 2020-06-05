@@ -15,7 +15,6 @@ exports.register = (username, rawPassword, email, name, surname, type) => {
                         reject(err);
                        
                     }
-                    console.log("here");
                     if (row.length < 1) {
                         if (/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d$@$!%*#?&-.]{8,}$/.test(rawPassword)) {
                             const dataIv = cipher.generateIv();
@@ -38,8 +37,6 @@ exports.register = (username, rawPassword, email, name, surname, type) => {
 
                 });
         } catch (error) {
-            console.log("hello");
-
         }
     })
 

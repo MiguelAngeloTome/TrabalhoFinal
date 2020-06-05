@@ -57,7 +57,7 @@ class SideNav extends React.Component{
           </ListItemIcon>
           <ListItemText primary="Alertas" />
         </ListItem>
-        <ListItem className={classes.listEnd} button component="a" href="/about">
+        <ListItem className={classes.listEnd} button component="a" href="/user">
           <ListItemIcon>
               <Avatar className={classes.green}>{user.name.charAt(0)+user.surname.charAt(0)}</Avatar>
           </ListItemIcon>

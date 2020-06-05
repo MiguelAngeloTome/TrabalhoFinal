@@ -281,8 +281,8 @@ class VinhasDetails extends React.Component {
                             <MenuIcon />
                         </IconButton>
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                            Vinhas
-          </Typography>
+                            Modulos
+                        </Typography>
                         <IconButton color="inherit">
                             <Badge badgeContent={255} color="secondary">
                                 <NotificationsIcon />
@@ -343,7 +343,7 @@ class VinhasDetails extends React.Component {
                                     actionsColumnIndex: -1,
 
                                 }}
-                                onRowClick={(event, rowData) => this.props.history.push(`/data/`)}
+                                onRowClick={(event, rowData) => this.props.history.push(`/data/${rowData.module_id}`)}
                                 actions={[
                                     {
                                         icon: AddBox,

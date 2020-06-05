@@ -22,6 +22,17 @@ exports.getDataSingle = id =>{
     });
 }
 
+exports.getDataModule = id =>{
+    return new Promise((resolve,reject)=>{
+        db.all(`select * from data where module_id = ?`, [id],
+        (err,row)=>{
+            if(err) reject (err);
+            resolve(row);
+            
+        });
+    });
+}
+
 exports.getDataLast = id =>{
     return new Promise((resolve,reject)=>{
         db.all(`select * from data where module_id = ? order by date desc limit 1`, [id],
