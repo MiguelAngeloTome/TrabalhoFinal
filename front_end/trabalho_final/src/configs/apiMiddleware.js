@@ -12,11 +12,19 @@ export const apiRequest = (method, route, body) => {
       },
       ...(body && { body: JSON.stringify(body) }),
     })
-      .then((res) => res.json())
-      .then((data) => resolve(data))
-      .catch((err) => {
-        console.error(`error ${method} ${route}: ${err.message}`);
-        reject(err);
-      });
-  });
+    .then((res) => res.json())
+    .then(
+      (data) => {if(data.erro!=undefined){
+        reject(data.erro)
+      }else{
+        resolve(data)
+      }
+    }
+      
+      )
+    .catch((err) => {
+      console.error(`error ${method} ${route}: ${err.message}`);
+      reject(err);
+    });
+});
 };
