@@ -39,25 +39,25 @@ class SideNav extends React.Component{
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItem>
-        <ListItem  button component="a" href="/vinhas">
+        <ListItem  button component="a" href="/#/vinhas">
           <ListItemIcon>
             <DashboardIcon />
           </ListItemIcon>
           <ListItemText primary="Vinhas" />
         </ListItem>
-        <ListItem  button component="a" href="/about">
+        <ListItem  button component="a" href="/#/about">
           <ListItemIcon>
             <DashboardIcon />
           </ListItemIcon>
           <ListItemText primary="Comparações" />
         </ListItem>
-        <ListItem  button component="a" href="/about">
+        <ListItem  button component="a" href="/#/about">
           <ListItemIcon>
             <DashboardIcon />
           </ListItemIcon>
           <ListItemText primary="Alertas" />
         </ListItem>
-        <ListItem className={classes.listEnd} button component="a" href="/user">
+        <ListItem className={classes.listEnd} button component="a" href="/#/user">
           <ListItemIcon>
               <Avatar className={classes.green}>{user.name.charAt(0)+user.surname.charAt(0)}</Avatar>
           </ListItemIcon>
