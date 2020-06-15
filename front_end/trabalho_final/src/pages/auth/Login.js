@@ -12,6 +12,12 @@ import { withStyles } from '@material-ui/core/styles';
 import Image from '../../assets/delete.jpg';
 import AuthContext from "../../configs/authContext";
 import services from "../../services";
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = theme => ({
   root: {
@@ -49,8 +55,12 @@ class LoginPage extends React.Component {
   static contextType = AuthContext;
   constructor(props) {
     super(props);
-    this.state = { username: "admin", password: "123qweASD" };
-  }
+    this.state = { 
+      username: "admin",
+      password: "123qweASD",
+      snackOpen: false,
+      errString: undefined };
+    }
 
   handleSubmit(evt) {
     evt.preventDefault();
@@ -60,14 +70,32 @@ class LoginPage extends React.Component {
         this.context.login({ username: this.state.username, ...data });
         this.props.history.push("/");
       })
-      .catch((err) => {console.log(err) });
+      .catch((err) => {
+        this.setState({ snackOpen: true })
+        this.setState({ errString: err })
+      });
   }
+
+  handleSnackClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    this.setState({ snackOpen: false })
+  };
 
 render(){
   const { classes } = this.props;
   const { username, password } = this.state;
   return (
     <Grid container component="main" className={classes.root}>
+      <div className={classes.root}>
+        <Snackbar open={this.state.snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
+          <Alert onClose={this.handleSnackClose} severity="error">
+            Utilizador ou password nao encontrados
+          </Alert>
+        </Snackbar>
+    </div>
       <CssBaseline />
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
