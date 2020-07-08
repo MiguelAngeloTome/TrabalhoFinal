@@ -3,17 +3,13 @@ import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
-//import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-//import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-//import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -21,10 +17,8 @@ import SideNav from '../../components/global/sideNav'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MaterialTable from 'material-table';
 import AuthContext from "../../configs/authContext";
-import dataService from '../../services/data';
 import vinhaService from '../../services/vinha';
 import { forwardRef } from 'react';
-
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
@@ -44,7 +38,6 @@ import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import ShowMap from '../maps/showMap'
-
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -263,7 +256,7 @@ class VinhasDetails extends React.Component {
 
 
     render() {
-        const { logout, user } = this.context;
+        const { logout } = this.context;
         const { classes } = this.props;
 
         return (
@@ -331,7 +324,7 @@ class VinhasDetails extends React.Component {
                         </Tabs>
                     </Paper>
 
-                    {this.state.value == 0 &&
+                    {this.state.value === 0 &&
                         <Container maxWidth="lg" className={classes.container}>
 
                             <MaterialTable
@@ -388,7 +381,7 @@ class VinhasDetails extends React.Component {
                     }
 
 
-                    {this.state.value == 1 &&
+                    {this.state.value === 1 &&
                      <Container maxWidth="lg" className={classes.container}>
 
                      <MaterialTable
@@ -444,7 +437,7 @@ class VinhasDetails extends React.Component {
                     
                 }
                    
-                    {this.state.value == 2 &&
+                    {this.state.value === 2 &&
                      <Container maxWidth="lg" className={classes.containerMap}>
 
                      <ShowMap vinha={this.props.match.params.id} />

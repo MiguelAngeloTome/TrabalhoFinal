@@ -3,7 +3,6 @@ import 'leaflet/dist/leaflet.css'
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
 import L from 'leaflet';
 import userLocationURL from '../../assets/vinha_location.svg';
-import Container from '@material-ui/core/Container';
 import vinhaService from '../../services/vinha';
 
 const mapContainerStyle = {

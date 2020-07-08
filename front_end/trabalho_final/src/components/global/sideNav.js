@@ -18,8 +18,6 @@ const useStyles = theme => ({
     color: theme.palette.getContrastText(lightGreen[900]),
     backgroundColor: lightGreen[900],
     marginRight: '20px'
-    
-    
   },
 })
 

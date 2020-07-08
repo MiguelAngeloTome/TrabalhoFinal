@@ -10,8 +10,6 @@ import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import services from "../../services";
 
-const drawerWidth = 240;
-
 const useStyles = theme => ({
   paper: {
     marginTop: theme.spacing(8),

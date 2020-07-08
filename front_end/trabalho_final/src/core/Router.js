@@ -1,8 +1,6 @@
 import React from "react";
 import { HashRouter as Router, Switch, Route } from "react-router-dom";
-import NavbarComponent from "../components/global/Navbar";
 import PrivateRoute from "../components/global/PrivateRoute";
-
 import Home from '../pages/dashboard/dashboard';
 import About from '../pages/about/About';
 import Data from '../pages/data/Data';

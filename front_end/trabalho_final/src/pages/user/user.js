@@ -3,56 +3,57 @@ import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
-//import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-//import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-//import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import Exa from '../graphs/ex';
-import CompareGrah from '../graphs/CompareGraph';
 import SideNav from '../../components/global/sideNav'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AuthContext from "../../configs/authContext";
-import dataService from '../../services/data';
-import vinhaService from '../../services/vinha';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-
-
-
-
-
-
-import PropTypes from 'prop-types';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import Avatar from '@material-ui/core/Avatar';
+import { lightGreen,} from '@material-ui/core/colors';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-import TableFooter from '@material-ui/core/TableFooter';
-import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import FirstPageIcon from '@material-ui/icons/FirstPage';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import LastPageIcon from '@material-ui/icons/LastPage';
+import userService from '../../services/userService'
+
+
+function createData(name, value) {
+  return {name, value};
+}
+
+const fontSize={
+  fontSize:"9vh",
+}
 
 const drawerWidth = 240;
 
 const useStyles = theme => ({
+  table:{
+    width:"90vh",
+    maxWidth: "5000px",
+    margin: "auto",
+  },
+  listItemThing:{
+    justifyContent: 'center', 
+  },
+  green: {
+    color: theme.palette.getContrastText(lightGreen[900]),
+    backgroundColor: lightGreen[900],
+    marginRight: '20px',
+    width: "20vh",
+    height: "20vh",
+  },
   root: {
     display: 'flex',
   },
@@ -162,13 +163,32 @@ class User extends React.Component {
   static contextType = AuthContext;
 
   componentDidMount() {
+    if(window.location.hash.split("/")[2] === undefined){
+      userService.getUser(this.context.user.id).then(data => this.setState({datas: data})).catch();
+    }else{
+      userService.getUser(window.location.hash.split("/")[2]).then(data => this.setState({datas: data})).catch();
+    }
     
   }
+  static contextType = AuthContext;
 
   render() {
-    const { datas, vinhas, selected} = this.state;
+    var rows = [{name:"yes", value:"no"}]
+    const {user} = this.context;
     const { logout } = this.context;
     const { classes } = this.props;
+
+    if(this.state.datas === undefined || this.state.datas[0] === undefined) {
+      return null
+    }
+
+    rows = [
+      createData('Nome', this.state.datas[0].name),
+      createData('Sobre-nome', this.state.datas[0].surname),
+      createData('E-mail', this.state.datas[0].email),
+      createData('Password', "*********"),
+      createData('Tipo', this.state.datas[0].type),
+    ];
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -214,7 +234,28 @@ class User extends React.Component {
           <SideNav />
         </Drawer>
         <main className={classes.content}>
-            
+        <div className={classes.appBarSpacer} />
+
+        <ListItem className={classes.listItemThing}>
+          <ListItemIcon>
+              <Avatar style = {fontSize} className={classes.green}>{user.name.charAt(0)+user.surname.charAt(0)}</Avatar>
+          </ListItemIcon>
+        </ListItem>
+
+
+        <TableContainer className={classes.table} component={Paper}>
+          <Table aria-label="simple table">
+            <TableBody>
+              {rows.map((row) => (
+                <TableRow key={row.name}>
+                  <TableCell component="th" scope="row"> {row.name}
+                  </TableCell>
+                  <TableCell align="center">{row.value}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
         </main>
       </div>
     );

@@ -2,20 +2,16 @@ import React from 'react';
 import { Container} from 'react-bootstrap';
 import dataService from '../../services/data'
 import './Data.css';
-
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
-//import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-//import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
-//import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -23,9 +19,7 @@ import SideNav from '../../components/global/sideNav'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MaterialTable from 'material-table';
 import AuthContext from "../../configs/authContext";
-import vinhaService from '../../services/vinha';
 import { forwardRef } from 'react';
-
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
@@ -201,11 +195,11 @@ class DataListPage extends React.Component {
     static contextType = AuthContext;
 
     componentDidMount() {
-        dataService.getAllModule(window.location.pathname.split("/")[2]).then(data => this.setState({datas: data})).catch();
+        dataService.getAllModule(window.location.hash.split("/")[2]).then(data => this.setState({datas: data})).catch();
     }
 
     render() {
-        const { logout, user } = this.context;
+        const { logout } = this.context;
         const { classes } = this.props;
 
         return (

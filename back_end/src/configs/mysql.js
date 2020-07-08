@@ -39,6 +39,10 @@ db.run(`create table if not exists module(
         foreign key (vinha_id) REFERENCES vinha(vinha_id))`
 );
 
+db.run(`create table if not exists moduleList(
+        'module_id' varchar(36) primary key)`
+);
+
 db.run(`create table if not exists data(
         'data_id' varchar(36) primary key,
         'module_id' varchar(36),

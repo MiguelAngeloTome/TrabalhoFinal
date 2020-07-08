@@ -1,9 +1,7 @@
 import React from 'react';
-import {Bar, Line, Scatter} from 'react-chartjs-2';
+import { Scatter} from 'react-chartjs-2';
 import { Container } from '@material-ui/core';
-import { Chart } from 'react-chartjs-2';
 import DataService from '../../services/data'
-import { control } from 'leaflet';
 
 export default class CompareGraph extends React.Component{
 
