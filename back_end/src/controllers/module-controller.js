@@ -24,8 +24,26 @@ exports.getFirstDataModule = (req, res) => {
     .catch(err => res.status(500).json({erro: err.message}));
 };
 
+exports.getSecureModule = (req, res) => {
+    moduleService.getSecureModule()
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
+};
+
+exports.getSingleSecureModule = (req, res) => {
+    moduleService.getSingleSecureModule(req.params.id)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
+};
+
 exports.insertModule = (req, res) => {
     moduleService.insertModule(req.body)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
+};
+
+exports.insertSecureModule = (req, res) => {
+    moduleService.insertSecureModule(req.body)
     .then(result => res.json(result))
     .catch(err => res.status(500).json({erro: err.message}));
 };
@@ -38,6 +56,12 @@ exports.updateModule = (req, res) => {
 
 exports.removeModule = (req, res) => {
     moduleService.removeModule(req.params.id)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
+};
+
+exports.removeSecureModule = (req, res) => {
+    moduleService.removeSecureModule(req.params.id)
     .then(result => res.json(result))
     .catch(err => res.status(500).json({erro: err.message}));
 };
