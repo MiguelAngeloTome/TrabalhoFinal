@@ -11,9 +11,29 @@ exports.getData = () =>{
     });
 }
 
+exports.getAvisos = () =>{
+    return new Promise((resolve,reject)=>{
+        db.all(`select * from avisos`,(err,row)=>{
+            if(err) reject (err);
+            resolve(row);
+        });
+    });
+}
+
 exports.getDataSingle = id =>{
     return new Promise((resolve,reject)=>{
         db.all(`select * from data where data_id = ?`, [id],
+        (err,row)=>{
+            if(err) reject (err);
+            resolve(row);
+            
+        });
+    });
+}
+
+exports.getAvisoSingle = id =>{
+    return new Promise((resolve,reject)=>{
+        db.all(`select * from avisos where id = ?`, [id],
         (err,row)=>{
             if(err) reject (err);
             resolve(row);
@@ -68,6 +88,16 @@ exports.insertData = body =>{
 exports.removeData = id =>{
     return new Promise((resolve,reject)=>{
         db.run(`delete from data where data_id = ?`, [id],
+        err=>{
+            if(err) reject (err);
+            resolve({removed:1, data_id: id});
+        });
+    });
+};
+
+exports.removeAviso = id =>{
+    return new Promise((resolve,reject)=>{
+        db.run(`delete from avisos where id = ?`, [id],
         err=>{
             if(err) reject (err);
             resolve({removed:1, data_id: id});

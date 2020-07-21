@@ -66,5 +66,11 @@ db.run(`create table if not exists vinha_user(
         foreign key (vinha_id) REFERENCES vinha(vinha_id))`
 );
 
+db.run(`create table if not exists avisos(
+        id varchar(36) NOT NULL,
+        module_id varchar(36),
+        msgErro varchar(36),
+        primary key(id))`
+);
 
 module.exports = db;

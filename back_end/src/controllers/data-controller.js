@@ -6,7 +6,19 @@ exports.getData = (req, res) => {
     .catch(err => res.status(500).json({erro: err.message}));
 };
 
+exports.getAvisos = (req, res) => {
+    dataService.getAvisos()
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
+};
+
 exports.getDataSingle = (req, res) => {
+    dataService.getDataSingle(req.params.id)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
+};
+
+exports.getAvisoSingle = (req, res) => {
     dataService.getDataSingle(req.params.id)
     .then(result => res.json(result))
     .catch(err => res.status(500).json({erro: err.message}));
@@ -43,6 +55,12 @@ exports.updateData = (req, res) => {
 };
 
 exports.removeData = (req, res) => {
+    dataService.removeData(req.params.id)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
+};
+
+exports.removeAviso = (req, res) => {
     dataService.removeData(req.params.id)
     .then(result => res.json(result))
     .catch(err => res.status(500).json({erro: err.message}));
