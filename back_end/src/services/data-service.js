@@ -1,8 +1,10 @@
+const testing = require("../Calc/ETP.js")
 const db = require('../configs/mysql.js');
 
 const uuid = require('uuid').v4;
 
 exports.getData = () =>{
+    console.log(testing.getStuff());
     return new Promise((resolve,reject)=>{
         db.all(`select * from data`,(err,row)=>{
             if(err) reject (err);
