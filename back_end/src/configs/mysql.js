@@ -1,7 +1,7 @@
 const sqlite3 = require ('sqlite3').verbose();
 const path = require ('path');
 
-const db = new sqlite3.Database(
+const db =  new sqlite3.Database(
     path.resolve (__dirname,'..','TempDb','raw_sqlite.db'),
     sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
     err=> {
