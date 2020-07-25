@@ -4,7 +4,7 @@ const db = require('../configs/mysql.js');
 const uuid = require('uuid').v4;
 
 exports.getData = async() =>{
-    let a = await testing.getStuff();
+    let a = await testing.getLng("eadb8670-9c55-4298-8696-56d0c8040da0");
     console.log(a);
     return new Promise((resolve,reject)=>{
         db.all(`select * from data`,(err,row)=>{
