@@ -96,10 +96,11 @@ exports.getLng = async(module_id) =>{
         });
     });
 };
+//Funcoes 
 
 
 exports.pressaoDadaTemperatura = async (temp) => {
-    return Math.Pow(0.611, (17.27 * temp) / (temp + 237.3));
+    return Math.pow(0.611, (17.27 * temp) / (temp + 237.3));
 }
 
 exports.pressaoValorReal = async (etMax, etMin, RHMax, RHMin) => {
@@ -110,9 +111,6 @@ exports.pressaoVaporSaturacao = async (EtMax, EtMin) => {
     return (EtMax + EtMin) / 2;
 }
 
-exports.pressaoVaporSaturacao = async (EtMax, EtMin) => {
-    return (EtMax + EtMin) / 2;
-}
 
 exports.VPD = async (Ea, Ed) => {
     return Ea - Ed;
@@ -123,20 +121,21 @@ exports.radiacaoExtraterrestre = async (latitude, data) => {
     let Ws = 0.0;
     let delta = 0.0;
     let Dr = 0.0;
-    let diaAno = data;
+    let diaAno = await this.diaToDiaAno(data);
+
     //Calculo de Dr
-    Dr = 1 + 0.033 * (Math.Cos((0.0172 * diaAno) * (Math.PI / 180)) * 180 / Math.PI);       
+    Dr = 1 + 0.033 * (Math.cos((0.0172 * diaAno) * (Math.PI / 180)) * 180 / Math.PI);     
     //Calculo de delta
-    delta = 0.409 * (Math.Sin((0.0172 * diaAno - 1.39) * (Math.PI / 180)) * 180 / Math.PI);
+    delta = 0.409 * (Math.sin((0.0172 * diaAno - 1.39) * (Math.PI / 180)) * 180 / Math.PI);
     //Calculo de ws.
-    Ws = (Math.Acos(-Math.Tan(latitude * (Math.PI / 180)) * Math.Tan(delta * (Math.PI / 180))) * 180 / Math.PI);
+    Ws = (Math.acos(-Math.tan(latitude * (Math.PI / 180)) * Math.tan(delta * (Math.PI / 180))) * 180 / Math.PI);
     //Calculo da radia��o extraterrestre
-    Ra = 37.6 * Dr * (Ws * (Math.Sin(latitude * (Math.PI / 180)) * 180 / Math.PI)) * (Math.Sin(delta * (Math.PI / 180)) * 180 / Math.PI) + (Math.Cos(latitude * (Math.PI / 180)) * 180 / Math.PI) * (Math.Cos(delta * (Math.PI / 180)) * 180 / Math.PI) * (Math.Sin(Ws * (Math.PI / 180)) * 180 / Math.PI);
+    Ra = 37.6 * Dr * (Ws * (Math.sin(latitude * (Math.PI / 180)) * 180 / Math.PI)) * (Math.sin(delta * (Math.PI / 180)) * 180 / Math.PI) + (Math.cos(latitude * (Math.PI / 180)) * 180 / Math.PI) * (Math.cos(delta * (Math.PI / 180)) * 180 / Math.PI) * (Math.sin(Ws * (Math.PI / 180)) * 180 / Math.PI);
     return Ra;
 }
 
 exports.curvaPressao = async (Tmed) => {
-    return (Math.Pow(2405, ((17.27 * Tmed) / (Tmed + 237.3)))) / (Math.Pow((Tmed + 237.3), 2));
+    return (Math.pow(2405, ((17.27 * Tmed) / (Tmed + 237.3)))) / (Math.pow((Tmed + 237.3), 2));
 }
 
 exports.radiacaoLiquidaRns = async (radMed) => {
@@ -147,15 +146,15 @@ exports.radiacaoLiquidaRnl = async (radMed, latitude, Ed, Tmax, Tmin, altitude, 
 
         let Rnl = 0.0;
         let Rso = 0.0;
-        let diaAno = data;
-        let Stefan_Boltzmann = 4.90 * 10 * (Math.Exp(-9));
+        let diaAno = this.diaToDiaAno(data);
+        let Stefan_Boltzmann = 4.90 * 10 * (Math.exp(-9));
         let TKx = Tmax + 273;
         let Tkn = Tmin + 273;
-        let Ra = this.radiacaoExtraterrestre(latitude);
+        let Ra = this.radiacaoExtraterrestre(latitude, data);
         //C�lculo de Rso
         Rso = (0.75 + 0.00002 * altitude) * Ra;
         //C�lculo de Rnl
-        Rnl = -1 * ((1.35 * (radMed / Rso) * (-0.35)) * (0.34 - 0.14 * Ed) * Stefan_Boltzmann * ((Math.Pow(TKx, 4) + Math.Pow(Tkn, 4)) / 2));
+        Rnl = -1 * ((1.35 * (radMed / Rso) * (-0.35)) * (0.34 - 0.14 * Ed) * Stefan_Boltzmann * ((Math.pow(TKx, 4) + Math.pow(Tkn, 4)) / 2));
         return Rnl;
 
 }
@@ -188,11 +187,11 @@ exports.evapotranspiracaoPotencial = async (Tmed, radMed, latitude, RHmax, RHmin
         //Defini��o do d�fice de press�o de vapor 
         let VPD = VPD(Ea, Ed);
         //Defini��o da radia��o extraterrestre
-        let Ra = radiacaoExtraterrestre(latitude);
+        let Ra = radiacaoExtraterrestre(latitude, data);
         //Defini��o do declive da curva de press�o de vapor
         let decCurvaPressaoVapor = curvaPressao(Tmed);
         //Defini��o da radia��o l�quida 
-        let radiacaoLiquidaRn = radiacaoLiquidaRn(radiacaoLiquidaRns(radMed), radiacaoLiquidaRnl(radMed, latitude, Ed, Tmax, Tmin, altitude));
+        let radiacaoLiquidaRn = radiacaoLiquidaRn(radiacaoLiquidaRns(radMed), radiacaoLiquidaRnl(radMed, latitude, Ed, Tmax, Tmin, altitude, data));
         //Defini��o da constante psicom�trica
         let constPsicometrica = this.constantePsicrometrica(altitude);
         //C�lculo do valor de evapotranspira��o potencial
@@ -202,4 +201,22 @@ exports.evapotranspiracaoPotencial = async (Tmed, radMed, latitude, RHmax, RHmin
 
 exports.ETPxCoeficiente = async (coeficiente, etp) => {
     return etp * coeficiente;
+}
+
+
+exports.diaToDiaAno = async (data) => {
+    let m = data.substring(5,7);
+    let d = data.substring(8,10);
+    m = parseInt(m);
+    d = parseInt(d)
+
+    md = (m-1) * 30.436875;
+
+    dy = md + d;
+    return Math.floor(dy);
+
+
+
+
+
 }
