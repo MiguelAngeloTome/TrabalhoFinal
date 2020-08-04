@@ -1,78 +1,79 @@
 const db = require('../configs/mysql.js');
+const { format } = require('mysql');
 
 exports.getMedTemp = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
-        db.all(`select avg(temp) from data
+        db.all(`select avg(temp) as mtemp from data
                 where date like ? || '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
             if(err) reject (err);
-            resolve(row);
+            resolve(row[0].mtemp);
         });
     });
 };
 
 exports.getMaxTemp = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
-        db.all(`select max(temp) from data
+        db.all(`select max(temp) as mtemp from data
                 where date like ? || '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
             if(err) reject (err);
-            resolve(row);
+            resolve(row[0].mtemp);
         });
     });
 };
 
 exports.getMinTemp = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
-        db.all(`select min(temp) from data
+        db.all(`select min(temp) as mtemp from data
                 where date like ? || '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
             if(err) reject (err);
-            resolve(row);
+            resolve(row[0].mtemp);
         });
     });
 };
 
 exports.getRadMed = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
-        db.all(`select avg(radiacao) from data
+        db.all(`select avg(radiacao) as mrad from data
                 where date like ? || '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
             if(err) reject (err);
-            resolve(row);
+            resolve(row[0].mrad);
         });
     });
 };
 
 exports.getHumMax = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
-        db.all(`select max(air_humidity) from data
+        db.all(`select max(air_humidity) as mhum from data
                 where date like ? || '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
             if(err) reject (err);
-            resolve(row);
+            resolve(row[0].mhum);
         });
     });
 };
 
 exports.getHumMin = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
-        db.all(`select min(air_humidity) from data
+        db.all(`select min(air_humidity) as mhum from data
                 where date like ? || '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
             if(err) reject (err);
-            resolve(row);
+            resolve(row[0].mhum);
         });
     });
 };
 
 exports.getVentoMed = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
-        db.all(`select avg(vel_vento) from data
+        db.all(`select avg(vel_vento) as mvento from data
                 where date like ? || '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
             if(err) reject (err);
-            resolve(row);
+            resolve(row[0].mvento);
         });
     });
 };
@@ -82,7 +83,7 @@ exports.getLat = async(module_id) =>{
         db.all(`select lat from module
                 where module_id like ?`,[module_id],(err,row)=>{
             if(err) reject (err);
-            resolve(row);
+            resolve(row[0].lat);
         });
     });
 };
@@ -92,7 +93,7 @@ exports.getLng = async(module_id) =>{
         db.all(`select lng from module
                 where module_id like ?`,[module_id],(err,row)=>{
             if(err) reject (err);
-            resolve(row);
+            resolve(row[0].lng);
         });
     });
 };
@@ -150,7 +151,7 @@ exports.radiacaoLiquidaRnl = async (radMed, latitude, Ed, Tmax, Tmin, altitude, 
         let Stefan_Boltzmann = 4.90 * 10 * (Math.exp(-9));
         let TKx = Tmax + 273;
         let Tkn = Tmin + 273;
-        let Ra = this.radiacaoExtraterrestre(latitude, data);
+        let Ra = await this.radiacaoExtraterrestre(latitude, data);
         //C�lculo de Rso
         Rso = (0.75 + 0.00002 * altitude) * Ra;
         //C�lculo de Rnl
@@ -177,25 +178,27 @@ exports.evapotranspiracaoPotencial = async (Tmed, radMed, latitude, RHmax, RHmin
         //Defini��o do dia do ano
         let diaAno = data;
         //Press�o de vapor para a temperatura m�xima
-        let etMax = pressaoDadaTemperatura(Tmax);
+        let etMax = await this.pressaoDadaTemperatura(Tmax);
         //Press�o de vapor para a temperatura min�ma
-        let etMin = pressaoDadaTemperatura(Tmin);
+        let etMin = await this.pressaoDadaTemperatura(Tmin);
         //Defini��o de press�o de vapor real (Ed)
-        let Ed = pressaoVaporReal(etMax, etMin, RHmax, RHmin);
+        let Ed = await this.pressaoValorReal(etMax, etMin, RHmax, RHmin);
         //Defini��o de press�o de vapor real (Ea)
-        let Ea = pressaoVaporSaturacao(etMax, etMin);
+        let Ea = await this.pressaoVaporSaturacao(etMax, etMin);
         //Defini��o do d�fice de press�o de vapor 
-        let VPD = VPD(Ea, Ed);
+        let VPD = await this.VPD(Ea, Ed);
         //Defini��o da radia��o extraterrestre
-        let Ra = radiacaoExtraterrestre(latitude, data);
+        let Ra = await this.radiacaoExtraterrestre(latitude, data);
         //Defini��o do declive da curva de press�o de vapor
-        let decCurvaPressaoVapor = curvaPressao(Tmed);
-        //Defini��o da radia��o l�quida 
-        let radiacaoLiquidaRn = radiacaoLiquidaRn(radiacaoLiquidaRns(radMed), radiacaoLiquidaRnl(radMed, latitude, Ed, Tmax, Tmin, altitude, data));
+        let decCurvaPressaoVapor = await this.curvaPressao(Tmed);
+        //Defini��o da radia��o l�quida  
+        let Rns = await this.radiacaoLiquidaRns(radMed);
+        let Rnl = await this.radiacaoLiquidaRnl(radMed, latitude, Ed, Tmax, Tmin, altitude, data);
+        let radiacaoLiquidaRn =await this.radiacaoLiquidaRn(Rns, Rnl);
         //Defini��o da constante psicom�trica
-        let constPsicometrica = this.constantePsicrometrica(altitude);
+        let constPsicometrica = await this.constantePsicrometrica(altitude);
         //C�lculo do valor de evapotranspira��o potencial
-        etp = Math.Round(((0.408 * decCurvaPressaoVapor * radiacaoLiquidaRn) + (altitude * (900 / (Tmed + 273)) * U2 * VPD)) / (decCurvaPressaoVapor + altitude * (1 + 0.34 * U2)), 1);
+        etp = Math.round(((0.408 * decCurvaPressaoVapor * radiacaoLiquidaRn) + (altitude * (900 / (Tmed + 273)) * U2 * VPD)) / (decCurvaPressaoVapor + altitude * (1 + 0.34 * U2)), 1);
         return etp;
 }
 
@@ -203,6 +206,59 @@ exports.ETPxCoeficiente = async (coeficiente, etp) => {
     return etp * coeficiente;
 }
 
+
+exports.ETPvalues = async (module, data) => {
+    let Tmed = await this.getMedTemp(data, module);
+    let radMed = await this.getRadMed(data, module);
+    let latitude = await this.getLat(module);
+    let RHMax = await this.getHumMax(data, module);
+    let RHMin = await this.getHumMin(data, module);
+    let Tmax = await this.getMaxTemp(data, module);
+    let Tmin = await this.getMinTemp(data, module);
+    let altitude = 0;
+    let U2 = await this.getVentoMed(data, module);
+
+    etp = await this.evapotranspiracaoPotencial(Tmed, radMed, latitude, RHMax, RHMin, Tmax, Tmin, altitude, U2, data);
+
+    return etp;
+}
+
+exports.ETPOverDays= async (dataInicio, dataFim, module) => {
+    let data = new Date(dataInicio);
+    let DataF = new Date(dataFim);
+    let send = [];
+    let d;
+    for(data; data<=DataF;data.setDate(data.getDate()+1)){
+        d = await this.getFormatedDate(data);
+        etp = await this.ETPvalues(module, d);
+        send.push(etp);
+    }
+    return send;
+}
+
+exports.ETPOverTime= async (body) => {
+    let send = await this.ETPOverDays(body.dataInic, body.dataFim, body.module_id);
+    return new Promise((resolve,reject)=>{
+        resolve(send);
+    });
+}
+
+
+exports.getFormatedDate = async(data) => {
+    let date = new Date(data);
+    let month = format(date.getMonth()+1);
+    if(month<10){
+        month = "0" + month;
+    }
+    let day = format(date.getDate());
+    if(day<10){
+        day = "0" + day;
+    }
+    let year = format(date.getFullYear());
+    return year + "-" + month + "-" + day;
+
+
+}
 
 exports.diaToDiaAno = async (data) => {
     let m = data.substring(5,7);
@@ -214,9 +270,4 @@ exports.diaToDiaAno = async (data) => {
 
     dy = md + d;
     return Math.floor(dy);
-
-
-
-
-
 }
