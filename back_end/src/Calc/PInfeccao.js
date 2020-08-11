@@ -73,3 +73,62 @@ exports.PInfeccao = async (dayInic, dayFim, module_id) =>{
     console.log(humValues.length)
     return send
 }
+
+exports.PHumidade = async (dayInic, dayFim, module_id, corte) =>{
+    let send = [];
+    let flagIntervalo = false;
+    let inic;
+    let humValues = await this.getHum(dayInic, dayFim, module_id);
+    /*let humValues = [{ date: '2009-06-29 11:08:59', air_humidity: 20 },
+    { date: '2009-06-29 11:08:59', air_humidity: 90 },
+    { date: '2009-06-29 12:08:59', air_humidity: 91 },
+    { date: '2009-06-29 13:08:59', air_humidity: 92 },
+    { date: '2009-06-29 14:08:59', air_humidity: 93 },
+    { date: '2009-06-29 15:08:59', air_humidity: 20 },
+    { date: '2009-06-29 16:08:59', air_humidity: 90 },
+    { date: '2009-06-29 17:08:59', air_humidity: 91 },
+    { date: '2009-06-29 18:08:59', air_humidity: 20 },
+    { date: '2009-06-29 19:08:59', air_humidity: 20 },
+    { date: '2009-06-29 20:08:59', air_humidity: 20 },
+    { date: '2009-06-29 21:08:59', air_humidity: 90 },
+    { date: '2009-06-29 22:08:59', air_humidity: 91 }
+    ];
+    */
+
+    if(humValues.length >0){
+        
+        if(humValues[0].air_humidity >= corte){
+            inic = humValues[0].date;
+            flagIntervalo = true;
+        }
+
+        for(i=1; i< humValues.length; i++){
+
+            if(humValues[i].air_humidity >= corte && !flagIntervalo){
+                inic = humValues[i].date;
+                console.log(inic)
+                flagIntervalo = true;
+            }
+            else{
+                if(humValues[i].air_humidity< corte && flagIntervalo){
+                    send.push(inic , humValues[i-1].date);
+                    console.log(send);
+                    flagIntervalo = false;
+                }
+            }
+            if(flagIntervalo && (i + 1) == humValues.length){
+                    send.push(inic , humValues[i].date);
+                    console.log(send);
+                    flagIntervalo = false;
+            }
+        }
+
+    }else{
+
+
+    }
+
+
+    console.log(humValues.length)
+    return send
+}
