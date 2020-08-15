@@ -127,8 +127,64 @@ exports.PHumidade = async (dayInic, dayFim, module_id, corte) =>{
 
 
     }
-
-
     console.log(humValues.length)
+    return send
+}
+
+exports.Phumectacao = async (dayInic, dayFim, module_id,) => {
+    let send = [];
+    let flagIntervalo = false;
+    let inic;
+    //let isWetValues = await this.getHum(dayInic, dayFim, module_id);
+    let isWetValues = [{ date: '2009-06-29 11:08:59', isWet: 20 },
+    { date: '2009-06-29 11:08:59', isWet: 90 },
+    { date: '2009-06-29 12:08:59', isWet: 91 },
+    { date: '2009-06-29 13:08:59', isWet: 6999 },
+    { date: '2009-06-29 14:08:59', isWet: 93 },
+    { date: '2009-06-29 15:08:59', isWet: 20 },
+    { date: '2009-06-29 16:08:59', isWet: 90 },
+    { date: '2009-06-29 17:08:59', isWet: 91 },
+    { date: '2009-06-29 18:08:59', isWet: 20 },
+    { date: '2009-06-29 19:08:59', isWet: 6999 },
+    { date: '2009-06-29 20:08:59', isWet: 20 },
+    { date: '2009-06-29 21:08:59', isWet: 90 },
+    { date: '2009-06-29 22:08:59', isWet: 91 }
+    ];
+    
+    
+    
+    if(isWetValues.length >0){
+        
+        if(isWetValues[0].isWet != 6999){
+            inic = isWetValues[0].date;
+            flagIntervalo = true;
+        }
+
+        for(i=1; i< isWetValues.length; i++){
+
+            if(isWetValues[i].isWet != 6999 && !flagIntervalo){
+                inic = isWetValues[i].date;
+                console.log(inic)
+                flagIntervalo = true;
+            }
+            else{
+                if(isWetValues[i].isWet == 6999 && flagIntervalo){
+                    send.push(inic , isWetValues[i-1].date);
+                    console.log(send);
+                    flagIntervalo = false;
+                }
+            }
+            if(flagIntervalo && (i + 1) == isWetValues.length){
+                    send.push(inic , isWetValues[i].date);
+                    console.log(send);
+                    flagIntervalo = false;
+            }
+        }
+
+    }else{
+
+
+    }
+    console.log(isWetValues.length)
     return send
 }
