@@ -188,3 +188,25 @@ exports.Phumectacao = async (dayInic, dayFim, module_id,) => {
     console.log(isWetValues.length)
     return send
 }
+
+
+exports.InfeccSend= async (body) => {
+    let send = await this.InfeccSend(body.dataInic, body.dataFim, body.module_id);
+    return new Promise((resolve,reject)=>{
+        resolve(send);
+    });
+}
+
+exports.HumSend= async (body) => {
+    let send = await this.PHumidade(body.dataInic, body.dataFim, body.module_id, body.corte);
+    return new Promise((resolve,reject)=>{
+        resolve(send);
+    });
+}
+
+exports.HumectacaoSend= async (body) => {
+    let send = await this.Phumectacao(body.dataInic, body.dataFim, body.module_id);
+    return new Promise((resolve,reject)=>{
+        resolve(send);
+    });
+}

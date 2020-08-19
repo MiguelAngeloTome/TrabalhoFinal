@@ -150,3 +150,10 @@ exports.Tempcrepuscular = async (dayInic, dayFim, module_id) =>{
     }
     return send;
 }
+
+exports.TCrepuscSend= async (body) => {
+    let send = await this.Tempcrepuscular(body.dataInic, body.dataFim, body.module_id);
+    return new Promise((resolve,reject)=>{
+        resolve(send);
+    });
+}

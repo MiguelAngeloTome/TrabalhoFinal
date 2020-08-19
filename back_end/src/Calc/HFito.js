@@ -14,3 +14,10 @@ exports.Fito = async (dayInic, dayFim, module_id) =>{
     return send;
 }
 
+exports.FitoSend = async (body) => {
+    let send = await this.Fito(body.dataInic, body.dataFim, body.module_id);
+    return new Promise((resolve,reject)=>{
+        resolve(send);
+    });
+}
+
