@@ -61,7 +61,7 @@ exports.removeData = (req, res) => {
 };
 
 exports.removeAviso = (req, res) => {
-    dataService.removeData(req.params.id)
+    dataService.removeAviso(req.params.id)
     .then(result => res.json(result))
     .catch(err => res.status(500).json({erro: err.message}));
 };

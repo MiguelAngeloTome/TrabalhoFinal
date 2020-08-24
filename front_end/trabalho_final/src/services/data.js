@@ -25,4 +25,6 @@ export default {
   getAllModule: (id) => apiRequest("GET", `/data/module/${id}`),
   getLast: (id) => apiRequest("GET", `/data/last/${id}`),
   getTime:(id, body)=> apiRequest("POST", `/data/time/${id}`, body),
+  getAvisos: () => apiRequest("GET", "/data/avisos"),
+  removeAviso: (id) => apiRequest("DELETE", `/data/avisos/${id}`),
 }

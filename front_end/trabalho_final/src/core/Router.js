@@ -11,6 +11,7 @@ import ListaVinhas from "../pages/vinhas/ListVinhas";
 import AuthContext from "../configs/authContext";
 import VinhasDetails from "../pages/vinhas/VinhasDetails";
 import User from "../pages/user/user";
+import Alertas from "../pages/Alertas/Alertas";
 
 export default class RouterComponent extends React.Component {
   static contextType = AuthContext;
@@ -30,6 +31,7 @@ export default class RouterComponent extends React.Component {
              <PrivateRoute exact path="/vinhas" component={ListaVinhas} />
              <PrivateRoute exact path="/vinhas/details/:id" component={VinhasDetails} />
              <PrivateRoute path="/user/" component={User} />
+             <PrivateRoute exact path="/alertas/" component={Alertas} />
             <Route path="*" component={Home} />
             </Switch>
           ):(

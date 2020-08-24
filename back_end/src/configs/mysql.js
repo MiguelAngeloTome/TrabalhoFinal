@@ -1,5 +1,6 @@
 const sqlite3 = require ('sqlite3').verbose();
 const path = require ('path');
+const { Transform } = require('stream');
 
 const db =  new sqlite3.Database(
     path.resolve (__dirname,'..','TempDb','raw_sqlite.db'),
@@ -50,10 +51,10 @@ db.run(`create table if not exists data(
         'temp' float,
         'air_humidity' float,
         'solo_humidity' float,
-        'isWet' boolean,
+        'isWet' int,
         'pluviosidade' float,
         'vel_vento' float,
-        'dir_vento' varchar(10),
+        'dir_vento' int,
         'radiacao' float,
         foreign key (module_id) REFERENCES module(module_id))`
 );
@@ -67,10 +68,12 @@ db.run(`create table if not exists vinha_user(
 );
 
 db.run(`create table if not exists avisos(
-        id varchar(36) NOT NULL,
+        id varchar(36) NOT NULL primary key,
+        nomeVinha varchar(50),
         module_id varchar(36),
         msgErro varchar(36),
-        primary key(id))`
+        prioridade int,
+        hora varchar(20))`
 );
 
 module.exports = db;
