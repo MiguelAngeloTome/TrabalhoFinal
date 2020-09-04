@@ -1,5 +1,6 @@
 const testing = require("../Calc/PInfeccao.js")
 const db = require('../configs/mysql.js');
+const avisos = require('../Avisos/verificacao.js');
 
 const uuid = require('uuid').v4;
 
@@ -77,6 +78,7 @@ exports.getDataTimeFrame = (id,body) =>{
 }
 
 exports.insertData = body =>{
+    avisos.verifica(body.module_id, body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao);
     return new Promise((resolve,reject)=>{
         const id = uuid();
         db.run(`insert into data(data_id, module_id, date, temp, air_humidity, solo_humidity, isWet, pluviosidade, vel_vento, dir_vento, radiacao) VALUES(?,?,?,?,?,?,?,?,?,?,?)`,

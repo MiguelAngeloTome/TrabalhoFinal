@@ -49,7 +49,7 @@ class SideNav extends React.Component{
           </ListItemIcon>
           <ListItemText primary="Comparações" />
         </ListItem>
-        <ListItem  button component="a" href="/#/about">
+        <ListItem  button component="a" href="/#/alertas">
           <ListItemIcon>
             <DashboardIcon />
           </ListItemIcon>
