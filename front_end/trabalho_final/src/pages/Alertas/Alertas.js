@@ -49,6 +49,7 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
+import { Grid } from '@material-ui/core';
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -245,19 +246,10 @@ const useStyles = theme => ({
     },
 });
 
+
 function createData(id, nome, prioridade, msg, hora) {
     return { id, nome, prioridade, msg, hora };
   }
-
-function handleAlerts(prioridade, msg){
-    if(prioridade === 1){
-        return <Alert severity="error">{msg}</Alert>
-    }
-    if(prioridade === 2){
-        return <Alert severity="warning">{msg}</Alert>
-    }
-    return <Alert severity="info">{msg}</Alert>
-}
 
 const rows = [];
 const drawerWidth = 240;
@@ -351,28 +343,42 @@ class Alertas extends React.Component {
                         <Container maxWidth="lg" className={classes.container}>
                             <TableContainer component={Paper}>
                                 <Table className={classes.table} aria-label="simple table">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>Mensagem</TableCell>
-                                            <TableCell>Nome da vinha</TableCell>
-                                            <TableCell>Hora</TableCell>
-                                            <TableCell>Eliminar</TableCell>
-                                        </TableRow>
-                                    </TableHead>
                                     <TableBody>
                                         {(this.state.rowsPerPage > 0
                                             ? rows.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
                                             : rows
                                         ).map((row) => (
-                                            <TableRow key={row.name}>
-                                                <TableCell width = "500px">{handleAlerts(row.prioridade, row.msg)}</TableCell>
-                                                <TableCell>{row.nome}</TableCell>
-                                                <TableCell>{row.hora}</TableCell>
-                                                <TableCell>
-                                                    <IconButton aria-label="delete" color="primary" onClick={() => { this.submitAlertas(row.id) }}>
+                                            <TableRow key={row.name} style = {{"width":"100%"}}>
+                                                <div style = {{"width":"100%"}}>
+                                                    { row.prioridade === 1 &&
+                                                <TableCell style = {{"width":"1%"}} colspan="2" >
+                                                    <Alert severity="error"  style = {{"width":"100%"}} action= {<IconButton aria-label="delete" color="primary" onClick={() => { this.submitAlertas(row.id) }}>
                                                         <DeleteIcon />
-                                                    </IconButton>
+                                                    </IconButton>}>{row.msg} as {row.hora} na vinha {row.nome} </Alert>
                                                 </TableCell>
+                                                    }
+                                                </div>
+
+                                                <div>
+                                                    { row.prioridade === 2 &&
+                                                <TableCell style = {{"width":"1%"}} colspan="2">
+                                                    <Alert severity="warning" style = {{"width":"100%"}} action= {<IconButton aria-label="delete" color="primary" onClick={() => { this.submitAlertas(row.id) }}>
+                                                        <DeleteIcon />
+                                                    </IconButton>}>{row.msg} as {row.hora} na vinha {row.nome} </Alert>
+                                                </TableCell>
+                                                    }
+                                                </div>
+
+                                                <div>
+                                                    { row.prioridade === 3 &&
+                                                <TableCell style = {{"width":"1%"}} colspan="2">
+                                                    <Alert severity="info" justify="center" style = {{"width":"100%"}} action= {<IconButton aria-label="delete" color="primary" onClick={() => { this.submitAlertas(row.id) }}>
+                                                        <DeleteIcon />
+                                                    </IconButton>}>{row.msg} as {row.hora} na vinha {row.nome} </Alert>
+                                                </TableCell>
+                                                    }
+                                                </div>
+
                                             </TableRow>
                                         ))}
                                     </TableBody>

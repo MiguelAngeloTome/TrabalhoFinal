@@ -242,7 +242,7 @@ class Compare extends React.Component {
             vinhaNome: undefined,
             module:undefined,
             first: true,
-            corte: 10,
+            corte: 50,
             oldInic: undefined,
             oldFim:undefined,
             key: 0,
@@ -286,8 +286,48 @@ class Compare extends React.Component {
           let dataFim = calcService.formatedDate(dFim);
           console.log(dataIni);
           calcService.etp({dataInic: dataIni, dataFim: dataFim, module_id: m_id}).then(
-              data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMin(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}  }).catch();
+              data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMin(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({first: false, checked:true, data:undefined})}  }).catch();
       };
+
+      calcPhum = (dIn, dFim, m_id) =>{
+        let dataIni = calcService.formatedDate(dIn);
+        let dataFim = calcService.formatedDate(dFim);
+        console.log(dataIni);
+        calcService.pHum({dataInic: dataIni, dataFim: dataFim, module_id: m_id, corte: this.state.corte}).then(
+            data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({first: false, checked:true, data:undefined})}  }).catch();
+    };
+
+    calcPinf = (dIn, dFim, m_id) =>{
+        let dataIni = calcService.formatedDate(dIn);
+        let dataFim = calcService.formatedDate(dFim);
+        console.log(dataIni);
+        calcService.pInf({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected}).then(
+            data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({first: false, checked:true, data:undefined})}  }).catch();
+    };
+
+    calcPHume = (dIn, dFim, m_id) =>{
+        let dataIni = calcService.formatedDate(dIn);
+        let dataFim = calcService.formatedDate(dFim);
+        console.log(dataIni);
+        calcService.pHume({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected}).then(
+            data => { console.log(data.length); if(data.length !== 0){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, first: false, checked:false})}else{this.setState({first: false, checked:true, data:undefined})}}).catch();
+    };
+
+    calcHFito = (dIn, dFim, m_id) =>{
+        let dataIni = calcService.formatedDate(dIn);
+        let dataFim = calcService.formatedDate(dFim);
+        console.log(dataIni);
+        calcService.hFito({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected}).then(
+            data => { console.log(data); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({first: false, checked:true, data:undefined})}  }).catch();
+    };
+
+    calcTcrepusc = (dIn, dFim, m_id) =>{
+        let dataIni = calcService.formatedDate(dIn);
+        let dataFim = calcService.formatedDate(dFim);
+        console.log(dataIni);
+        calcService.tcrepusc({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected}).then(
+            data => { console.log(data); if(data.length !== 0){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, first: false, checked:false})}else{this.setState({first: false, checked:true, data:undefined})}}).catch();
+    };
 
       handleChange = (event, newValue) => {
         this.setState({ value: newValue });
@@ -316,8 +356,8 @@ class Compare extends React.Component {
             this.setState({DataInic: f})
             let dataIni = calcService.formatedDate(f);
             let dataFim = calcService.formatedDate(d);
-            calcService.pHum({dataInic: "2009-06-29", dataFim: "2009-06-30", module_id: "eadb8670-9c55-4298-8696-56d0c8040da0", corte: "89"}).then(
-                data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}  }).catch();
+            calcService.pHum({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected, corte: this.state.corte}).then(
+                data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch();
         }
 
         if(newValue === 2){
@@ -331,8 +371,8 @@ class Compare extends React.Component {
             let dataIni = calcService.formatedDate(f);
             let dataFim = calcService.formatedDate(d);
 
-            calcService.hFito({dataInic: "2009-06-29", dataFim: "2009-06-30", module_id: "eadb8670-9c55-4298-8696-56d0c8040da0"}).then(
-                data => { console.log(data); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}  }).catch();
+            calcService.hFito({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected}).then(
+                data => { console.log(data); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch();
         
         }
     };
@@ -351,8 +391,8 @@ class Compare extends React.Component {
             let dataIni = calcService.formatedDate(f);
             let dataFim = calcService.formatedDate(d);
 
-            calcService.pHum({dataInic: "2009-06-29", dataFim: "2009-06-30", module_id: "eadb8670-9c55-4298-8696-56d0c8040da0", corte: "9"}).then(
-                data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}  }).catch();
+            calcService.pHum({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected, corte: this.state.corte}).then(
+                data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch();
         
         
             }
@@ -368,8 +408,8 @@ class Compare extends React.Component {
             let dataIni = calcService.formatedDate(f);
             let dataFim = calcService.formatedDate(d);
 
-            calcService.pInf({dataInic: "2009-06-29", dataFim: "2009-06-30", module_id: "eadb8670-9c55-4298-8696-56d0c8040da0", corte: "9"}).then(
-                data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}  }).catch();
+            calcService.pInf({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected}).then(
+                data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch();
                 
         }
         if(newValue === 2){
@@ -384,8 +424,8 @@ class Compare extends React.Component {
             let dataIni = calcService.formatedDate(f);
             let dataFim = calcService.formatedDate(d);
 
-            calcService.pHume({dataInic: "2009-06-29", dataFim: "2009-06-30", module_id: "eadb8670-9c55-4298-8696-56d0c8040da0", corte: "9"}).then(
-                data => { console.log(data.length); if(data.length !== 0){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, first: false, checked:false})}}).catch();
+            calcService.pHume({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected}).then(
+                data => { console.log(data.length); if(data.length !== 0){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, first: false, checked:false})} else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}}).catch();
                 
         }
     };
@@ -404,8 +444,8 @@ class Compare extends React.Component {
             let dataIni = calcService.formatedDate(f);
             let dataFim = calcService.formatedDate(d);
 
-            calcService.hFito({dataInic: "2009-06-29", dataFim: "2009-06-30", module_id: "eadb8670-9c55-4298-8696-56d0c8040da0"}).then(
-                data => { console.log(data); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}  }).catch();
+            calcService.hFito({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected}).then(
+                data => { console.log(data); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch();
         
         
             }
@@ -421,8 +461,8 @@ class Compare extends React.Component {
             let dataIni = calcService.formatedDate(f);
             let dataFim = calcService.formatedDate(d);
 
-            calcService.pInf({dataInic: "2009-06-29", dataFim: "2009-06-30", module_id: "eadb8670-9c55-4298-8696-56d0c8040da0", corte: "9"}).then(
-                data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}  }).catch();
+            calcService.pInf({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected}).then(
+                data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch();
                 
         }
         if(newValue === 2){
@@ -437,8 +477,8 @@ class Compare extends React.Component {
             let dataIni = calcService.formatedDate(f);
             let dataFim = calcService.formatedDate(d);
 
-            calcService.tcrepusc({dataInic: "2009-06-29", dataFim: "2009-06-30", module_id: "eadb8670-9c55-4298-8696-56d0c8040da0", corte: "9"}).then(
-                data => { console.log(data); if(data.length !== 0){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, first: false, checked:false})}}).catch();
+            calcService.tcrepusc({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected}).then(
+                data => { console.log(data); if(data.length !== 0){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, first: false, checked:false})}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}}).catch();
                 
         }
     };
@@ -743,15 +783,17 @@ class Compare extends React.Component {
                                                 
                                 <Container maxWidth="lg" className={classes.container}>
                                     {console.log(this.state.data)}
-                                        <Scatter1line title = {"Evapotranspiração"} data = {this.state.data} />
+                                        <Scatter1line key = {this.state.key} title = {"Evapotranspiração"} data = {this.state.data} />
                                 </Container>
                                 </div>
                             ):(
-
+                                <div>
+                                    {this.state.first !== true &&
                                 <Container maxWidth="lg" className={classes.container}>
-                                <p>hello</p>
+                                <p>Não existem dados suficientes para fazer o calculo da evapotranspiracao, se este erro persistir por favor entrar em contacto</p>
                                 </Container> 
-
+                                    }
+                                </div>
                             )}
                             
                         </Container>
@@ -824,7 +866,7 @@ class Compare extends React.Component {
                     </Grid>
                     </MuiPickersUtilsProvider>
                     <div className={classes.colapseButton} >
-                           <IconButton onClick={()=> this.calcEtp(this.state.DataInic, this.state.DataFim, this.state.selected)}>
+                           <IconButton onClick={()=> this.calcPhum(this.state.DataInic, this.state.DataFim, this.state.selected)}>
                                <DoubleArrowIcon />
                            </IconButton>
                        </div>
@@ -875,9 +917,13 @@ class Compare extends React.Component {
                        </div>
                    ):(
 
-                       <Container maxWidth="lg" className={classes.container}>
-                       <p>hello</p>
-                       </Container> 
+                    <div>
+                    {this.state.first !== true &&
+                         <Container maxWidth="lg" className={classes.container}>
+                            <p>Não existem dados suficientes para fazer o calculo da evapotranspiracao, se este erro persistir por favor entrar em contacto</p>
+                            </Container> 
+                    }
+                </div> 
 
                    )}
                     
@@ -946,7 +992,7 @@ class Compare extends React.Component {
                     </Grid>
                     </MuiPickersUtilsProvider>
                     <div className={classes.colapseButton} >
-                           <IconButton onClick={()=> this.calcEtp(this.state.DataInic, this.state.DataFim, this.state.selected)}>
+                           <IconButton onClick={()=> this.calcPinf(this.state.DataInic, this.state.DataFim, this.state.selected)}>
                                <DoubleArrowIcon />
                            </IconButton>
                        </div>
@@ -997,9 +1043,13 @@ class Compare extends React.Component {
                        </div>
                    ):(
 
-                       <Container maxWidth="lg" className={classes.container}>
-                       <p>hello</p>
-                       </Container> 
+                    <div>
+                    {this.state.first !== true &&
+                         <Container maxWidth="lg" className={classes.container}>
+                            <p>Não existem dados suficientes para fazer o calculo da evapotranspiracao, se este erro persistir por favor entrar em contacto</p>
+                            </Container> 
+                    }
+                </div>  
 
                    )}
                      
@@ -1067,7 +1117,7 @@ class Compare extends React.Component {
                     </Grid>
                     </MuiPickersUtilsProvider>
                     <div className={classes.colapseButton} >
-                           <IconButton onClick={()=> this.calcEtp(this.state.DataInic, this.state.DataFim, this.state.selected)}>
+                           <IconButton onClick={()=> this.calcPHume(this.state.DataInic, this.state.DataFim, this.state.selected)}>
                                <DoubleArrowIcon />
                            </IconButton>
                        </div>
@@ -1130,9 +1180,13 @@ class Compare extends React.Component {
                        </div>
                    ):(
 
-                       <Container maxWidth="lg" className={classes.container}>
-                       <p>hello</p>
-                       </Container> 
+                    <div>
+                    {this.state.first !== true &&
+                         <Container maxWidth="lg" className={classes.container}>
+                            <p>Não existem dados suficientes para fazer o calculo da evapotranspiracao, se este erro persistir por favor entrar em contacto</p>
+                            </Container> 
+                    }
+                </div>  
 
                    )}
                      
@@ -1205,7 +1259,7 @@ class Compare extends React.Component {
                      </Grid>
                      </MuiPickersUtilsProvider>
                      <div className={classes.colapseButton} >
-                            <IconButton onClick={()=> this.calcEtp(this.state.DataInic, this.state.DataFim, this.state.selected)}>
+                            <IconButton onClick={()=> this.calcHFito(this.state.DataInic, this.state.DataFim, this.state.selected)}>
                                 <DoubleArrowIcon />
                             </IconButton>
                         </div>
@@ -1256,9 +1310,13 @@ class Compare extends React.Component {
                         </div>
                     ):(
  
-                        <Container maxWidth="lg" className={classes.container}>
-                        <p>hello</p>
-                        </Container> 
+                        <div>
+                            {this.state.first !== true &&
+                         <Container maxWidth="lg" className={classes.container}>
+                            <p>Não existem dados suficientes para fazer o calculo da evapotranspiracao, se este erro persistir por favor entrar em contacto</p>
+                            </Container> 
+                    }
+                </div>  
  
                     )}
                      
@@ -1378,9 +1436,13 @@ class Compare extends React.Component {
                         </div>
                     ):(
  
-                        <Container maxWidth="lg" className={classes.container}>
-                        <p>hello</p>
-                        </Container> 
+                        <div>
+                    {this.state.first !== true &&
+                         <Container maxWidth="lg" className={classes.container}>
+                            <p>Não existem dados suficientes para fazer o calculo da evapotranspiracao, se este erro persistir por favor entrar em contacto</p>
+                            </Container> 
+                    }
+                </div>  
  
                     )}
                       
@@ -1448,7 +1510,7 @@ class Compare extends React.Component {
                      </Grid>
                      </MuiPickersUtilsProvider>
                      <div className={classes.colapseButton} >
-                            <IconButton onClick={()=> this.calcEtp(this.state.DataInic, this.state.DataFim, this.state.selected)}>
+                            <IconButton onClick={()=> this.calcTcrepusc(this.state.DataInic, this.state.DataFim, this.state.selected)}>
                                 <DoubleArrowIcon />
                             </IconButton>
                         </div>
@@ -1511,9 +1573,13 @@ class Compare extends React.Component {
                         </div>
                     ):(
  
-                        <Container maxWidth="lg" className={classes.container}>
-                        <p>hello</p>
-                        </Container> 
+                        <div>
+                        {this.state.first !== true &&
+                             <Container maxWidth="lg" className={classes.container}>
+                                <p>Não existem dados suficientes para fazer o calculo da evapotranspiracao, se este erro persistir por favor entrar em contacto</p>
+                                </Container> 
+                        }
+                    </div>  
  
                     )}
                       

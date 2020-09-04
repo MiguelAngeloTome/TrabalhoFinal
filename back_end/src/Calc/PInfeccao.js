@@ -21,8 +21,8 @@ exports.PInfeccao = async (dayInic, dayFim, module_id) =>{
     let flagIntervalo = false;
     let inic;
     let inichum;
-    //let humValues = await this.getHum(dayInic, dayFim, module_id);
-    let humValues = [{ date: '2009-06-29 11:08:59', air_humidity: 20 },
+    let humValues = await this.getHum(dayInic, dayFim, module_id);
+    /*let humValues = [{ date: '2009-06-29 11:08:59', air_humidity: 20 },
     { date: '2009-06-29 11:08:59', air_humidity: 20 },
     { date: '2009-06-29 12:08:59', air_humidity: 30 },
     { date: '2009-06-29 13:08:59', air_humidity: 92 },
@@ -35,7 +35,7 @@ exports.PInfeccao = async (dayInic, dayFim, module_id) =>{
     { date: '2009-06-29 20:08:59', air_humidity: 20 },
     { date: '2009-06-29 21:08:59', air_humidity: 90 },
     { date: '2009-06-29 22:08:59', air_humidity: 91 }
-    ];
+    ];*/
     
 
     if(humValues.length >0){
@@ -82,8 +82,8 @@ exports.PHumidade = async (dayInic, dayFim, module_id, corte) =>{
     let flagIntervalo = false;
     let inic;
     let inichum;
-    //let humValues = await this.getHum(dayInic, dayFim, module_id);
-    let humValues = [{ date: '2009-06-29 11:08:59', air_humidity: 20 },
+    let humValues = await this.getHum(dayInic, dayFim, module_id);
+    /*let humValues = [{ date: '2009-06-29 11:08:59', air_humidity: 20 },
     { date: '2009-06-29 11:08:59', air_humidity: 90 },
     { date: '2009-06-29 12:08:59', air_humidity: 91 },
     { date: '2009-06-29 13:08:59', air_humidity: 92 },
@@ -96,7 +96,7 @@ exports.PHumidade = async (dayInic, dayFim, module_id, corte) =>{
     { date: '2009-06-29 20:08:59', air_humidity: 20 },
     { date: '2009-06-29 21:08:59', air_humidity: 90 },
     { date: '2009-06-29 22:08:59', air_humidity: 91 }
-    ];
+    ];*/
     
     console.log
     if(humValues.length >0){
@@ -141,8 +141,8 @@ exports.Phumectacao = async (dayInic, dayFim, module_id,) => {
     let send = [];
     let flagIntervalo = false;
     let inic;
-    //let isWetValues = await this.getHum(dayInic, dayFim, module_id);
-    let isWetValues = [{ date: '2009-06-29 11:08:59', isWet: 20 },
+    let isWetValues = await this.getHum(dayInic, dayFim, module_id);
+    /*let isWetValues = [{ date: '2009-06-29 11:08:59', isWet: 20 },
     { date: '2009-06-29 11:08:59', isWet: 90 },
     { date: '2009-06-29 12:08:59', isWet: 91 },
     { date: '2009-06-29 13:08:59', isWet: 6999 },
@@ -155,7 +155,7 @@ exports.Phumectacao = async (dayInic, dayFim, module_id,) => {
     { date: '2009-06-29 20:08:59', isWet: 20 },
     { date: '2009-06-29 21:08:59', isWet: 90 },
     { date: '2009-06-29 22:08:59', isWet: 91 }
-    ];
+    ];*/
     
     
     

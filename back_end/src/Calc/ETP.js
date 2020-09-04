@@ -6,6 +6,7 @@ exports.getMedTemp = async(day, module_id) =>{
         db.all(`select avg(temp) as mtemp from data
                 where date like ? || '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
+                    console.log(row[0]);
                     if(err) reject (err);
                     if (row.length > 0){
                         resolve(row[0].mtemp);
@@ -235,6 +236,8 @@ exports.ETPxCoeficiente = async (coeficiente, etp) => {
 
 
 exports.ETPvalues = async (module, data) => {
+    console.log("data:"+ data)
+    console.log("module:" + module);
     let Tmed = await this.getMedTemp(data, module);
     console.log("Tmed:"+Tmed)
     let radMed = await this.getRadMed(data, module);
@@ -268,6 +271,7 @@ exports.ETPOverDays= async (dataInicio, dataFim, module) => {
     let d;
     for(data; data<=DataF;data.setDate(data.getDate()+1)){
         d = await this.getFormatedDate(data);
+        console.log("/n " + d);
         etp = await this.ETPvalues(module, d);
         if(etp != null){
             send.push({date: d,value:etp});

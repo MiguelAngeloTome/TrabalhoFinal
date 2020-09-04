@@ -18,8 +18,8 @@ exports.getTemp= async(dayInic, dayFim, module_id) =>{
 
 exports.averageTemp = async(dayInic, dayFim, module_id) =>{
 
-   // let tempValues = await this.getTemp(dayInic, dayFim, module_id);
-    let tempValues = [{ date: '2009-06-29 11:08:59', temp: 20 },
+    let tempValues = await this.getTemp(dayInic, dayFim, module_id);
+   /* let tempValues = [{ date: '2009-06-29 11:08:59', temp: 20 },
     { date: '2009-06-29 11:23:59', temp: 90 },
     { date: '2009-06-29 11:40:59', temp: 91 },
     { date: '2009-06-29 12:08:59', temp: 92 },
@@ -32,7 +32,7 @@ exports.averageTemp = async(dayInic, dayFim, module_id) =>{
     { date: '2009-06-29 20:08:59', temp: 20 },
     { date: '2009-06-29 21:08:59', temp: 7},
     { date: '2009-06-29 21:22:59', temp: 10 }
-    ];
+    ];*/
     let average = [];
     let send = [];
     let aux = [];
