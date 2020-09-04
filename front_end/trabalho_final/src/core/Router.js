@@ -10,6 +10,7 @@ import LoginPage from "../pages/auth/Login";
 import ListaVinhas from "../pages/vinhas/ListVinhas";
 import AuthContext from "../configs/authContext";
 import VinhasDetails from "../pages/vinhas/VinhasDetails";
+import Compare from "../pages/compare/compare.js";
 import User from "../pages/user/user";
 
 export default class RouterComponent extends React.Component {
@@ -30,6 +31,7 @@ export default class RouterComponent extends React.Component {
              <PrivateRoute exact path="/vinhas" component={ListaVinhas} />
              <PrivateRoute exact path="/vinhas/details/:id" component={VinhasDetails} />
              <PrivateRoute path="/user/" component={User} />
+             <PrivateRoute path="/compare/" component={Compare} />
             <Route path="*" component={Home} />
             </Switch>
           ):(

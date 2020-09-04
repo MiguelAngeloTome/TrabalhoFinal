@@ -9,6 +9,8 @@ exports.Fito = async (dayInic, dayFim, module_id) =>{
     for(i =0; i<medHours.length; i++){
         if(medHours[i].avg > 10){
             send.push(medHours[i]);
+        }else{
+            send.push({date: medHours[i].date, avg: null})
         }
     }
     return send;

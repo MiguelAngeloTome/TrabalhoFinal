@@ -146,7 +146,7 @@ exports.Tempcrepuscular = async (dayInic, dayFim, module_id) =>{
         tempC = await this.getTemp(d, module_id);
         if(tempC != null){
             send.push({date:d + ":00:00",temp: tempC});
-        }    
+        }
     }
     return send;
 }

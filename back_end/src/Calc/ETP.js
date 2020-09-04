@@ -6,97 +6,124 @@ exports.getMedTemp = async(day, module_id) =>{
         db.all(`select avg(temp) as mtemp from data
                 where date like ? || '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
-            if(err) reject (err);
-            resolve(row[0].mtemp);
-        });
-    });
-};
+                    if(err) reject (err);
+                    if (row.length > 0){
+                        resolve(row[0].mtemp);
+                    }
+                    resolve(null);
+                });
+            });
+        };
 
 exports.getMaxTemp = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
         db.all(`select max(temp) as mtemp from data
                 where date like ? || '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
-            if(err) reject (err);
-            resolve(row[0].mtemp);
-        });
-    });
-};
+                    if(err) reject (err);
+                    if (row.length > 0){
+                        resolve(row[0].mtemp);
+                    }
+                    resolve(null);
+                });
+            });
+        };
 
 exports.getMinTemp = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
         db.all(`select min(temp) as mtemp from data
                 where date like ? || '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
-            if(err) reject (err);
-            resolve(row[0].mtemp);
-        });
-    });
-};
+                    if(err) reject (err);
+                    if (row.length > 0){
+                        resolve(row[0].mtemp);
+                    }
+                    resolve(null);
+                });
+            });
+        };
 
 exports.getRadMed = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
         db.all(`select avg(radiacao) as mrad from data
                 where date like ? || '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
-            if(err) reject (err);
-            resolve(row[0].mrad);
-        });
-    });
-};
+                    if(err) reject (err);
+                    if (row.length > 0){
+                        resolve(row[0].mrad);
+                    }
+                    resolve(null);
+                });
+            });
+        };
 
 exports.getHumMax = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
         db.all(`select max(air_humidity) as mhum from data
                 where date like ? || '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
-            if(err) reject (err);
-            resolve(row[0].mhum);
-        });
-    });
-};
+                    if(err) reject (err);
+                    if (row.length > 0){
+                        resolve(row[0].mhum);
+                    }
+                    resolve(null);
+                });
+            });
+        };
 
 exports.getHumMin = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
         db.all(`select min(air_humidity) as mhum from data
                 where date like ? || '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
-            if(err) reject (err);
-            resolve(row[0].mhum);
-        });
-    });
-};
+                    if(err) reject (err);
+                    if (row.length > 0){
+                        resolve(row[0].mhum);
+                    }
+                    resolve(null);
+                });
+            });
+        };
 
 exports.getVentoMed = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
         db.all(`select avg(vel_vento) as mvento from data
                 where date like ? || '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
-            if(err) reject (err);
-            resolve(row[0].mvento);
-        });
-    });
-};
+                    if(err) reject (err);
+                    if (row.length > 0){
+                        resolve(row[0].mvento);
+                    }
+                    resolve(null);
+                });
+            });
+        };
 
 exports.getLat = async(module_id) =>{
     return new Promise((resolve,reject)=>{
         db.all(`select lat from module
                 where module_id like ?`,[module_id],(err,row)=>{
-            if(err) reject (err);
-            resolve(row[0].lat);
-        });
-    });
-};
+                    if(err) reject (err);
+                    if (row.length > 0){
+                        resolve(row[0].lat);
+                    }
+                    resolve(null);
+                });
+            });
+        };
 
 exports.getLng = async(module_id) =>{
     return new Promise((resolve,reject)=>{
         db.all(`select lng from module
                 where module_id like ?`,[module_id],(err,row)=>{
-            if(err) reject (err);
-            resolve(row[0].lng);
-        });
-    });
-};
+                    if(err) reject (err);
+                    if (row.length > 0){
+                        resolve(row[0].lng);
+                    }
+                    resolve(null);
+                });
+            });
+        };
 //Funcoes 
 
 
@@ -209,15 +236,26 @@ exports.ETPxCoeficiente = async (coeficiente, etp) => {
 
 exports.ETPvalues = async (module, data) => {
     let Tmed = await this.getMedTemp(data, module);
+    console.log("Tmed:"+Tmed)
     let radMed = await this.getRadMed(data, module);
+    console.log("radMed:"+radMed)
     let latitude = await this.getLat(module);
+    console.log("latitude:"+latitude)
     let RHMax = await this.getHumMax(data, module);
+    console.log("RHMax:"+RHMax)
     let RHMin = await this.getHumMin(data, module);
+    console.log("RHMin:"+RHMin)
     let Tmax = await this.getMaxTemp(data, module);
+    console.log("Tmax:"+Tmax)
     let Tmin = await this.getMinTemp(data, module);
+    console.log("Tmin:"+Tmin)
     let altitude = 0;
     let U2 = await this.getVentoMed(data, module);
-
+    console.log("U2:"+U2)
+    if(Tmed == null || radMed == null ||latitude == null || RHMax == null || RHMin == null || Tmax == null || Tmin == null || altitude == null ||U2 == null ){
+        console.log("here");
+       return null; 
+    }
     etp = await this.evapotranspiracaoPotencial(Tmed, radMed, latitude, RHMax, RHMin, Tmax, Tmin, altitude, U2, data);
 
     return etp;
@@ -231,7 +269,10 @@ exports.ETPOverDays= async (dataInicio, dataFim, module) => {
     for(data; data<=DataF;data.setDate(data.getDate()+1)){
         d = await this.getFormatedDate(data);
         etp = await this.ETPvalues(module, d);
-        send.push(etp);
+        if(etp != null){
+            send.push({date: d,value:etp});
+        }
+        
     }
     return send;
 }

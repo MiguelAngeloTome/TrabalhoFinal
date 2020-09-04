@@ -16,13 +16,15 @@ exports.getHum = async(dayInic, dayFim, module_id) =>{
 };
 
 exports.PInfeccao = async (dayInic, dayFim, module_id) =>{
+    console.log("HELLLLLLLLLLLLLLLLLLLO")
     let send = [];
     let flagIntervalo = false;
     let inic;
-    let humValues = await this.getHum(dayInic, dayFim, module_id);
-    /*let humValues = [{ date: '2009-06-29 11:08:59', air_humidity: 20 },
-    { date: '2009-06-29 11:08:59', air_humidity: 90 },
-    { date: '2009-06-29 12:08:59', air_humidity: 91 },
+    let inichum;
+    //let humValues = await this.getHum(dayInic, dayFim, module_id);
+    let humValues = [{ date: '2009-06-29 11:08:59', air_humidity: 20 },
+    { date: '2009-06-29 11:08:59', air_humidity: 20 },
+    { date: '2009-06-29 12:08:59', air_humidity: 30 },
     { date: '2009-06-29 13:08:59', air_humidity: 92 },
     { date: '2009-06-29 14:08:59', air_humidity: 93 },
     { date: '2009-06-29 15:08:59', air_humidity: 20 },
@@ -34,12 +36,13 @@ exports.PInfeccao = async (dayInic, dayFim, module_id) =>{
     { date: '2009-06-29 21:08:59', air_humidity: 90 },
     { date: '2009-06-29 22:08:59', air_humidity: 91 }
     ];
-    */
+    
 
     if(humValues.length >0){
         
         if(humValues[0].air_humidity >= 90){
             inic = humValues[0].date;
+            inichum = humValues[0].air_humidity
             flagIntervalo = true;
         }
 
@@ -47,18 +50,18 @@ exports.PInfeccao = async (dayInic, dayFim, module_id) =>{
 
             if(humValues[i].air_humidity >= 90 && !flagIntervalo){
                 inic = humValues[i].date;
-                console.log(inic)
+                inichum = humValues[i].air_humidity
                 flagIntervalo = true;
             }
             else{
                 if(humValues[i].air_humidity< 90 && flagIntervalo){
-                    send.push(inic , humValues[i-1].date);
+                    send.push({inic:inic , fim:humValues[i-1].date,inichum: inichum, fimhum: humValues[i-1].air_humidity});
                     console.log(send);
                     flagIntervalo = false;
                 }
             }
             if(flagIntervalo && (i + 1) == humValues.length){
-                    send.push(inic , humValues[i].date);
+                send.push({inic:inic , fim:humValues[i].date,inichum: inichum, fimhum: humValues[i].air_humidity});
                     console.log(send);
                     flagIntervalo = false;
             }
@@ -78,8 +81,9 @@ exports.PHumidade = async (dayInic, dayFim, module_id, corte) =>{
     let send = [];
     let flagIntervalo = false;
     let inic;
-    let humValues = await this.getHum(dayInic, dayFim, module_id);
-    /*let humValues = [{ date: '2009-06-29 11:08:59', air_humidity: 20 },
+    let inichum;
+    //let humValues = await this.getHum(dayInic, dayFim, module_id);
+    let humValues = [{ date: '2009-06-29 11:08:59', air_humidity: 20 },
     { date: '2009-06-29 11:08:59', air_humidity: 90 },
     { date: '2009-06-29 12:08:59', air_humidity: 91 },
     { date: '2009-06-29 13:08:59', air_humidity: 92 },
@@ -93,12 +97,13 @@ exports.PHumidade = async (dayInic, dayFim, module_id, corte) =>{
     { date: '2009-06-29 21:08:59', air_humidity: 90 },
     { date: '2009-06-29 22:08:59', air_humidity: 91 }
     ];
-    */
-
+    
+    console.log
     if(humValues.length >0){
         
         if(humValues[0].air_humidity >= corte){
             inic = humValues[0].date;
+            inichum = humValues[0].air_humidity
             flagIntervalo = true;
         }
 
@@ -106,18 +111,19 @@ exports.PHumidade = async (dayInic, dayFim, module_id, corte) =>{
 
             if(humValues[i].air_humidity >= corte && !flagIntervalo){
                 inic = humValues[i].date;
+                inichum = humValues[i].air_humidity
                 console.log(inic)
                 flagIntervalo = true;
             }
             else{
                 if(humValues[i].air_humidity< corte && flagIntervalo){
-                    send.push(inic , humValues[i-1].date);
+                    send.push({inic:inic , fim:humValues[i-1].date,inichum: inichum, fimhum: humValues[i-1].air_humidity});
                     console.log(send);
                     flagIntervalo = false;
                 }
             }
             if(flagIntervalo && (i + 1) == humValues.length){
-                    send.push(inic , humValues[i].date);
+                    send.push({inic:inic , fim:humValues[i].date,inichum: inichum, fimhum: humValues[i].air_humidity});
                     console.log(send);
                     flagIntervalo = false;
             }
@@ -127,7 +133,7 @@ exports.PHumidade = async (dayInic, dayFim, module_id, corte) =>{
 
 
     }
-    console.log(humValues.length)
+    console.log(send);
     return send
 }
 
@@ -169,13 +175,13 @@ exports.Phumectacao = async (dayInic, dayFim, module_id,) => {
             }
             else{
                 if(isWetValues[i].isWet == 6999 && flagIntervalo){
-                    send.push(inic , isWetValues[i-1].date);
+                    send.push({inic: inic , fim: isWetValues[i-1].date});
                     console.log(send);
                     flagIntervalo = false;
                 }
             }
             if(flagIntervalo && (i + 1) == isWetValues.length){
-                    send.push(inic , isWetValues[i].date);
+                    send.push({inic: inic , fim: isWetValues[i].date});
                     console.log(send);
                     flagIntervalo = false;
             }
@@ -191,7 +197,7 @@ exports.Phumectacao = async (dayInic, dayFim, module_id,) => {
 
 
 exports.InfeccSend= async (body) => {
-    let send = await this.InfeccSend(body.dataInic, body.dataFim, body.module_id);
+    let send = await this.PInfeccao(body.dataInic, body.dataFim, body.module_id);
     return new Promise((resolve,reject)=>{
         resolve(send);
     });

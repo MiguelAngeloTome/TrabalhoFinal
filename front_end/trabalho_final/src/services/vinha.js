@@ -15,6 +15,7 @@ export default {
     getUsersVinha: (id) => apiRequest("GET", `/vinhauser/getUsersVinha/${id}`),
     getModulesUser: (id) => apiRequest("GET", `/vinhauser/getModuleUsers/${id}`),
     getModulesVinha: (id) => apiRequest("GET", `/module/vinha/${id}`),
+    getModule: (id) => apiRequest("GET", `/module/${id}`),
     delete: (id) => apiRequest("DELETE", `/vinha/${id}`),
     deleteUser_vinha: (body) => apiRequest("DELETE", `/vinhauser/delete`, body),
     deleteModule_vinha: (id) => apiRequest("DELETE", `/module/${id}`),

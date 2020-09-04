@@ -8,5 +8,6 @@ router.post("/hum", authorize(), Calc.PHum);
 router.post("/infec", authorize(), Calc.PInfec);
 router.post("/humc", authorize(), Calc.Phumectacao);
 router.post("/average", authorize(), Calc.averageTemp);
+router.post("/tcrepusc", authorize(), Calc.TCrepuscular);
 
 module.exports = router;
