@@ -173,6 +173,7 @@ class DataListPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            count:[{count:0}],
             open: true,
             openDialogUser: false,
             openDialogModule: false,
@@ -195,6 +196,7 @@ class DataListPage extends React.Component {
     static contextType = AuthContext;
 
     componentDidMount() {
+        dataService.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
         dataService.getAllModule(window.location.hash.split("/")[2]).then(data => this.setState({datas: data})).catch();
     }
 
@@ -219,8 +221,8 @@ class DataListPage extends React.Component {
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                             Datas
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={255} color="secondary">
+                        <IconButton color="inherit" href="/#/alertas">
+                            <Badge badgeContent={this.state.count[0].count} color="secondary">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>

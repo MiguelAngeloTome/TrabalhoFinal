@@ -25,7 +25,8 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
-import userService from '../../services/userService'
+import userService from '../../services/userService';
+import dataService from '../../services/data';
 
 
 function createData(name, value) {
@@ -155,6 +156,7 @@ class User extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      count:[{count:0}],
       open: true,
       datas: undefined,
     }
@@ -163,6 +165,7 @@ class User extends React.Component {
   static contextType = AuthContext;
 
   componentDidMount() {
+    dataService.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
     if(window.location.hash.split("/")[2] === undefined){
       userService.getUser(this.context.user.id).then(data => this.setState({datas: data})).catch();
     }else{
@@ -206,10 +209,10 @@ class User extends React.Component {
             <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
               User profile
           </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={255} color="secondary">
-                <NotificationsIcon />
-              </Badge>
+            <IconButton color="inherit" href="/#/alertas">
+                <Badge badgeContent={this.state.count[0].count} color="secondary">
+                    <NotificationsIcon />
+                </Badge>
             </IconButton>
             <IconButton color="inherit" onClick={() => logout()}>
               <Badge color="secondary">

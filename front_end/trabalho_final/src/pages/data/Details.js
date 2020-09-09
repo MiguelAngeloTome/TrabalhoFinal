@@ -125,6 +125,7 @@ class DetailsPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            count:[{count:0}],
             open: true,
             openDialogUser: false,
             openDialogModule: false,
@@ -135,7 +136,8 @@ class DetailsPage extends React.Component {
     static contextType = AuthContext;
 
     componentDidMount() {
-        dataService.getOne(this.props.match.params.id).then(data=>this.setState({datas: data[0]})).catch();
+      dataService.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
+      dataService.getOne(this.props.match.params.id).then(data=>this.setState({datas: data[0]})).catch();
     }
 
     render() {
@@ -178,8 +180,8 @@ class DetailsPage extends React.Component {
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                             Datas
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={255} color="secondary">
+                        <IconButton color="inherit" href="/#/alertas">
+                            <Badge badgeContent={this.state.count[0].count} color="secondary">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>

@@ -41,6 +41,23 @@ exports.getUserAvisos = id =>{
     });
 }
 
+exports.CountUserAvisos = id =>{
+    return new Promise((resolve,reject)=>{
+        db.all(`select count(id) as count from avisos 
+                where module_id = (
+                    select module_id from vinha
+                    where vinha_id = (
+                        select vinha_id from vinha_user
+                        where user_id = ?
+                    )
+                )`, [id],
+        (err,row)=>{
+            if(err) reject (err);
+            resolve(row);
+        });
+    });
+}
+
 exports.getDataSingle = id =>{
     return new Promise((resolve,reject)=>{
         db.all(`select * from data where data_id = ?`, [id],

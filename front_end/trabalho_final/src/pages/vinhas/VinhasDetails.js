@@ -44,6 +44,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import dataService from '../../services/data';
 
 
 const tableIcons = {
@@ -187,6 +188,7 @@ class VinhasDetails extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            count:[{count:0}],
             open: true,
             openDialogUser: false,
             openDialogModule: false,
@@ -216,6 +218,7 @@ class VinhasDetails extends React.Component {
     static contextType = AuthContext;
 
     componentDidMount() {
+        dataService.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
         vinhaService.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data })).catch();
         vinhaService.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
     }
@@ -276,8 +279,8 @@ class VinhasDetails extends React.Component {
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                             Modulos
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={255} color="secondary">
+                        <IconButton color="inherit" href="/#/alertas">
+                            <Badge badgeContent={this.state.count[0].count} color="secondary">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>

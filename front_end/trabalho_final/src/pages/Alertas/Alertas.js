@@ -256,6 +256,7 @@ class Alertas extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            count:[{count:0}],
             open: true,
             datas: [],
             page:0,
@@ -266,6 +267,7 @@ class Alertas extends React.Component {
 
     componentDidMount() {
         dataService.getUserAvisos(this.context.user.id).then(data => this.setState({ datas: data })).catch();
+        dataService.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
     }
 
     submitAlertas(id) {
@@ -308,8 +310,8 @@ class Alertas extends React.Component {
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                             Alertas
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={255} color="secondary">
+                        <IconButton color="inherit" href="/#/alertas">
+                            <Badge badgeContent={this.state.count[0].count} color="secondary">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>
