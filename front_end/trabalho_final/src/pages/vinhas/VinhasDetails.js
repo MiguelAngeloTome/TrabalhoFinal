@@ -393,7 +393,7 @@ class VinhasDetails extends React.Component {
                              actionsColumnIndex: -1,
 
                          }}
-                         onRowClick={(event, rowData) => this.props.history.push('/about')}
+                         onRowClick={(event, rowData) => this.props.history.push('/user/' + rowData.user_id)}
                          actions={[
                              {
                                  icon: AddBox,
