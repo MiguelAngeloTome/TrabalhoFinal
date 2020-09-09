@@ -340,7 +340,7 @@ class VinhasDetails extends React.Component {
                                 actions={[
                                     {
                                         icon: AddBox,
-                                        tooltip: 'Add User',
+                                        tooltip: 'Add Modulo',
                                         isFreeAction: true,
                                         onClick: () => this.handleFormClickModule()
                                     }

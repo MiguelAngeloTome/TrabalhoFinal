@@ -21,6 +21,7 @@ const getOne = id => {
 
 export default {
   getAll: () => apiRequest("GET", "/data"),
+  getUserAvisos: (id) => apiRequest("GET", `/data/avisos/user/${id}`),
   getOne: (id) => apiRequest("GET", `/data/${id}`),
   getAllModule: (id) => apiRequest("GET", `/data/module/${id}`),
   getLast: (id) => apiRequest("GET", `/data/last/${id}`),

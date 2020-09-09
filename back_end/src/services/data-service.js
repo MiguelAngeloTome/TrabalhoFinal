@@ -24,6 +24,23 @@ exports.getAvisos = () =>{
     });
 }
 
+exports.getUserAvisos = id =>{
+    return new Promise((resolve,reject)=>{
+        db.all(`select * from avisos 
+                where module_id = (
+                    select module_id from vinha
+                    where vinha_id = (
+                        select vinha_id from vinha_user
+                        where user_id = ?
+                    )
+                )`, [id],
+        (err,row)=>{
+            if(err) reject (err);
+            resolve(row);
+        });
+    });
+}
+
 exports.getDataSingle = id =>{
     return new Promise((resolve,reject)=>{
         db.all(`select * from data where data_id = ?`, [id],
@@ -77,8 +94,40 @@ exports.getDataTimeFrame = (id,body) =>{
     });
 }
 
-exports.insertData = body =>{
-    avisos.verifica(body.module_id, body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao);
+exports.getEmail = async (module_id) =>{
+    return new Promise((resolve,reject)=>{
+        let send = [];
+        db.all(`select user_id from vinha_user
+                where vinha_id = (
+                    select vinha_id from module
+                    where module_id = ?
+                )`, [module_id],
+                (err,row)=>{
+            if(err){
+                reject (err)
+            } else {
+                for (i = 0; i < row.length; i++) {
+                    db.all(`Select email from user where user_id = ?`, [row[i].user_id],
+                        (err, row2) => {
+                            if (err) {
+                                reject(err)
+                            } else {
+                                send.push(row2[0]);
+                                if (send.length == row.length) {
+                                    resolve(send);
+                                }
+                            }
+                        }
+                    )
+                }
+            };
+        });
+    });
+}
+
+exports.insertData = async body =>{
+    let mail = await this.getEmail(body.module_id);
+    avisos.verifica(body.module_id, body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao, mail);
     return new Promise((resolve,reject)=>{
         const id = uuid();
         db.run(`insert into data(data_id, module_id, date, temp, air_humidity, solo_humidity, isWet, pluviosidade, vel_vento, dir_vento, radiacao) VALUES(?,?,?,?,?,?,?,?,?,?,?)`,

@@ -38,7 +38,6 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -49,7 +48,6 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
-import { Grid } from '@material-ui/core';
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -267,7 +265,7 @@ class Alertas extends React.Component {
     static contextType = AuthContext;
 
     componentDidMount() {
-        dataService.getAvisos().then(data => this.setState({ datas: data })).catch();
+        dataService.getUserAvisos(this.context.user.id).then(data => this.setState({ datas: data })).catch();
     }
 
     submitAlertas(id) {
