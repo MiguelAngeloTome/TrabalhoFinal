@@ -34,6 +34,13 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import dataService from '../../services/data';
 
 
 const tableIcons = {
@@ -166,7 +173,9 @@ class ListaVinhas extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            count:[{count:0}],
             open: true,
+            openDialog: false,
             datas: [],
 
             columns: [
@@ -181,8 +190,16 @@ class ListaVinhas extends React.Component {
     static contextType = AuthContext;
 
     componentDidMount() {
-        
+        dataService.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
         vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
+    }
+
+    handleFormclose() {
+        this.setState({ openDialog: false })
+    }
+
+    handleFormClick() {
+        this.setState({ openDialog: true })
     }
 
     submit(id, type) {
@@ -217,8 +234,8 @@ class ListaVinhas extends React.Component {
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                             Vinhas
           </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={255} color="secondary">
+          <IconButton color="inherit" href="/#/alertas">
+                            <Badge badgeContent={this.state.count[0].count} color="secondary">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>
@@ -261,9 +278,9 @@ class ListaVinhas extends React.Component {
                             actions={[
                                 {
                                     icon: AddBox,
-                                    tooltip: 'Add User',
+                                    tooltip: 'Adicionar vinha',
                                     isFreeAction: true,
-                                    onClick: () => this.props.history.push('/about')
+                                    onClick: () => this.handleFormClick()
                                 }
                             ]}
                             editable={{
@@ -296,6 +313,20 @@ class ListaVinhas extends React.Component {
                             }}
                         />
 
+                        <Container maxWidth="lg" className={classes.container}>
+                            <Dialog open={this.state.openDialog} onClose={() => this.handleFormclose()} aria-labelledby="form-dialog-title">
+                                <DialogTitle id="form-dialog-title">Criar uma vinha</DialogTitle>
+                                <DialogContent>
+                                    <TextField autoFocus margin="dense" id="name" label="Nome" fullWidth />
+                                    <TextField autoFocus margin="dense" id="name" label="Localizacao" fullWidth />
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={() => this.handleFormclose()} color="primary">
+                                        Criar
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
+                        </Container>
 
                     </Container>
                 </main>

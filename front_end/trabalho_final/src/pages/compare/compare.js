@@ -226,6 +226,7 @@ class Compare extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            count:[{count:0}],
             open: true,
             data:undefined,
             value: 0,
@@ -251,7 +252,7 @@ class Compare extends React.Component {
     static contextType = AuthContext;
 
     componentDidMount() {
-
+        dataService.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
         let a;
     vinhaService.getModulesUser(this.context.user.id)
     .then(data =>{a=data[0].modules[0].module_id;
@@ -597,8 +598,8 @@ class Compare extends React.Component {
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                             Modulos
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={255} color="secondary">
+                        <IconButton color="inherit" href="/#/alertas">
+                            <Badge badgeContent={this.state.count[0].count} color="secondary">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>

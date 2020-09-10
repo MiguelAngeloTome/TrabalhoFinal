@@ -6,6 +6,8 @@ router.get("/avisos", authorize(), dataController.getAvisos);
 router.get("", authorize(), dataController.getData);
 router.get("/avisos/:id", authorize(), dataController.getAvisoSingle);
 router.get("/:id", authorize(), dataController.getDataSingle);
+router.get("/avisos/user/:id", authorize(), dataController.getUserAvisos);
+router.get("/avisos/user/count/:id", authorize(), dataController.CountUserAvisos);
 router.get("/module/:id", authorize(), dataController.getDataModule);
 router.get("/last/:id", authorize(), dataController.getDataLast);
 router.post("", authorize(), dataController.insertData);

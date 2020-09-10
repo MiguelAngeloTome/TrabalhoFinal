@@ -12,6 +12,18 @@ exports.getAvisos = (req, res) => {
     .catch(err => res.status(500).json({erro: err.message}));
 };
 
+exports.getUserAvisos = (req, res) => {
+    dataService.getUserAvisos(req.params.id)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
+};
+
+exports.CountUserAvisos = (req, res) => {
+    dataService.CountUserAvisos(req.params.id)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
+};
+
 exports.getDataSingle = (req, res) => {
     dataService.getDataSingle(req.params.id)
     .then(result => res.json(result))

@@ -51,6 +51,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import dataService from '../../services/data';
 
 
 const tableIcons = {
@@ -197,6 +198,7 @@ class VinhasDetails extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            count:[{count:0}],
             open: true,
             openDialogUser: false,
             openDialogModule: false,
@@ -236,6 +238,7 @@ class VinhasDetails extends React.Component {
     static contextType = AuthContext;
 
     componentDidMount() {
+        dataService.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
         vinhaService.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data })).catch();
         vinhaService.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
     }
@@ -356,8 +359,8 @@ class VinhasDetails extends React.Component {
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                             Modulos
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={255} color="secondary">
+                        <IconButton color="inherit" href="/#/alertas">
+                            <Badge badgeContent={this.state.count[0].count} color="secondary">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>
@@ -420,7 +423,7 @@ class VinhasDetails extends React.Component {
                                 actions={[
                                     {
                                         icon: AddBox,
-                                        tooltip: 'Add User',
+                                        tooltip: 'Add Modulo',
                                         isFreeAction: true,
                                         onClick: () => this.handleFormClickModule()
                                     }
@@ -473,7 +476,7 @@ class VinhasDetails extends React.Component {
                              actionsColumnIndex: -1,
 
                          }}
-                         onRowClick={(event, rowData) => this.props.history.push('/about')}
+                         onRowClick={(event, rowData) => this.props.history.push('/user/' + rowData.user_id)}
                          actions={[
                              {
                                  icon: AddBox,
