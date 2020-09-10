@@ -18,6 +18,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MaterialTable from 'material-table';
 import AuthContext from "../../configs/authContext";
 import vinhaService from '../../services/vinha';
+import moduleService from '../../services/module';
 import { forwardRef } from 'react';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
@@ -38,12 +39,18 @@ import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import ShowMap from '../maps/showMap'
+import ClickMap from '../maps/clickMap'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 
 const tableIcons = {
@@ -71,6 +78,9 @@ const tableIcons = {
 
 
 const drawerWidth = 240;
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
 
 const useStyles = theme => ({
     root: {
@@ -190,6 +200,8 @@ class VinhasDetails extends React.Component {
             open: true,
             openDialogUser: false,
             openDialogModule: false,
+            openDialogModule2: false,
+            openDialogModule3: false,
             datas1: [],
             datas2: [],
             value: 0,
@@ -211,6 +223,14 @@ class VinhasDetails extends React.Component {
             name: "",
             email: "",
             type: "",
+
+            lat: undefined,
+            lng: undefined,
+            module: "",
+            nome:"",
+            nomeError: true,
+            moduleError: true,
+            snackOpen: false,
         }
     };
     static contextType = AuthContext;
@@ -232,6 +252,7 @@ class VinhasDetails extends React.Component {
         window.location.reload();
     }
 
+    
     handleFormClickUser() {
         this.setState({ openDialogUser: true })
     }
@@ -244,15 +265,74 @@ class VinhasDetails extends React.Component {
         this.setState({ openDialogModule: true })
     }
 
-    handleFormcloseModule() {
-        this.setState({ openDialogModule: false })
+    handleFormClickModule2() {
+        this.setState({ openDialogModule2: true })
     }
+
+    handleFormClickModule3() {
+        this.setState({ openDialogModule3: true })
+    }
+
+    handleFormcloseModule() {
+        this.setState({ openDialogModule: false });
+        this.handleFormClickModule2();
+    }
+
+    handleFormcloseModule2() {
+        if(this.state.nome !== null && this.state.nome !== undefined && this.state.nome !=="" && this.state.module !== null && this.state.module !== undefined && this.state.module !==""){
+            this.setState({ openDialogModule2: false, value: 3 });
+        }
+        
+    }
+
+
 
     handleChange = (event, newValue) => {
         console.log(newValue)
         this.setState({ value: newValue });
     };
 
+    callbackFunction = (childData) => {
+        this.setState({lat: childData.lat, lng: childData.lng});
+    };
+
+    newModule = () =>{
+        if(this.state.lat !== null && this.state.lat !== undefined && this.state.lat !=="" && this.state.lng !== null && this.state.lng !== undefined && this.state.lng !=="" ){
+            moduleService.add({vinha_id: this.props.match.params.id,localizacao:this.state.nome,lat:this.state.lat,lng:this.state.lng});
+            vinhaService.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data, value:1 })).catch();
+            vinhaService.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
+        }else{
+            this.setState({ snackOpen: true })
+        }
+    }
+
+    nomeChange = (e) =>{
+        if(e !== null && e !== undefined && e !==""){
+            this.setState({nomeError: false})
+        }else{
+            this.setState({nomeError: true})
+        }
+        this.setState({nome:e});
+            console.log(e);
+    }
+
+    moduleChange = (e) =>{
+        if(e !== null && e !== undefined && e !==""){
+            this.setState({moduleError: false})
+        }else{
+            this.setState({moduleError: true})
+        }
+            this.setState({module:e});
+            console.log(e);
+    }
+    
+  handleSnackClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    this.setState({ snackOpen: false })
+  };
 
 
     render() {
@@ -445,7 +525,24 @@ class VinhasDetails extends React.Component {
 
                     
                 }
+                    {this.state.value === 3 &&
+                     <Container maxWidth="lg" className={classes.containerMap}>
+                         <div className={classes.root}>
+                            <Snackbar open={this.state.snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
+                            <Alert onClose={this.handleSnackClose} severity="error">
+                                Precisa de escolher a sua localização.
+                            </Alert>
+                            </Snackbar>
+                        </div>
+                         <h2 style= {{"font-size": "medium", "padding": "5px",fontWeight: "bold"}} textAlign="center">Criar Modulo</h2>
+                     <ClickMap parentCallback = {this.callbackFunction}/>
+                     <Button variant="contained" color="primary" style= {{position: "absolute",bottom: 3,right:30}} onClick={() => this.newModule()} color="primary">
+                                    SEGUINTE
+                    </Button>
+                     </Container>
 
+                    
+                }
                     <Container maxWidth="lg" className={classes.container}>
                         <Dialog open={this.state.openDialogUser} onClose={() => this.handleFormcloseUser()} aria-labelledby="form-dialog-title">
                             <DialogTitle id="form-dialog-title">Adicionar um utilizador</DialogTitle>
@@ -460,16 +557,61 @@ class VinhasDetails extends React.Component {
                         </Dialog>
 
                         <Dialog open={this.state.openDialogModule} onClose={() => this.handleFormcloseModule()} aria-labelledby="form-dialog-title">
-                            <DialogTitle id="form-dialog-title">Criar um modulo</DialogTitle>
+                            <DialogTitle id="form-dialog-title">CRIAR UM MODULO</DialogTitle>
                             <DialogContent>
-                                <TextField autoFocus margin="dense" id="name" label="Localizacao" fullWidth />
-                                <TextField autoFocus margin="dense" id="name" label="Coordenadas" fullWidth />
+                            <DialogContentText>
+                                Para criar um módulo terá de introduzir o número de série da sua estação.
+                             </DialogContentText>
+                             <DialogContentText>
+                                Insira também um nome para lhe ser mais fácil de identificar os módulos.
+                             </DialogContentText>
+                             <DialogContentText>
+                                Terá também de escolher no mapa a sua Localização. Isto ajudará nos cálculos para os tornar mais precisos.
+                             </DialogContentText>
+                                
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={() => this.handleFormcloseModule()} color="primary">
-                                    Criar
+                                    SEGUINTE
                                 </Button>
                             </DialogActions>
+                        </Dialog>
+
+                        <Dialog fullWidth minWidth="500px" open={this.state.openDialogModule2} onClose={() => this.handleFormcloseModule()} aria-labelledby="form-dialog-title">
+                            <DialogTitle id="form-dialog-title">CRIAR UM MODULO</DialogTitle>
+                            <DialogContent fullWidth>
+                            <FormControl error fullWidth>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                value={this.state.module}
+                                onChange = {(evt)=>this.moduleChange(evt.target.value)}
+                                label=" Introduza o número de série da sua estação."
+                                aria-describedby="module-error-text"
+                                fullWidth
+                            />
+                            {this.state.moduleError === true &&
+                                <FormHelperText fullWidth id="module-error-text">O ID da estação nao pode ser vazio</FormHelperText>
+                            }
+                            <TextField
+                                autoFocus
+                                value={this.state.nome}
+                                onChange = {(evt)=>this.nomeChange(evt.target.value)}
+                                label="Introduza o nome para a sua estação."
+                                aria-describedby="nome-error-text"
+                                fullWidth
+                            />
+                            {this.state.nomeError === true &&
+                                <FormHelperText fullWidth id="module-error-text">O NOME da estação nao pode ser vazio</FormHelperText>
+                            }
+                            </FormControl>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={() => this.handleFormcloseModule2()} color="primary">
+                                    SEGUINTE
+                                </Button>
+                            </DialogActions>
+
                         </Dialog>
                     </Container>
                 </main>
