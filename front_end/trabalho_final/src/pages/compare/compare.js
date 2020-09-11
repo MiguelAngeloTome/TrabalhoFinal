@@ -1,6 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
+import EmailIcon from '@material-ui/icons/Email';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -65,11 +66,13 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import dataService from '../../services/data';
+import excelService from '../../services/ExcelService';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Icon from '@material-ui/core/Icon';
 
 
 
@@ -492,6 +495,12 @@ class Compare extends React.Component {
         
     }
 
+    ExcelClick = () =>{
+        excelService.Excel(this.context.user.id, this.state.data);
+        //temporario
+        alert("enviado com sucesso");
+    }
+
 
     render() {
         var rows = [{name:"yes", value:"no"}]
@@ -786,6 +795,15 @@ class Compare extends React.Component {
                                     {console.log(this.state.data)}
                                         <Scatter1line key = {this.state.key} title = {"Evapotranspiração"} data = {this.state.data} />
                                 </Container>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.button}
+                                    endIcon={<EmailIcon/>}
+                                    onClick={() => { this.ExcelClick() }}
+                                    >
+                                        Enviar para email em formato excel
+                                </Button>
                                 </div>
                             ):(
                                 <div>
@@ -915,6 +933,15 @@ class Compare extends React.Component {
                            {console.log(this.state.data)}
                                <HumGraph value = {0} key = {this.state.key} title = {"Períodos de Humidade"} data = {this.state.data} corte = {this.state.corte} />
                        </Container>
+                       <Button
+                            variant="contained"
+                            color="primary"
+                            className={classes.button}
+                            endIcon={<EmailIcon/>}
+                            onClick={() => { this.ExcelClick() }}
+                            >
+                                Enviar para email em formato excel
+                        </Button>
                        </div>
                    ):(
 
@@ -1041,6 +1068,15 @@ class Compare extends React.Component {
                            {console.log(this.state.data)}
                                <HumGraph value = {0} key = {this.state.key} title = {"Períodos de Infecção"} data = {this.state.data} corte = {90} />
                        </Container>
+                       <Button
+                            variant="contained"
+                            color="primary"
+                            className={classes.button}
+                            endIcon={<EmailIcon/>}
+                            onClick={() => { this.ExcelClick() }}
+                            >
+                                Enviar para email em formato excel
+                        </Button>
                        </div>
                    ):(
 
@@ -1178,6 +1214,15 @@ class Compare extends React.Component {
                            </Table>
                        </TableContainer>
                        </Container>
+                       <Button
+                            variant="contained"
+                            color="primary"
+                            className={classes.button}
+                            endIcon={<EmailIcon/>}
+                            onClick={() => { this.ExcelClick() }}
+                            >
+                                Enviar para email em formato excel
+                        </Button>
                        </div>
                    ):(
 
@@ -1308,6 +1353,15 @@ class Compare extends React.Component {
                             {console.log(this.state.data)}
                                 <HumGraph value = {1} key = {this.state.key} title = {"Horas Fitoativas"} data = {this.state.data} corte = {null} />
                         </Container>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            className={classes.button}
+                            endIcon={<EmailIcon/>}
+                            onClick={() => { this.ExcelClick() }}
+                            >
+                                Enviar para email em formato excel
+                        </Button>
                         </div>
                     ):(
  
@@ -1434,6 +1488,15 @@ class Compare extends React.Component {
                             {console.log(this.state.data)}
                                 <HumGraph key = {this.state.key} title = {"Períodos de Infecção"} data = {this.state.data} corte = {90} />
                         </Container>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            className={classes.button}
+                            endIcon={<EmailIcon/>}
+                            onClick={() => { this.ExcelClick() }}
+                            >
+                                Enviar para email em formato excel
+                        </Button>
                         </div>
                     ):(
  
@@ -1571,6 +1634,15 @@ class Compare extends React.Component {
                             </Table>
                         </TableContainer>
                         </Container>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            className={classes.button}
+                            endIcon={<EmailIcon/>}
+                            onClick={() => { this.ExcelClick() }}
+                            >
+                                Enviar para email em formato excel
+                        </Button>
                         </div>
                     ):(
  
