@@ -495,8 +495,8 @@ class Compare extends React.Component {
         
     }
 
-    ExcelClick = () =>{
-        excelService.Excel(this.context.user.id, this.state.data);
+    ExcelClick = (tipo) =>{
+        excelService.Excel(this.context.user.id, this.state.data, this.state.module.vinha_id, this.state.module.localizacao, tipo);
         //temporario
         alert("enviado com sucesso");
     }
@@ -800,7 +800,7 @@ class Compare extends React.Component {
                                     color="primary"
                                     className={classes.button}
                                     endIcon={<EmailIcon/>}
-                                    onClick={() => { this.ExcelClick() }}
+                                    onClick={() => { this.ExcelClick("Evapotranspiracao") }}
                                     >
                                         Enviar para email em formato excel
                                 </Button>
@@ -938,7 +938,7 @@ class Compare extends React.Component {
                             color="primary"
                             className={classes.button}
                             endIcon={<EmailIcon/>}
-                            onClick={() => { this.ExcelClick() }}
+                            onClick={() => { this.ExcelClick("Períodos de Humidade") }}
                             >
                                 Enviar para email em formato excel
                         </Button>
@@ -1073,7 +1073,7 @@ class Compare extends React.Component {
                             color="primary"
                             className={classes.button}
                             endIcon={<EmailIcon/>}
-                            onClick={() => { this.ExcelClick() }}
+                            onClick={() => { this.ExcelClick("Períodos de Infecção") }}
                             >
                                 Enviar para email em formato excel
                         </Button>
@@ -1219,7 +1219,7 @@ class Compare extends React.Component {
                             color="primary"
                             className={classes.button}
                             endIcon={<EmailIcon/>}
-                            onClick={() => { this.ExcelClick() }}
+                            onClick={() => { this.ExcelClick("Períodos de Humectacção") }}
                             >
                                 Enviar para email em formato excel
                         </Button>
@@ -1358,7 +1358,7 @@ class Compare extends React.Component {
                             color="primary"
                             className={classes.button}
                             endIcon={<EmailIcon/>}
-                            onClick={() => { this.ExcelClick() }}
+                            onClick={() => { this.ExcelClick("Horas Fitoativas") }}
                             >
                                 Enviar para email em formato excel
                         </Button>
@@ -1493,7 +1493,7 @@ class Compare extends React.Component {
                             color="primary"
                             className={classes.button}
                             endIcon={<EmailIcon/>}
-                            onClick={() => { this.ExcelClick() }}
+                            onClick={() => { this.ExcelClick("Horas de frio") }}
                             >
                                 Enviar para email em formato excel
                         </Button>
@@ -1639,7 +1639,7 @@ class Compare extends React.Component {
                             color="primary"
                             className={classes.button}
                             endIcon={<EmailIcon/>}
-                            onClick={() => { this.ExcelClick() }}
+                            onClick={() => { this.ExcelClick("Temperaturas crepusculares") }}
                             >
                                 Enviar para email em formato excel
                         </Button>

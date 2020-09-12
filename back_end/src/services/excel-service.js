@@ -2,13 +2,20 @@ const db = require('../configs/mysql.js');
 var nodemailer = require('nodemailer');
 const xl = require('excel4node');
 
-exports.Excel = async (body, id) => {
-    let email = await this.getUserEmail(id);
+exports.Excel = async (body, user_id, vinha_id, module_name, tipo) => {
+    let email = await this.getUserEmail(user_id);
+    let vinhaNome = await this.getVinhaName(vinha_id);
     return new Promise((resolve,reject)=>{
+        vinhaNome = vinhaNome[0].Nome;
         email = email[0].email;
         const wb = new xl.Workbook();
         const ws = wb.addWorksheet('Informacao');
 
+        for(let i = 0; i < body.length; i++){
+            body[i].vinha = vinhaNome;
+            body[i].modulo = module_name;
+            body[i].tipo = tipo;
+        }
         let keys = Object.keys(body[0]);
         let values = Object.values(body[0]);
 
@@ -76,6 +83,18 @@ exports.getUserEmail = async (id) =>{
     return new Promise((resolve,reject)=>{
         db.all(`select email from user
                 where user_id = ?`, [id],
+                (err,row)=>{
+            if(err)
+                reject (err)
+            resolve(row);
+        });
+    });
+}
+
+exports.getVinhaName = async (id) =>{
+    return new Promise((resolve,reject)=>{
+        db.all(`select nome from vinha
+                where vinha_id = ?`, [id],
                 (err,row)=>{
             if(err)
                 reject (err)
