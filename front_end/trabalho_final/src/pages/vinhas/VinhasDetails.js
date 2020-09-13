@@ -19,6 +19,7 @@ import MaterialTable from 'material-table';
 import AuthContext from "../../configs/authContext";
 import vinhaService from '../../services/vinha';
 import moduleService from '../../services/module';
+import userService from '../../services/userService';
 import { forwardRef } from 'react';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
@@ -52,6 +53,10 @@ import FormControl from '@material-ui/core/FormControl';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import dataService from '../../services/data';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { lightGreen,} from '@material-ui/core/colors';
+import Avatar from '@material-ui/core/Avatar';
+import MuiAutocomplete from 'mui-autocomplete';
 
 
 const tableIcons = {
@@ -191,6 +196,11 @@ const useStyles = theme => ({
     Tabs: {
         flexGrow: 1,
     },
+    green: {
+        color: theme.palette.getContrastText(lightGreen[900]),
+        backgroundColor: lightGreen[900],
+        marginRight: '20px'
+      },
 
 });
 
@@ -233,6 +243,8 @@ class VinhasDetails extends React.Component {
             nomeError: true,
             moduleError: true,
             snackOpen: false,
+            users:[],
+            newUser: undefined,
         }
     };
     static contextType = AuthContext;
@@ -241,6 +253,7 @@ class VinhasDetails extends React.Component {
         dataService.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
         vinhaService.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data })).catch();
         vinhaService.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
+        userService.userSimple().then(data => this.setState({ users: data })).catch();
     }
 
     submitUsers(vinha_id, user_id) {
@@ -262,6 +275,7 @@ class VinhasDetails extends React.Component {
 
     handleFormcloseUser() {
         this.setState({ openDialogUser: false })
+        this.newUser();
     }
 
     handleFormClickModule() {
@@ -307,6 +321,23 @@ class VinhasDetails extends React.Component {
         }else{
             this.setState({ snackOpen: true })
         }
+    }
+
+    newUser = () =>{
+        let dup = false;
+        if(this.state.newUser !== null && this.state.newUser !== undefined &&  this.state.newUser !== "" ){
+            for(let i=0; i<this.state.datas2.length; i++){
+                if(this.state.newUser === this.state.datas2[i].user_id){
+                    dup = true;
+                }
+            }
+            if(dup !== true){
+                vinhaService.addUser({vinha_id: this.props.match.params.id,user_id: this.state.newUser});
+                vinhaService.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data, value:1 })).catch();
+                vinhaService.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
+            }  
+        }
+
     }
 
     nomeChange = (e) =>{
@@ -550,7 +581,36 @@ class VinhasDetails extends React.Component {
                         <Dialog open={this.state.openDialogUser} onClose={() => this.handleFormcloseUser()} aria-labelledby="form-dialog-title">
                             <DialogTitle id="form-dialog-title">Adicionar um utilizador</DialogTitle>
                             <DialogContent>
-                                <TextField autoFocus margin="dense" id="name" label="ID do utilizador" fullWidth />
+                            <DialogContentText>
+                                Para adicionar um utilizador a sua vinha escreva o username ou o nome.
+                             </DialogContentText>
+                            <Autocomplete
+                                id="free-solo-demo"
+                                PopperComponent = {"bottom-start"}
+                                fullWidth
+                                options={this.state.users}
+                                getOptionLabel={(option) => option.username+": "+ option.name+ " "+ option.surname}
+                                renderOption={(option) => (
+                                    <React.Fragment fullWidth>
+                                        <Avatar className={classes.green}>{option.name.charAt(0)+option.surname.charAt(0)}</Avatar>
+                                    {option.username}: {option.name} {option.surname}
+                                  </React.Fragment>
+                                  )}
+                                onChange={(event, newValue) => {
+                                    console.log(newValue.user_id);
+                                    this.setState({newUser:newValue.user_id})
+                                  }}
+                                renderInput={(params) => (
+                                    <TextField
+                                    fullWidth
+                                        {...params}
+                                        label="Escolha um utilizador"
+                                        variant="outlined"
+                                        
+                                    />
+                                )}
+                            />
+
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={() => this.handleFormcloseUser()} color="primary">

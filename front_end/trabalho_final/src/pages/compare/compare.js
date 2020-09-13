@@ -343,7 +343,7 @@ class Compare extends React.Component {
             let dataIni = calcService.formatedDate(f);
             let dataFim = calcService.formatedDate(d);
             calcService.etp({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected}).then(
-             data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMin(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch();
+             data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMin(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch(this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true}));
         
         
             }
@@ -358,12 +358,12 @@ class Compare extends React.Component {
             let dataIni = calcService.formatedDate(f);
             let dataFim = calcService.formatedDate(d);
             calcService.pHum({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected, corte: this.state.corte}).then(
-                data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch();
+                data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch(this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true}));
         }
 
         if(newValue === 2){
             let d = new Date();
-            console.log(d);
+            console.log("WHAT THE FCKING FUCk")
             this.setState({DataFim: d});
             let f = new Date();
             f.setDate(f.getDate() - 7);
@@ -373,7 +373,7 @@ class Compare extends React.Component {
             let dataFim = calcService.formatedDate(d);
 
             calcService.hFito({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected}).then(
-                data => { console.log(data); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch();
+                data => { console.log(data); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch(this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true}));
         
         }
     };
@@ -393,7 +393,7 @@ class Compare extends React.Component {
             let dataFim = calcService.formatedDate(d);
 
             calcService.pHum({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected, corte: this.state.corte}).then(
-                data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch();
+                data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch(this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true}));
         
         
             }
@@ -410,7 +410,7 @@ class Compare extends React.Component {
             let dataFim = calcService.formatedDate(d);
 
             calcService.pInf({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected}).then(
-                data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch();
+                data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch(this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true}));
                 
         }
         if(newValue === 2){
@@ -426,7 +426,7 @@ class Compare extends React.Component {
             let dataFim = calcService.formatedDate(d);
 
             calcService.pHume({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected}).then(
-                data => { console.log(data.length); if(data.length !== 0){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, first: false, checked:false})} else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}}).catch();
+                data => { console.log(data.length); if(data.length !== 0){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, first: false, checked:false})} else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}}).catch(this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true}));
                 
         }
     };
@@ -446,7 +446,7 @@ class Compare extends React.Component {
             let dataFim = calcService.formatedDate(d);
 
             calcService.hFito({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected}).then(
-                data => { console.log(data); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch();
+                data => { console.log(data); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch(this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true}));
         
         
             }
@@ -463,7 +463,7 @@ class Compare extends React.Component {
             let dataFim = calcService.formatedDate(d);
 
             calcService.pInf({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected}).then(
-                data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch();
+                data => { console.log(data.length); if(data.length !== 0){let M = calcService.MaxMinPhum(data); if(M != null){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, Max:M[0], Min:M[1], first: false, checked:false})}}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}  }).catch(this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true}));
                 
         }
         if(newValue === 2){
@@ -479,7 +479,7 @@ class Compare extends React.Component {
             let dataFim = calcService.formatedDate(d);
 
             calcService.tcrepusc({dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected}).then(
-                data => { console.log(data); if(data.length !== 0){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, first: false, checked:false})}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}}).catch();
+                data => { console.log(data); if(data.length !== 0){this.setState({key:this.state.key +1, oldInic:dataIni, oldFim:dataFim  , data:data, first: false, checked:false})}else{this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true})}}).catch(this.setState({data:undefined, Max:undefined, Min:undefined, first:true, checked:true}));
                 
         }
     };
@@ -540,7 +540,6 @@ class Compare extends React.Component {
                             createData('Coordenadas:', this.state.module.lat +" "+ this.state.module.lng),
                             createData('Dia de Início:', this.state.oldInic),
                             createData('Dia de Término:', this.state.oldFim),
-                            createData('Períodos de humectacão', ''),
                           ];
                     }
                 }
@@ -552,8 +551,8 @@ class Compare extends React.Component {
                             createData('Coordenadas:', this.state.module.lat +" "+ this.state.module.lng),
                             createData('Dia de Início:', this.state.oldInic),
                             createData('Dia de Término:', this.state.oldFim),
-                            createData('Temperatura máxima registado:', this.state.Max),
-                            createData('Temperatura minima registado:', this.state.Min),
+                            createData('Temperatura máxima registada:', this.state.Max),
+                            createData('Temperatura minima registada:', this.state.Min),
                           ];
                     }
                     if(this.state.value2 === 1){

@@ -45,3 +45,10 @@ exports.removeUser = (req, res) => {
         .then(result => res.json(result))
         .catch(err => res.status(500).json({erro: err.message}));
 };
+
+exports.getUserSimple = (req, res) => {
+    console.log("hello")
+    userService.getUserSimple()
+        .then(result => res.json(result))
+        .catch(err => res.status(500).json({erro: err.message}));;
+};
