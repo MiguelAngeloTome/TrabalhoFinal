@@ -57,6 +57,8 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { lightGreen,} from '@material-ui/core/colors';
 import Avatar from '@material-ui/core/Avatar';
 import MuiAutocomplete from 'mui-autocomplete';
+import Collapse from '@material-ui/core/Collapse';
+import CloseIcon from '@material-ui/icons/Close';
 
 
 const tableIcons = {
@@ -245,6 +247,7 @@ class VinhasDetails extends React.Component {
             snackOpen: false,
             users:[],
             newUser: undefined,
+            dupAlert:false,
         }
     };
     static contextType = AuthContext;
@@ -268,13 +271,11 @@ class VinhasDetails extends React.Component {
         window.location.reload();
     }
 
-    
     handleFormClickUser() {
         this.setState({ openDialogUser: true })
     }
 
     handleFormcloseUser() {
-        this.setState({ openDialogUser: false })
         this.newUser();
     }
 
@@ -282,17 +283,9 @@ class VinhasDetails extends React.Component {
         this.setState({ openDialogModule: true })
     }
 
-    handleFormClickModule2() {
-        this.setState({ openDialogModule2: true })
-    }
-
-    handleFormClickModule3() {
-        this.setState({ openDialogModule3: true })
-    }
-
     handleFormcloseModule() {
         this.setState({ openDialogModule: false });
-        this.handleFormClickModule2();
+        this.setState({ openDialogModule2: true })
     }
 
     handleFormcloseModule2() {
@@ -335,7 +328,10 @@ class VinhasDetails extends React.Component {
                 vinhaService.addUser({vinha_id: this.props.match.params.id,user_id: this.state.newUser});
                 vinhaService.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data, value:1 })).catch();
                 vinhaService.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
-            }  
+                this.setState({ openDialogUser: false })
+            }else{
+                this.setState({dupAlert:true});
+            }
         }
 
     }
@@ -578,12 +574,12 @@ class VinhasDetails extends React.Component {
                     
                 }
                     <Container maxWidth="lg" className={classes.container}>
-                        <Dialog open={this.state.openDialogUser} onClose={() => this.handleFormcloseUser()} aria-labelledby="form-dialog-title">
+                        <Dialog open={this.state.openDialogUser} onClose={() => this.setState({openDialogUser:false})} aria-labelledby="form-dialog-title">
                             <DialogTitle id="form-dialog-title">Adicionar um utilizador</DialogTitle>
                             <DialogContent>
                             <DialogContentText>
                                 Para adicionar um utilizador a sua vinha escreva o username ou o nome.
-                             </DialogContentText>
+                            </DialogContentText>
                             <Autocomplete
                                 id="free-solo-demo"
                                 PopperComponent = {"bottom-start"}
@@ -612,6 +608,26 @@ class VinhasDetails extends React.Component {
                             />
 
                             </DialogContent>
+                            <Container>
+                                <Collapse in={this.state.dupAlert}>
+                                    <Alert severity="error"
+                                    action={
+                                        <IconButton
+                                        aria-label="close"
+                                        color="inherit"
+                                        size="small"
+                                        onClick={() => {
+                                            this.setState({dupAlert:false})
+                                        }}
+                                        >
+                                        <CloseIcon fontSize="inherit" />
+                                        </IconButton>
+                                    }
+                                    >
+                                    O utilizador que tentou adicionar já esta associado a esta vinha
+                                    </Alert>
+                                </Collapse>
+                            </Container>
                             <DialogActions>
                                 <Button onClick={() => this.handleFormcloseUser()} color="primary">
                                     Adicionar
@@ -619,7 +635,7 @@ class VinhasDetails extends React.Component {
                             </DialogActions>
                         </Dialog>
 
-                        <Dialog open={this.state.openDialogModule} onClose={() => this.handleFormcloseModule()} aria-labelledby="form-dialog-title">
+                        <Dialog open={this.state.openDialogModule} onClose={() => this.setState({openDialogModule:false})} aria-labelledby="form-dialog-title">
                             <DialogTitle id="form-dialog-title">CRIAR UM MODULO</DialogTitle>
                             <DialogContent>
                             <DialogContentText>
@@ -640,7 +656,7 @@ class VinhasDetails extends React.Component {
                             </DialogActions>
                         </Dialog>
 
-                        <Dialog fullWidth minWidth="500px" open={this.state.openDialogModule2} onClose={() => this.handleFormcloseModule()} aria-labelledby="form-dialog-title">
+                        <Dialog fullWidth minWidth="500px" open={this.state.openDialogModule2} onClose={() => this.setState({openDialogModule2:false})} aria-labelledby="form-dialog-title">
                             <DialogTitle id="form-dialog-title">CRIAR UM MODULO</DialogTitle>
                             <DialogContent fullWidth>
                             <FormControl error fullWidth>
