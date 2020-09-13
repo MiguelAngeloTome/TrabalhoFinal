@@ -73,7 +73,8 @@ db.run(`create table if not exists avisos(
         module_id varchar(36),
         msgErro varchar(36),
         prioridade int,
-        hora varchar(20))`
+        hora varchar(20),
+        dia date)`
 );
 
 module.exports = db;

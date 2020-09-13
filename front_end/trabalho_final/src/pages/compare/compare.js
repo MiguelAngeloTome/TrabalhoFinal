@@ -73,6 +73,7 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Icon from '@material-ui/core/Icon';
+import DialogContentText from '@material-ui/core/DialogContentText';
 
 
 
@@ -250,6 +251,7 @@ class Compare extends React.Component {
             oldInic: undefined,
             oldFim:undefined,
             key: 0,
+            emailDialogOpen: false,
         }
     };
     static contextType = AuthContext;
@@ -497,8 +499,11 @@ class Compare extends React.Component {
 
     ExcelClick = (tipo) =>{
         excelService.Excel(this.context.user.id, this.state.data, this.state.module.vinha_id, this.state.module.localizacao, tipo);
-        //temporario
-        alert("enviado com sucesso");
+        this.setState({ emailDialogOpen: true });
+    }
+
+    handleEmailDialogClose = () =>{
+        this.setState({ emailDialogOpen: false });
     }
 
 
@@ -1663,6 +1668,19 @@ class Compare extends React.Component {
 
                     
                 }
+                <Dialog
+                    open={this.state.emailDialogOpen}
+                    onClose={this.handleEmailDialogClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{"Email enviado com sucesso"}</DialogTitle>
+                    <DialogActions>
+                    <Button onClick={this.handleEmailDialogClose} color="primary">
+                        OK
+                    </Button>
+                    </DialogActions>
+                </Dialog>
 
                 </main>
             </div >

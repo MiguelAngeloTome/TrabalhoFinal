@@ -44,7 +44,7 @@ exports.Excel = async (body, user_id, vinha_id, module_name, tipo) => {
         });
 
         wb.write('Informacao.xlsx');
-        //this.sendMail(email);
+        this.sendMail(email);
         resolve(body);
     });
 }

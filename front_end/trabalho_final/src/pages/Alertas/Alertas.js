@@ -245,9 +245,9 @@ const useStyles = theme => ({
 });
 
 
-function createData(id, nome, prioridade, msg, hora) {
-    return { id, nome, prioridade, msg, hora };
-  }
+function createData(id, nome, prioridade, msg, hora, dia) {
+    return { id, nome, prioridade, msg, hora, dia};
+}
 
 const rows = [];
 const drawerWidth = 240;
@@ -265,15 +265,26 @@ class Alertas extends React.Component {
     };
     static contextType = AuthContext;
 
-    componentDidMount() {
-        dataService.getUserAvisos(this.context.user.id).then(data => this.setState({ datas: data })).catch();
+    componentDidMount () {
+        dataService.getUserAvisos(this.context.user.id).then(data => {this.setState({ datas: data });this.sortAlertas();}).catch();
         dataService.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
     }
 
     submitAlertas(id) {
         dataService.removeAviso(id);
-        dataService.getAvisos().then(data => this.setState({ datas: data })).catch();
         window.location.reload();
+    }
+
+    sortAlertas() {
+        let aux = [];
+        for(let i = 1; i < 4; i++){
+            for(let j = 0; j < this.state.datas.length; j++){
+                if(this.state.datas[j].prioridade == i){
+                    aux.push(this.state.datas[j]);
+                }  
+            }
+        }
+        this.setState({ datas: aux });
     }
 
     render() {
@@ -288,10 +299,10 @@ class Alertas extends React.Component {
             this.setState({ rowsPerPage: parseInt(event.target.value, 10) })
             this.setState({ page: 0 })
         };
-
         for(let i = 0; i < this.state.datas.length ;i++){
-            rows[i] = createData(this.state.datas[i].id, this.state.datas[i].nomeVinha, this.state.datas[i].prioridade, this.state.datas[i].msgErro, this.state.datas[i].hora);
+            rows[i] = createData(this.state.datas[i].id, this.state.datas[i].nomeVinha, this.state.datas[i].prioridade, this.state.datas[i].msgErro, this.state.datas[i].hora, this.state.datas[i].dia);
         }
+        console.log(this.state.datas);
 
         return (
             <div className={classes.root}>
@@ -354,7 +365,7 @@ class Alertas extends React.Component {
                                                 <TableCell style = {{"width":"1%"}} colspan="2" >
                                                     <Alert severity="error"  style = {{"width":"100%"}} action= {<IconButton aria-label="delete" color="primary" onClick={() => { this.submitAlertas(row.id) }}>
                                                         <DeleteIcon />
-                                                    </IconButton>}>{row.msg} as {row.hora} na vinha {row.nome} </Alert>
+                                                    </IconButton>}>{row.msg} no dia {row.dia} as {row.hora} na vinha {row.nome} </Alert>
                                                 </TableCell>
                                                     }
                                                 </div>
@@ -364,7 +375,7 @@ class Alertas extends React.Component {
                                                 <TableCell style = {{"width":"1%"}} colspan="2">
                                                     <Alert severity="warning" style = {{"width":"100%"}} action= {<IconButton aria-label="delete" color="primary" onClick={() => { this.submitAlertas(row.id) }}>
                                                         <DeleteIcon />
-                                                    </IconButton>}>{row.msg} as {row.hora} na vinha {row.nome} </Alert>
+                                                    </IconButton>}>{row.msg} no dia {row.dia} as {row.hora} na vinha {row.nome} </Alert>
                                                 </TableCell>
                                                     }
                                                 </div>
@@ -374,7 +385,7 @@ class Alertas extends React.Component {
                                                 <TableCell style = {{"width":"1%"}} colspan="2">
                                                     <Alert severity="info" justify="center" style = {{"width":"100%"}} action= {<IconButton aria-label="delete" color="primary" onClick={() => { this.submitAlertas(row.id) }}>
                                                         <DeleteIcon />
-                                                    </IconButton>}>{row.msg} as {row.hora} na vinha {row.nome} </Alert>
+                                                    </IconButton>}>{row.msg} no dia {row.dia} as {row.hora} na vinha {row.nome} </Alert>
                                                 </TableCell>
                                                     }
                                                 </div>
