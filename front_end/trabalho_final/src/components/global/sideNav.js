@@ -31,7 +31,7 @@ class SideNav extends React.Component{
      return(
 
         <div>
-        <ListItem button component="a" href="/">
+        <ListItem button component="a" href="/#">
           <ListItemIcon>
             <DashboardIcon />
           </ListItemIcon>

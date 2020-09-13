@@ -117,7 +117,6 @@ exports.updateUser = (id, body) => {
 };
 
 exports.getUserSimple = () => {
-    console.log("here");
     return new Promise((resolve, reject) => {
         db.all(`Select user_id, username, name, surname From user`, (err, row) => {
             if (err) reject(err);

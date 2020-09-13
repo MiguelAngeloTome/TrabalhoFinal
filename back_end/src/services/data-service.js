@@ -4,28 +4,27 @@ const avisos = require('../Avisos/verificacao.js');
 
 const uuid = require('uuid').v4;
 
-exports.getData = async() =>{
+exports.getData = async () => {
     let a = await testing.Phumectacao("2009-06-29", "2009-06-30", "eadb8670-9c55-4298-8696-56d0c8040da0");
-    console.log(a);
-    return new Promise((resolve,reject)=>{
-        db.all(`select * from data`,(err,row)=>{
-            if(err) reject (err);
+    return new Promise((resolve, reject) => {
+        db.all(`select * from data`, (err, row) => {
+            if (err) reject(err);
             resolve(row);
         });
     });
 }
 
-exports.getAvisos = () =>{
-    return new Promise((resolve,reject)=>{
-        db.all(`select * from avisos`,(err,row)=>{
-            if(err) reject (err);
+exports.getAvisos = () => {
+    return new Promise((resolve, reject) => {
+        db.all(`select * from avisos`, (err, row) => {
+            if (err) reject(err);
             resolve(row);
         });
     });
 }
 
-exports.getUserAvisos = id =>{
-    return new Promise((resolve,reject)=>{
+exports.getUserAvisos = id => {
+    return new Promise((resolve, reject) => {
         db.all(`select * from avisos 
                 where module_id = (
                     select module_id from vinha
@@ -34,15 +33,15 @@ exports.getUserAvisos = id =>{
                         where user_id = ?
                     )
                 )`, [id],
-        (err,row)=>{
-            if(err) reject (err);
-            resolve(row);
-        });
+            (err, row) => {
+                if (err) reject(err);
+                resolve(row);
+            });
     });
 }
 
-exports.CountUserAvisos = id =>{
-    return new Promise((resolve,reject)=>{
+exports.CountUserAvisos = id => {
+    return new Promise((resolve, reject) => {
         db.all(`select count(id) as count from avisos 
                 where module_id = (
                     select module_id from vinha
@@ -51,138 +50,138 @@ exports.CountUserAvisos = id =>{
                         where user_id = ?
                     )
                 )`, [id],
-        (err,row)=>{
-            if(err) reject (err);
-            resolve(row);
-        });
+            (err, row) => {
+                if (err) reject(err);
+                resolve(row);
+            });
     });
 }
 
-exports.getDataSingle = id =>{
-    return new Promise((resolve,reject)=>{
+exports.getDataSingle = id => {
+    return new Promise((resolve, reject) => {
         db.all(`select * from data where data_id = ?`, [id],
-        (err,row)=>{
-            if(err) reject (err);
-            resolve(row);
-            
-        });
+            (err, row) => {
+                if (err) reject(err);
+                resolve(row);
+
+            });
     });
 }
 
-exports.getAvisoSingle = id =>{
-    return new Promise((resolve,reject)=>{
+exports.getAvisoSingle = id => {
+    return new Promise((resolve, reject) => {
         db.all(`select * from avisos where id = ?`, [id],
-        (err,row)=>{
-            if(err) reject (err);
-            resolve(row);
-            
-        });
+            (err, row) => {
+                if (err) reject(err);
+                resolve(row);
+
+            });
     });
 }
 
-exports.getDataModule = id =>{
-    return new Promise((resolve,reject)=>{
+exports.getDataModule = id => {
+    return new Promise((resolve, reject) => {
         db.all(`select * from data where module_id = ?`, [id],
-        (err,row)=>{
-            if(err) reject (err);
-            resolve(row);
-            
-        });
+            (err, row) => {
+                if (err) reject(err);
+                resolve(row);
+
+            });
     });
 }
 
-exports.getDataLast = id =>{
-    return new Promise((resolve,reject)=>{
+exports.getDataLast = id => {
+    return new Promise((resolve, reject) => {
         db.all(`select * from data where module_id = ? order by date desc limit 1`, [id],
-        (err,row)=>{
-            if(err) reject (err);
-            resolve(row);
-            
-        });
+            (err, row) => {
+                if (err) reject(err);
+                resolve(row);
+
+            });
     });
 }
-exports.getDataTimeFrame = (id,body) =>{
-    return new Promise((resolve,reject)=>{
+exports.getDataTimeFrame = (id, body) => {
+    return new Promise((resolve, reject) => {
         db.all(`select * from data where date > ? and date < ? and module_id =? order by date asc`,
-        [body.time1, body.time2, id],(err,row)=>{
-            if(err) reject (err);
-            resolve(row);
-        });
+            [body.time1, body.time2, id], (err, row) => {
+                if (err) reject(err);
+                resolve(row);
+            });
     });
 }
 
-exports.getEmail = async (module_id) =>{
-    return new Promise((resolve,reject)=>{
+exports.getEmail = async (module_id) => {
+    return new Promise((resolve, reject) => {
         let send = [];
         db.all(`select user_id from vinha_user
                 where vinha_id = (
                     select vinha_id from module
                     where module_id = ?
                 )`, [module_id],
-                (err,row)=>{
-            if(err){
-                reject (err)
-            } else {
-                for (i = 0; i < row.length; i++) {
-                    db.all(`Select email from user where user_id = ?`, [row[i].user_id],
-                        (err, row2) => {
-                            if (err) {
-                                reject(err)
-                            } else {
-                                send.push(row2[0]);
-                                if (send.length == row.length) {
-                                    resolve(send);
+            (err, row) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    for (i = 0; i < row.length; i++) {
+                        db.all(`Select email from user where user_id = ?`, [row[i].user_id],
+                            (err, row2) => {
+                                if (err) {
+                                    reject(err)
+                                } else {
+                                    send.push(row2[0]);
+                                    if (send.length == row.length) {
+                                        resolve(send);
+                                    }
                                 }
                             }
-                        }
-                    )
-                }
-            };
-        });
+                        )
+                    }
+                };
+            });
     });
 }
 
-exports.insertData = async body =>{
+exports.insertData = async body => {
     let mail = await this.getEmail(body.module_id);
     avisos.verifica(body.module_id, body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao, mail);
-    return new Promise((resolve,reject)=>{
+    return new Promise((resolve, reject) => {
         const id = uuid();
         db.run(`insert into data(data_id, module_id, date, temp, air_humidity, solo_humidity, isWet, pluviosidade, vel_vento, dir_vento, radiacao) VALUES(?,?,?,?,?,?,?,?,?,?,?)`,
-        [id, body.module_id, body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao],
-        err=>{
-            if(err) reject (err);
-            resolve({inserted:1, data_id: id});
-        });
+            [id, body.module_id, body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao],
+            err => {
+                if (err) reject(err);
+                resolve({ inserted: 1, data_id: id });
+            });
     });
 };
 
-exports.removeData = id =>{
-    return new Promise((resolve,reject)=>{
+exports.removeData = id => {
+    return new Promise((resolve, reject) => {
         db.run(`delete from data where data_id = ?`, [id],
-        err=>{
-            if(err) reject (err);
-            resolve({removed:1, data_id: id});
-        });
+            err => {
+                if (err) reject(err);
+                resolve({ removed: 1, data_id: id });
+            });
     });
 };
 
-exports.removeAviso = id =>{
-    return new Promise((resolve,reject)=>{
+exports.removeAviso = id => {
+    return new Promise((resolve, reject) => {
         db.run(`delete from avisos where id = ?`, [id],
-        err=>{
-            if(err) reject (err);
-            resolve({removed:1, data_id: id});
-        });
+            err => {
+                if (err) reject(err);
+                resolve({ removed: 1, data_id: id });
+            });
     });
 };
 
-exports.updateData = (id, body) =>{
-    return new Promise((resolve,reject)=>{
+exports.updateData = (id, body) => {
+    return new Promise((resolve, reject) => {
         db.run(`update data set module_id = ?, date = ?, temp = ?, air_humidity = ?, solo_humidity = ?, isWet = ?, pluviosidade = ?, vel_vento = ?, dir_vento = ?, radiacao = ? where data_id = ?`,
-        [body.module_id, body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao, id],
-        err=>{
-            if(err) reject (err);
-            resolve({updated:1, data_id: id});
-        });
+            [body.module_id, body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao, id],
+            err => {
+                if (err) reject(err);
+                resolve({ updated: 1, data_id: id });
+            });
     });
 };

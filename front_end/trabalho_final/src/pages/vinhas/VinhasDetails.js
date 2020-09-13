@@ -56,7 +56,6 @@ import dataService from '../../services/data';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { lightGreen,} from '@material-ui/core/colors';
 import Avatar from '@material-ui/core/Avatar';
-import MuiAutocomplete from 'mui-autocomplete';
 import Collapse from '@material-ui/core/Collapse';
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -248,6 +247,7 @@ class VinhasDetails extends React.Component {
             users:[],
             newUser: undefined,
             dupAlert:false,
+            userError:false
         }
     };
     static contextType = AuthContext;
@@ -298,7 +298,6 @@ class VinhasDetails extends React.Component {
 
 
     handleChange = (event, newValue) => {
-        console.log(newValue)
         this.setState({ value: newValue });
     };
 
@@ -343,7 +342,6 @@ class VinhasDetails extends React.Component {
             this.setState({nomeError: true})
         }
         this.setState({nome:e});
-            console.log(e);
     }
 
     moduleChange = (e) =>{
@@ -353,7 +351,6 @@ class VinhasDetails extends React.Component {
             this.setState({moduleError: true})
         }
             this.setState({module:e});
-            console.log(e);
     }
     
   handleSnackClose = (event, reason) => {
@@ -566,7 +563,7 @@ class VinhasDetails extends React.Component {
                         </div>
                          <h2 style= {{"font-size": "medium", "padding": "5px",fontWeight: "bold"}} textAlign="center">Criar Modulo</h2>
                      <ClickMap parentCallback = {this.callbackFunction}/>
-                     <Button variant="contained" color="primary" style= {{position: "absolute",bottom: 3,right:30}} onClick={() => this.newModule()} color="primary">
+                     <Button variant="contained" color="primary" style= {{position: "absolute",bottom: 3,right:30}} onClick={() => this.newModule()}>
                                     SEGUINTE
                     </Button>
                      </Container>
@@ -593,8 +590,13 @@ class VinhasDetails extends React.Component {
                                   </React.Fragment>
                                   )}
                                 onChange={(event, newValue) => {
-                                    console.log(newValue.user_id);
-                                    this.setState({newUser:newValue.user_id})
+                                    this.setState({userError:false});
+                                    if(newValue != null) this.setState({newUser:newValue.user_id})
+                                    else {
+                                        this.setState({newUser:null});
+                                        this.setState({userError:true});
+                                    }
+                                    this.setState({dupAlert:false})
                                   }}
                                 renderInput={(params) => (
                                     <TextField
@@ -602,7 +604,7 @@ class VinhasDetails extends React.Component {
                                         {...params}
                                         label="Escolha um utilizador"
                                         variant="outlined"
-                                        
+                                        error={this.state.userError}
                                     />
                                 )}
                             />

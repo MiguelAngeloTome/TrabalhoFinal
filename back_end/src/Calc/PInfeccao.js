@@ -6,7 +6,6 @@ exports.getHum = async(dayInic, dayFim, module_id) =>{
     let df = new Date(dayFim);
     df.setDate(df.getDate()+1);
     df = await calc.getFormatedDate(df);
-    console.log(df);
     return new Promise((resolve,reject)=>{
         db.all(`select date, air_humidity from data where date BETWEEN ? and ? and module_id =? order by date asc`,[dayInic, df, module_id],(err,row)=>{
             if(err) reject (err);
@@ -16,7 +15,6 @@ exports.getHum = async(dayInic, dayFim, module_id) =>{
 };
 
 exports.PInfeccao = async (dayInic, dayFim, module_id) =>{
-    console.log("HELLLLLLLLLLLLLLLLLLLO")
     let send = [];
     let flagIntervalo = false;
     let inic;
@@ -56,13 +54,11 @@ exports.PInfeccao = async (dayInic, dayFim, module_id) =>{
             else{
                 if(humValues[i].air_humidity< 90 && flagIntervalo){
                     send.push({inic:inic , fim:humValues[i-1].date,inichum: inichum, fimhum: humValues[i-1].air_humidity});
-                    console.log(send);
                     flagIntervalo = false;
                 }
             }
             if(flagIntervalo && (i + 1) == humValues.length){
                 send.push({inic:inic , fim:humValues[i].date,inichum: inichum, fimhum: humValues[i].air_humidity});
-                    console.log(send);
                     flagIntervalo = false;
             }
         }
@@ -73,7 +69,6 @@ exports.PInfeccao = async (dayInic, dayFim, module_id) =>{
     }
 
 
-    console.log(humValues.length)
     return send
 }
 
@@ -83,22 +78,6 @@ exports.PHumidade = async (dayInic, dayFim, module_id, corte) =>{
     let inic;
     let inichum;
     let humValues = await this.getHum(dayInic, dayFim, module_id);
-    /*let humValues = [{ date: '2009-06-29 11:08:59', air_humidity: 20 },
-    { date: '2009-06-29 11:08:59', air_humidity: 90 },
-    { date: '2009-06-29 12:08:59', air_humidity: 91 },
-    { date: '2009-06-29 13:08:59', air_humidity: 92 },
-    { date: '2009-06-29 14:08:59', air_humidity: 93 },
-    { date: '2009-06-29 15:08:59', air_humidity: 20 },
-    { date: '2009-06-29 16:08:59', air_humidity: 90 },
-    { date: '2009-06-29 17:08:59', air_humidity: 91 },
-    { date: '2009-06-29 18:08:59', air_humidity: 20 },
-    { date: '2009-06-29 19:08:59', air_humidity: 20 },
-    { date: '2009-06-29 20:08:59', air_humidity: 20 },
-    { date: '2009-06-29 21:08:59', air_humidity: 90 },
-    { date: '2009-06-29 22:08:59', air_humidity: 91 }
-    ];*/
-    
-    console.log
     if(humValues.length >0){
         
         if(humValues[0].air_humidity >= corte){
@@ -112,19 +91,16 @@ exports.PHumidade = async (dayInic, dayFim, module_id, corte) =>{
             if(humValues[i].air_humidity >= corte && !flagIntervalo){
                 inic = humValues[i].date;
                 inichum = humValues[i].air_humidity
-                console.log(inic)
                 flagIntervalo = true;
             }
             else{
                 if(humValues[i].air_humidity< corte && flagIntervalo){
                     send.push({inic:inic , fim:humValues[i-1].date,inichum: inichum, fimhum: humValues[i-1].air_humidity});
-                    console.log(send);
                     flagIntervalo = false;
                 }
             }
             if(flagIntervalo && (i + 1) == humValues.length){
                     send.push({inic:inic , fim:humValues[i].date,inichum: inichum, fimhum: humValues[i].air_humidity});
-                    console.log(send);
                     flagIntervalo = false;
             }
         }
@@ -133,7 +109,6 @@ exports.PHumidade = async (dayInic, dayFim, module_id, corte) =>{
 
 
     }
-    console.log(send);
     return send
 }
 
@@ -142,22 +117,6 @@ exports.Phumectacao = async (dayInic, dayFim, module_id,) => {
     let flagIntervalo = false;
     let inic;
     let isWetValues = await this.getHum(dayInic, dayFim, module_id);
-    /*let isWetValues = [{ date: '2009-06-29 11:08:59', isWet: 20 },
-    { date: '2009-06-29 11:08:59', isWet: 90 },
-    { date: '2009-06-29 12:08:59', isWet: 91 },
-    { date: '2009-06-29 13:08:59', isWet: 6999 },
-    { date: '2009-06-29 14:08:59', isWet: 93 },
-    { date: '2009-06-29 15:08:59', isWet: 20 },
-    { date: '2009-06-29 16:08:59', isWet: 90 },
-    { date: '2009-06-29 17:08:59', isWet: 91 },
-    { date: '2009-06-29 18:08:59', isWet: 20 },
-    { date: '2009-06-29 19:08:59', isWet: 6999 },
-    { date: '2009-06-29 20:08:59', isWet: 20 },
-    { date: '2009-06-29 21:08:59', isWet: 90 },
-    { date: '2009-06-29 22:08:59', isWet: 91 }
-    ];*/
-    
-    
     
     if(isWetValues.length >0){
         
@@ -170,19 +129,16 @@ exports.Phumectacao = async (dayInic, dayFim, module_id,) => {
 
             if(isWetValues[i].isWet != 6999 && !flagIntervalo){
                 inic = isWetValues[i].date;
-                console.log(inic)
                 flagIntervalo = true;
             }
             else{
                 if(isWetValues[i].isWet == 6999 && flagIntervalo){
                     send.push({inic: inic , fim: isWetValues[i-1].date});
-                    console.log(send);
                     flagIntervalo = false;
                 }
             }
             if(flagIntervalo && (i + 1) == isWetValues.length){
                     send.push({inic: inic , fim: isWetValues[i].date});
-                    console.log(send);
                     flagIntervalo = false;
             }
         }
@@ -191,7 +147,6 @@ exports.Phumectacao = async (dayInic, dayFim, module_id,) => {
 
 
     }
-    console.log(isWetValues.length)
     return send
 }
 

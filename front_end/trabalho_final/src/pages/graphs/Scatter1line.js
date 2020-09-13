@@ -1,7 +1,6 @@
 import React from 'react';
 import { Scatter} from 'react-chartjs-2';
 import { Container } from '@material-ui/core';
-import DataService from '../../services/data'
 
 export default class Scatter1line extends React.Component{
 
@@ -41,7 +40,6 @@ export default class Scatter1line extends React.Component{
     }
     }
 componentDidMount(){
-    console.log(this.props.data);
     this.control(this.props.data);
 
 }
@@ -77,7 +75,6 @@ control(a){
           };
         return(
             <Container>
-                    {console.log(this.state.densityData)}
                     {this.state.densityData.data.length!==0 &&
                     <Scatter style={{align: 'center'}} data={planetData} options={chartOptions} />
                     }

@@ -303,7 +303,6 @@ class Dashboard extends React.Component {
               {/* Recent Orders */}
               <Grid item xs={12} md={6} lg={4}>
                 <Paper className={classes.paper}>
-                  {console.log(datas)}
                   {datas !== undefined &&
                     <Exa valor={datas.solo_humidity} rest={80 - datas.solo_humidity} title={soloHum} color={soloHumColor} />
                   }

@@ -2,7 +2,7 @@ import { apiRequest } from "../configs/apiMiddleware";
 
 
 const MaxMin = (data) =>{
-    if(data.length == 0){
+    if(data.length === 0){
         return null
     }
     let Max =data[0].value;
@@ -24,7 +24,7 @@ const MaxMin = (data) =>{
 
 const MaxMinPhum = (data) =>{
 
-    if(data.length == 0){
+    if(data.length === 0){
         return null
     }
     let Max =data[0].inichum;
@@ -57,7 +57,6 @@ const MaxMinPhum = (data) =>{
 const formatedDate = (data) => {
     let date = new Date(data);
     let month = date.getMonth()+1 + "";
-    console.log(month);
     if(month<10){
         month = "0" + month;
     }

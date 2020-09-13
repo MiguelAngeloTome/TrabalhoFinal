@@ -1,7 +1,6 @@
 import React from 'react';
 import { Scatter} from 'react-chartjs-2';
 import { Container } from '@material-ui/core';
-import DataService from '../../services/data'
 
 export default class HumGraph extends React.Component{
 
@@ -66,7 +65,6 @@ control(a){
     this.setState({m:!this.state.m})
     let b = [];
     let c = [];
-    console.log(a);
     for(let i=0;i<a.length;i++){
         b.push({x:new Date(a[i].inic),y:a[i].inichum})
         b.push({x:new Date(a[i].fim),y:a[i].fimhum})
@@ -83,8 +81,6 @@ control(a){
 control1(a){
     this.setState({m:!this.state.m})
     let b = [];
-    let c = [];
-    console.log(a);
     for(let i=0;i<a.length;i++){
         b.push({x:new Date(a[i].date),y:a[i].avg})
     }
@@ -93,13 +89,14 @@ control1(a){
  
     render(){
         if(this.props.data.length!== 0){
+            var planetData;
             if(this.props.value ===0){
-                var planetData = {
+                planetData = {
                     datasets: [this.state.densityData, this.state.gravityData]
                   };
             }
             if (this.props.value ===1){
-                var planetData = {
+                planetData = {
                     datasets: [this.state.densityData]
                   };
             }
@@ -129,7 +126,6 @@ control1(a){
         return(
             
             <Container>
-                    {console.log(this.state.densityData)}
                     {this.state.densityData.data.length!==0 &&
                     <Scatter style={{align: 'center'}} data={planetData} options={chartOptions} />
                     }

@@ -1,9 +1,8 @@
 import React from "react";
 import 'leaflet/dist/leaflet.css'
-import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
+import { Map, TileLayer, Marker } from 'react-leaflet'
 import L from 'leaflet';
 import userLocationURL from '../../assets/vinha_location.svg';
-import vinhaService from '../../services/vinha';
 
 const mapContainerStyle = {
   height: "100%",

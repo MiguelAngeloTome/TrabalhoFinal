@@ -88,7 +88,6 @@ control(a){
           };
         return(
             <Container>
-                    {console.log(this.state.densityData)}
                     {this.state.densityData.data.length!==0 &&
                     <Scatter style={{align: 'center'}} data={planetData} options={chartOptions} />
                     }

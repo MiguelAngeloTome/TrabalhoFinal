@@ -7,7 +7,6 @@ exports.getTemp= async(dayInic, dayFim, module_id) =>{
     let df = new Date(dayFim);
     df.setDate(df.getDate()+1);
     df = await calc.getFormatedDate(df);
-    console.log(df);
     return new Promise((resolve,reject)=>{
         db.all(`select date, temp from data where date BETWEEN ? and ? and module_id =? order by date asc`,[dayInic, df, module_id],(err,row)=>{
             if(err) reject (err);
