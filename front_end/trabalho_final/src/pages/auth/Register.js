@@ -9,6 +9,10 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import services from "../../services";
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 
 const useStyles = theme => ({
   paper: {
@@ -33,18 +37,23 @@ const useStyles = theme => ({
   },
 });
 
-
 class RegisterPage extends React.Component  {
 
   constructor(props) {
     super(props);
-    this.state = { username: "", password: "", email: "", name: "", surname: "", type: "" };
-    
+    this.state = { username: "", password: "", email: "", name: "", surname: "", type: "",
+    isOpen: false }; 
   }
   handleSubmit(evt) {
     evt.preventDefault();
-    services.auth.register(this.state).then(()=> this.props.history.push("/"))
+    services.auth.register(this.state).then(()=> {this.setState({isOpen:true})})
     .catch((err) => {console.log(err)})
+  }
+  handleClose(){
+    this.setState({isOpen:false});
+  }
+  endRegister(){
+    this.props.history.push("/");
   }
 
 render(){
@@ -148,7 +157,26 @@ render(){
           </Button>
         </form>
       </div>
-    </Container>
+      
+      <Dialog
+        open={this.state.isOpen}
+        onClose={this.handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Registado com sucesso
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button href="/"/* onClick={this.endRegister} */ color="primary">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>  
+      </Container>
+    
   );
 }
 }

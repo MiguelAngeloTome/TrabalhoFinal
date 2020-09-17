@@ -1,6 +1,7 @@
 const testing = require("../Calc/PInfeccao.js")
 const db = require('../configs/mysql.js');
 const avisos = require('../Avisos/verificacao.js');
+const userAvisos = require('./userAvisos.js');
 
 const uuid = require('uuid').v4;
 
@@ -23,38 +24,12 @@ exports.getAvisos = () => {
     });
 }
 
-exports.getUserAvisos = id => {
-    return new Promise((resolve, reject) => {
-        db.all(`select * from avisos 
-                where module_id = (
-                    select module_id from vinha
-                    where vinha_id = (
-                        select vinha_id from vinha_user
-                        where user_id = ?
-                    )
-                )`, [id],
-            (err, row) => {
-                if (err) reject(err);
-                resolve(row);
-            });
-    });
+exports.getUserAvisos = async(id) => {
+    return userAvisos.getUserAvisos(id);
 }
 
-exports.CountUserAvisos = id => {
-    return new Promise((resolve, reject) => {
-        db.all(`select count(id) as count from avisos 
-                where module_id = (
-                    select module_id from vinha
-                    where vinha_id = (
-                        select vinha_id from vinha_user
-                        where user_id = ?
-                    )
-                )`, [id],
-            (err, row) => {
-                if (err) reject(err);
-                resolve(row);
-            });
-    });
+exports.CountUserAvisos = async (id) => {
+    return userAvisos.CountUserAvisos(id);
 }
 
 exports.getDataSingle = id => {

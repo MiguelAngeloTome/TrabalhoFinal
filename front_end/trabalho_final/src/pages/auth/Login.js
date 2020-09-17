@@ -61,14 +61,17 @@ class LoginPage extends React.Component {
       snackOpen: false,
       errString: undefined };
     }
+    componentDidMount(){
+      this.props.history.push("/");
+    }
 
   handleSubmit(evt) {
     evt.preventDefault();
     services.auth
       .login(this.state)
       .then((data) => {
-        this.context.login({ username: this.state.username, ...data });
-        this.props.history.push("/");
+        this.context.login({ username: this.state.username, ...data })
+        window.location.reload();
       })
       .catch((err) => {
         this.setState({ snackOpen: true })

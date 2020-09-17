@@ -35,63 +35,63 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
-      flexShrink: 0,
-      marginLeft: theme.spacing(2.5),
+        flexShrink: 0,
+        marginLeft: theme.spacing(2.5),
     },
 }));
 
 function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 function TablePaginationActions(props) {
     const classes = useStyles1();
     const theme = useTheme();
     const { count, page, rowsPerPage, onChangePage } = props;
-  
+
     const handleFirstPageButtonClick = (event) => {
-      onChangePage(event, 0);
+        onChangePage(event, 0);
     };
-  
+
     const handleBackButtonClick = (event) => {
-      onChangePage(event, page - 1);
+        onChangePage(event, page - 1);
     };
-  
+
     const handleNextButtonClick = (event) => {
-      onChangePage(event, page + 1);
+        onChangePage(event, page + 1);
     };
-  
+
     const handleLastPageButtonClick = (event) => {
-      onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+        onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
     };
-  
+
     return (
-      <div className={classes.root}>
-        <IconButton
-          onClick={handleFirstPageButtonClick}
-          disabled={page === 0}
-          aria-label="first page"
-        >
-          {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
-        </IconButton>
-        <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
-          {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-        </IconButton>
-        <IconButton
-          onClick={handleNextButtonClick}
-          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-          aria-label="next page"
-        >
-          {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-        </IconButton>
-        <IconButton
-          onClick={handleLastPageButtonClick}
-          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-          aria-label="last page"
-        >
-          {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
-        </IconButton>
-      </div>
+        <div className={classes.root}>
+            <IconButton
+                onClick={handleFirstPageButtonClick}
+                disabled={page === 0}
+                aria-label="first page"
+            >
+                {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+            </IconButton>
+            <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
+                {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+            </IconButton>
+            <IconButton
+                onClick={handleNextButtonClick}
+                disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+                aria-label="next page"
+            >
+                {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+            </IconButton>
+            <IconButton
+                onClick={handleLastPageButtonClick}
+                disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+                aria-label="last page"
+            >
+                {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+            </IconButton>
+        </div>
     );
 }
 
@@ -210,7 +210,7 @@ const useStyles = theme => ({
 
 
 function createData(id, nome, prioridade, msg, hora, dia) {
-    return { id, nome, prioridade, msg, hora, dia};
+    return { id, nome, prioridade, msg, hora, dia };
 }
 
 const rows = [];
@@ -220,18 +220,18 @@ class Alertas extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            count:[{count:0}],
+            count: 0,
             open: true,
             datas: [],
-            page:0,
-            rowsPerPage:5,
+            page: 0,
+            rowsPerPage: 5,
         }
     };
     static contextType = AuthContext;
 
-    componentDidMount () {
-        dataService.getUserAvisos(this.context.user.id).then(data => {this.setState({ datas: data });this.sortAlertas();}).catch();
-        dataService.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
+    componentDidMount() {
+        dataService.getUserAvisos(this.context.user.id).then(data => { this.setState({ datas: data }); this.sortAlertas() }).catch();
+        dataService.CountUserAvisos(this.context.user.id).then(data => { this.setState({ count: data }) }).catch();
     }
 
     submitAlertas(id) {
@@ -241,11 +241,11 @@ class Alertas extends React.Component {
 
     sortAlertas() {
         let aux = [];
-        for(let i = 1; i < 4; i++){
-            for(let j = 0; j < this.state.datas.length; j++){
-                if(this.state.datas[j].prioridade === i){
+        for (let i = 1; i < 4; i++) {
+            for (let j = 0; j < this.state.datas.length; j++) {
+                if (this.state.datas[j].prioridade === i) {
                     aux.push(this.state.datas[j]);
-                }  
+                }
             }
         }
         this.setState({ datas: aux });
@@ -263,7 +263,7 @@ class Alertas extends React.Component {
             this.setState({ rowsPerPage: parseInt(event.target.value, 10) })
             this.setState({ page: 0 })
         };
-        for(let i = 0; i < this.state.datas.length ;i++){
+        for (let i = 0; i < this.state.datas.length; i++) {
             rows[i] = createData(this.state.datas[i].id, this.state.datas[i].nomeVinha, this.state.datas[i].prioridade, this.state.datas[i].msgErro, this.state.datas[i].hora, this.state.datas[i].dia);
         }
 
@@ -285,7 +285,7 @@ class Alertas extends React.Component {
                             Alertas
                         </Typography>
                         <IconButton color="inherit" href="/#/alertas">
-                            <Badge badgeContent={this.state.count[0].count} color="secondary">
+                            <Badge badgeContent={this.state.count} color="secondary">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>
@@ -314,69 +314,69 @@ class Alertas extends React.Component {
 
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />
-                        <Container maxWidth="lg" className={classes.container}>
-                            <TableContainer component={Paper}>
-                                <Table className={classes.table} aria-label="simple table">
-                                    <TableBody>
-                                        {(this.state.rowsPerPage > 0
-                                            ? rows.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
-                                            : rows
-                                        ).map((row) => (
-                                            <TableRow key={row.name} style = {{"width":"100%"}}>
-                                                <div style = {{"width":"100%"}}>
-                                                    { row.prioridade === 1 &&
-                                                <TableCell style = {{"width":"1%"}} colspan="2" >
-                                                    <Alert severity="error"  style = {{"width":"100%"}} action= {<IconButton aria-label="delete" color="primary" onClick={() => { this.submitAlertas(row.id) }}>
-                                                        <DeleteIcon />
-                                                    </IconButton>}>{row.msg} no dia {row.dia} as {row.hora} na vinha {row.nome} </Alert>
-                                                </TableCell>
-                                                    }
-                                                </div>
+                    <Container maxWidth="lg" className={classes.container}>
+                        <TableContainer component={Paper}>
+                            <Table className={classes.table} aria-label="simple table">
+                                <TableBody>
+                                    {(this.state.rowsPerPage > 0
+                                        ? rows.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
+                                        : rows
+                                    ).map((row) => (
+                                        <TableRow key={row.name} style={{ "width": "100%" }}>
+                                            <div style={{ "width": "100%" }}>
+                                                {row.prioridade === 1 &&
+                                                    <TableCell style={{ "width": "1%" }} colspan="2" >
+                                                        <Alert severity="error" style={{ "width": "100%" }} action={<IconButton aria-label="delete" color="primary" onClick={() => { this.submitAlertas(row.id) }}>
+                                                            <DeleteIcon />
+                                                        </IconButton>}>{row.msg} no dia {row.dia} as {row.hora} na vinha {row.nome} </Alert>
+                                                    </TableCell>
+                                                }
+                                            </div>
 
-                                                <div>
-                                                    { row.prioridade === 2 &&
-                                                <TableCell style = {{"width":"1%"}} colspan="2">
-                                                    <Alert severity="warning" style = {{"width":"100%"}} action= {<IconButton aria-label="delete" color="primary" onClick={() => { this.submitAlertas(row.id) }}>
-                                                        <DeleteIcon />
-                                                    </IconButton>}>{row.msg} no dia {row.dia} as {row.hora} na vinha {row.nome} </Alert>
-                                                </TableCell>
-                                                    }
-                                                </div>
+                                            <div>
+                                                {row.prioridade === 2 &&
+                                                    <TableCell style={{ "width": "1%" }} colspan="2">
+                                                        <Alert severity="warning" style={{ "width": "100%" }} action={<IconButton aria-label="delete" color="primary" onClick={() => { this.submitAlertas(row.id) }}>
+                                                            <DeleteIcon />
+                                                        </IconButton>}>{row.msg} no dia {row.dia} as {row.hora} na vinha {row.nome} </Alert>
+                                                    </TableCell>
+                                                }
+                                            </div>
 
-                                                <div>
-                                                    { row.prioridade === 3 &&
-                                                <TableCell style = {{"width":"1%"}} colspan="2">
-                                                    <Alert severity="info" justify="center" style = {{"width":"100%"}} action= {<IconButton aria-label="delete" color="primary" onClick={() => { this.submitAlertas(row.id) }}>
-                                                        <DeleteIcon />
-                                                    </IconButton>}>{row.msg} no dia {row.dia} as {row.hora} na vinha {row.nome} </Alert>
-                                                </TableCell>
-                                                    }
-                                                </div>
+                                            <div>
+                                                {row.prioridade === 3 &&
+                                                    <TableCell style={{ "width": "1%" }} colspan="2">
+                                                        <Alert severity="info" justify="center" style={{ "width": "100%" }} action={<IconButton aria-label="delete" color="primary" onClick={() => { this.submitAlertas(row.id) }}>
+                                                            <DeleteIcon />
+                                                        </IconButton>}>{row.msg} no dia {row.dia} as {row.hora} na vinha {row.nome} </Alert>
+                                                    </TableCell>
+                                                }
+                                            </div>
 
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                    <TableFooter>
-                                        <TableRow>
-                                            <TablePagination
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                                <TableFooter>
+                                    <TableRow>
+                                        <TablePagination
                                             rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
                                             colSpan={3}
                                             count={rows.length}
                                             rowsPerPage={this.state.rowsPerPage}
                                             page={this.state.page}
                                             SelectProps={{
-                                              inputProps: { 'aria-label': 'rows per page' },
-                                              native: true,
+                                                inputProps: { 'aria-label': 'rows per page' },
+                                                native: true,
                                             }}
                                             onChangePage={handleChangePage}
                                             onChangeRowsPerPage={handleChangeRowsPerPage}
                                             ActionsComponent={TablePaginationActions}
-                                            />
-                                        </TableRow>
-                                    </TableFooter>
-                                </Table>
-                            </TableContainer>
-                        </Container>
+                                        />
+                                    </TableRow>
+                                </TableFooter>
+                            </Table>
+                        </TableContainer>
+                    </Container>
                 </main>
             </div >
         )

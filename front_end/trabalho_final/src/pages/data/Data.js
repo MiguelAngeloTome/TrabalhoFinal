@@ -173,7 +173,7 @@ class DataListPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            count:[{count:0}],
+            count:0,
             open: true,
             openDialogUser: false,
             openDialogModule: false,
@@ -222,7 +222,7 @@ class DataListPage extends React.Component {
                             Datas
                         </Typography>
                         <IconButton color="inherit" href="/#/alertas">
-                            <Badge badgeContent={this.state.count[0].count} color="secondary">
+                            <Badge badgeContent={this.state.count} color="secondary">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>

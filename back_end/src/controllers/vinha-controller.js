@@ -12,6 +12,12 @@ exports.getVinhaSingle = (req, res) => {
     .catch(err => res.status(500).json({erro: err.message}));
 };
 
+exports.getDonoVinha = (req, res) => {
+    vinhaService.getDonoVinha(req.params.id)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
+};
+
 exports.insertVinha = (req, res) => {
     vinhaService.insertVinha(req.body)
     .then(result => res.json(result))

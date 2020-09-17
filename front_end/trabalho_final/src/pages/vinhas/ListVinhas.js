@@ -41,6 +41,14 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import dataService from '../../services/data';
+import userService from '../../services/userService';
+import moduleService from '../../services/module';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import ClickMap from '../maps/clickMap'
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 
 const tableIcons = {
@@ -64,6 +72,10 @@ const tableIcons = {
 };
 
 const drawerWidth = 240;
+
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = theme => ({
     root: {
@@ -163,7 +175,12 @@ const useStyles = theme => ({
     StyledTableRow: {
         backgroundColor: theme.palette.action.hover,
     },
-
+    containerMap: {
+        paddingTop: theme.spacing(4),
+        paddingBottom: theme.spacing(4),
+        height: "75%",
+        minHeight: "25%",
+    },
 });
 
 
@@ -173,11 +190,14 @@ class ListaVinhas extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            count:[{count:0}],
+            value: 0,
+            count:0,
             open: true,
-            openDialog: false,
+            openDialogVinha: false,
+            openDialogModule: false,
+            openDialogModule2: false,
             datas: [],
-
+            vinhaIdNovo: "",
             columns: [
                 { title: 'Name', field: 'Nome' },
                 { title: 'Localização', field: 'localizacao' },
@@ -185,6 +205,21 @@ class ListaVinhas extends React.Component {
             localizacao: "",
             nome: "",
             coordenadas: "",
+            nomeVinha: "",
+            lat: "",
+            long: "",
+            local: "",
+            nomeVinhaError: "",
+            latError: "",
+            longError: "",
+            localError: "",
+            module: "",
+            nomeModule: "",
+            nomeModuleError: false,
+            moduleError: false,
+            moduleError2: false,
+            latMapa: undefined,
+            lngMapa: undefined,
         }
     };
     static contextType = AuthContext;
@@ -194,12 +229,34 @@ class ListaVinhas extends React.Component {
         vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
     }
 
-    handleFormclose() {
-        this.setState({ openDialog: false })
+    addVinha() {
+        if(this.state.nomeVinha !== null && 
+            this.state.nomeVinha !== undefined &&
+            this.state.nomeVinha !=="" &&
+            this.state.long !== null && 
+            this.state.long !== undefined &&
+            this.state.long !=="" &&
+            this.state.lat !== null && 
+            this.state.lat !== undefined &&
+            this.state.lat !=="" &&
+            this.state.local !== null && 
+            this.state.local !== undefined &&
+            this.state.local !==""
+        ){
+            this.setState({openDialogVinha:false});
+            this.setState({openDialogModule:true});
+        }else{
+            this.setState({ snackOpen: true })
+        }
     }
-
+    connectUserVinha (data) {
+        userService.addUserVinha({user_id:this.context.user.id, vinha_id:data.vinha_id}).catch();
+        vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
+        moduleService.add({vinha_id: data.vinha_id,localizacao:this.state.nomeModule,lat:this.state.latMapa,lng:this.state.lngMapa});
+    }
+    
     handleFormClick() {
-        this.setState({ openDialog: true })
+        this.setState({ openDialogVinha: true })
     }
 
     submit(id, type) {
@@ -208,9 +265,102 @@ class ListaVinhas extends React.Component {
             vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
         } else {
             vinhaService.delete(id);
-            vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
+            userService.deleteUserVinha({vinha_id:id, user_id:this.context.user.id}).then(vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch());
         }
 
+    }
+
+    nomeVinhaChange = (e) =>{
+        if(e !== null && e !== undefined && e !==""){
+            this.setState({nomeVinhaError: false})
+        }else{
+            this.setState({nomeVinhaError: true})
+        }
+        this.setState({nomeVinha:e});
+    }
+
+    latChange = (e) =>{
+        if(e !== null && e !== undefined && e !==""){
+            this.setState({latError: false})
+        }else{
+            this.setState({latError: true})
+        }
+        this.setState({lat:e});
+    }
+
+    longChange = (e) =>{
+        if(e !== null && e !== undefined && e !==""){
+            this.setState({longError: false})
+        }else{
+            this.setState({longError: true})
+        }
+        this.setState({long:e});
+    }
+
+    localChange = (e) =>{
+        if(e !== null && e !== undefined && e !==""){
+            this.setState({localError: false})
+        }else{
+            this.setState({localError: true})
+        }
+        this.setState({local:e});
+    }
+
+    handleFormcloseModule() {
+        this.setState({ openDialogModule: false });
+        this.setState({ openDialogModule2: true })
+    }
+
+    handleFormcloseModule2() {
+        moduleService.getSingleSecModule(this.state.module).then(data =>{
+            if(data.length === 1){
+                if(this.state.nomeModule !== null && this.state.nomeModule !== undefined && this.state.nomeModule !=="" && this.state.module !== null && this.state.module !== undefined && this.state.module !==""){
+                    this.setState({ openDialogModule2: false, value: 1 });
+                }
+            }else{
+                this.setState({ moduleError2: true});
+            }
+        }).catch();
+    }
+
+    nomeModuleChange = (e) =>{
+        if(e !== null && e !== undefined && e !==""){
+            this.setState({nomeModuleError: false})
+        }else{
+            this.setState({nomeModuleError: true})
+        }
+        this.setState({nomeModule:e});
+    }
+
+    moduleChange = (e) =>{
+        if(e !== null && e !== undefined && e !==""){
+            this.setState({moduleError: false})
+        }else{
+            this.setState({moduleError: true})
+        }
+        this.setState({module:e});
+        this.setState({moduleError2: false});
+    }
+
+    callbackFunction = (childData) => {
+        this.setState({latMapa: childData.lat, lngMapa: childData.lng});
+    };
+
+    handleSnackClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        this.setState({ snackOpen: false })
+    };
+
+    newModule = () =>{
+        if(this.state.latMapa !== null && this.state.latMapa !== undefined && this.state.latMapa !=="" && this.state.lngMapa !== null && this.state.lngMapa !== undefined && this.state.lngMapa !=="" ){
+            vinhaService.add({nome: this.state.nomeVinha,lat:this.state.lat,lng:this.state.long,localizacao:this.state.local,dono:this.context.user.id}).then(data => this.connectUserVinha(data)).catch();
+            this.setState({value: 0});
+        }else{
+            this.setState({ snackOpen: true })
+        }
     }
 
     render() {
@@ -235,7 +385,7 @@ class ListaVinhas extends React.Component {
                             Vinhas
           </Typography>
           <IconButton color="inherit" href="/#/alertas">
-                            <Badge badgeContent={this.state.count[0].count} color="secondary">
+                            <Badge badgeContent={this.state.count} color="secondary">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>
@@ -263,8 +413,9 @@ class ListaVinhas extends React.Component {
                 </Drawer>
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />
+                    
+                    {this.state.value === 0 &&
                     <Container maxWidth="lg" className={classes.container}>
-
                         <MaterialTable
                             icons={tableIcons}
                             title="Lista de Vinhas"
@@ -284,15 +435,6 @@ class ListaVinhas extends React.Component {
                                 }
                             ]}
                             editable={{
-                                /*onRowAdd: (newData) =>
-                                    new Promise((resolve) => {
-                                        setTimeout(() => {
-                                            resolve();
-                                            this.setState({localizacao: newData.localizacao});
-                                            this.setState({dono:user.id});
-                                            this.submit('','add');
-                                        }, 2);
-                                    }),*/
                                 onRowUpdate: (newData, oldData) =>
                                     new Promise((resolve) => {
                                         setTimeout(() => {
@@ -312,23 +454,125 @@ class ListaVinhas extends React.Component {
                                     }),
                             }}
                         />
+                    </Container>
+                    }
+
+                    {this.state.value === 1 &&
+                        <Container maxWidth="lg" className={classes.containerMap}>
+                                <div className={classes.root}>
+                                    <Snackbar open={this.state.snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
+                                    <Alert onClose={this.handleSnackClose} severity="error">
+                                        Precisa de escolher a sua localização.
+                                    </Alert>
+                                    </Snackbar>
+                                </div>
+                                <h2 style= {{"font-size": "medium", "padding": "5px",fontWeight: "bold"}} textAlign="center">Criar Modulo</h2>
+                                <ClickMap parentCallback = {this.callbackFunction}/>
+                                <Button variant="contained" color="primary" style= {{position: "absolute",bottom: 3,right:30}} onClick={() => this.newModule()}>
+                                            SEGUINTE
+                                </Button>
+                        </Container>
+                    }
+
+
+
+
 
                         <Container maxWidth="lg" className={classes.container}>
-                            <Dialog open={this.state.openDialog} onClose={() => this.handleFormclose()} aria-labelledby="form-dialog-title">
+                            <Dialog fullWidth minWidth="500px" open={this.state.openDialogVinha} onClose={() => this.setState({openDialogVinha: false})} aria-labelledby="form-dialog-title">
                                 <DialogTitle id="form-dialog-title">Criar uma vinha</DialogTitle>
-                                <DialogContent>
-                                    <TextField autoFocus margin="dense" id="name" label="Nome" fullWidth />
-                                    <TextField autoFocus margin="dense" id="name" label="Localizacao" fullWidth />
+                                <DialogContent fullWidth>
+                                <FormControl error fullWidth>
+                                    <TextField autoFocus margin="dense" value={this.state.nomeVinha} onChange = {(evt)=>this.nomeVinhaChange(evt.target.value)} label="Nome da vinha" aria-describedby="nomeVinha-error-text" fullWidth />
+                                    {this.state.nomeVinhaError === true &&
+                                        <FormHelperText fullWidth id="nomeVinha-error-text">O nome da vinha nao pode estar vazio</FormHelperText>
+                                    }
+                                    <TextField autoFocus margin="dense" value={this.state.lat} onChange = {(evt)=>this.latChange(evt.target.value)} label="Latitude" aria-describedby="lat-error-text" fullWidth />
+                                    {this.state.latError === true &&
+                                        <FormHelperText fullWidth id="lat-error-text">A latitude da vinha nao pode estar vazia</FormHelperText>
+                                    }
+                                    <TextField autoFocus margin="dense" value={this.state.long} onChange = {(evt)=>this.longChange(evt.target.value)} label="Longitude" aria-describedby="long-error-text" fullWidth />
+                                    {this.state.longError === true &&
+                                        <FormHelperText fullWidth id="long-error-text">A latitude da vinha nao pode estar vazia</FormHelperText>
+                                    }
+                                    <TextField autoFocus margin="dense" value={this.state.local} onChange = {(evt)=>this.localChange(evt.target.value)} label="Localizacao" aria-describedby="local-error-text" fullWidth />
+                                    {this.state.localError === true &&
+                                        <FormHelperText fullWidth id="local-error-text">A localização da vinha nao pode estar vazia</FormHelperText>
+                                    }
+                                </FormControl>
                                 </DialogContent>
                                 <DialogActions>
-                                    <Button onClick={() => this.handleFormclose()} color="primary">
+                                    <Button onClick={() => this.addVinha()} color="primary">
                                         Criar
                                     </Button>
                                 </DialogActions>
                             </Dialog>
-                        </Container>
 
-                    </Container>
+
+
+                            <Dialog open={this.state.openDialogModule} onClose={() => this.setState({openDialogModule:false})} aria-labelledby="form-dialog-title">
+                                <DialogTitle id="form-dialog-title">CRIAR UM MODULO</DialogTitle>
+                                <DialogContent>
+                                <DialogContentText>
+                                </DialogContentText>
+                                <DialogContentText>
+                                    Para criar um módulo terá de introduzir o número de série da sua estação.
+                                </DialogContentText>
+                                <DialogContentText>
+                                    Insira também um nome para lhe ser mais fácil de identificar os módulos.
+                                </DialogContentText>
+                                <DialogContentText>
+                                    Terá também de escolher no mapa a sua Localização. Isto ajudará nos cálculos para os tornar mais precisos.
+                                </DialogContentText>
+                                    
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={() => this.handleFormcloseModule()} color="primary">
+                                        SEGUINTE
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
+
+                            <Dialog fullWidth minWidth="500px" open={this.state.openDialogModule2} onClose={() => this.setState({openDialogModule2:false})} aria-labelledby="form-dialog-title">
+                                <DialogTitle id="form-dialog-title">CRIAR UM MODULO</DialogTitle>
+                                <DialogContent fullWidth>
+                                <FormControl error fullWidth>
+                                <TextField
+                                    autoFocus
+                                    margin="dense"
+                                    value={this.state.module}
+                                    onChange = {(evt)=>this.moduleChange(evt.target.value)}
+                                    label=" Introduza o número de série da sua estação."
+                                    aria-describedby="module-error-text"
+                                    fullWidth
+                                />
+                                {this.state.moduleError === true &&
+                                    <FormHelperText fullWidth id="module-error-text">O ID da estação nao pode ser vazio</FormHelperText>
+                                }
+                                {this.state.moduleError2 === true &&
+                                    <FormHelperText fullWidth id="module-error-text">O ID da estação nao e valido</FormHelperText>
+                                }
+                                <TextField
+                                    autoFocus
+                                    value={this.state.nomeModule}
+                                    onChange = {(evt)=>this.nomeModuleChange(evt.target.value)}
+                                    label="Introduza o nome para a sua estação."
+                                    aria-describedby="nome-error-text"
+                                    fullWidth
+                                />
+                                {this.state.nomeModuleError === true &&
+                                    <FormHelperText fullWidth id="module-error-text">O NOME da estação nao pode ser vazio</FormHelperText>
+                                }
+                                </FormControl>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={() => this.handleFormcloseModule2()} color="primary">
+                                        SEGUINTE
+                                    </Button>
+                                </DialogActions>
+
+                            </Dialog>
+                        </Container>
                 </main>
             </div >
         )

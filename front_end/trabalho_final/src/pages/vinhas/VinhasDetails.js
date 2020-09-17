@@ -209,7 +209,7 @@ class VinhasDetails extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            count:[{count:0}],
+            count:0,
             open: true,
             openDialogUser: false,
             openDialogModule: false,
@@ -241,13 +241,15 @@ class VinhasDetails extends React.Component {
             lng: undefined,
             module: "",
             nome:"",
-            nomeError: true,
-            moduleError: true,
+            nomeError: false,
+            moduleError: false,
+            moduleError2: false,
             snackOpen: false,
             users:[],
             newUser: undefined,
             dupAlert:false,
-            userError:false
+            userError:false,
+            isDono: false,
         }
     };
     static contextType = AuthContext;
@@ -257,6 +259,9 @@ class VinhasDetails extends React.Component {
         vinhaService.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data })).catch();
         vinhaService.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
         userService.userSimple().then(data => this.setState({ users: data })).catch();
+        vinhaService.getDonoVinha(window.location.hash.split("/")[3]).then(data =>{
+            if(data[0].dono === this.context.user.id)this.setState({isDono:true});
+        }).catch();
     }
 
     submitUsers(vinha_id, user_id) {
@@ -289,13 +294,16 @@ class VinhasDetails extends React.Component {
     }
 
     handleFormcloseModule2() {
-        if(this.state.nome !== null && this.state.nome !== undefined && this.state.nome !=="" && this.state.module !== null && this.state.module !== undefined && this.state.module !==""){
-            this.setState({ openDialogModule2: false, value: 3 });
-        }
-        
+        moduleService.getSingleSecModule(this.state.module).then(data =>{
+            if(data.length === 1){
+                if(this.state.nome !== null && this.state.nome !== undefined && this.state.nome !=="" && this.state.module !== null && this.state.module !== undefined && this.state.module !==""){
+                    this.setState({ openDialogModule2: false, value: 3 });
+                }
+            }else{
+                this.setState({ moduleError2: true});
+            }
+        }).catch();
     }
-
-
 
     handleChange = (event, newValue) => {
         this.setState({ value: newValue });
@@ -308,7 +316,7 @@ class VinhasDetails extends React.Component {
     newModule = () =>{
         if(this.state.lat !== null && this.state.lat !== undefined && this.state.lat !=="" && this.state.lng !== null && this.state.lng !== undefined && this.state.lng !=="" ){
             moduleService.add({vinha_id: this.props.match.params.id,localizacao:this.state.nome,lat:this.state.lat,lng:this.state.lng});
-            vinhaService.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data, value:1 })).catch();
+            vinhaService.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data, value:0 })).catch();
             vinhaService.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
         }else{
             this.setState({ snackOpen: true })
@@ -350,7 +358,8 @@ class VinhasDetails extends React.Component {
         }else{
             this.setState({moduleError: true})
         }
-            this.setState({module:e});
+        this.setState({module:e});
+        this.setState({ moduleError2: false});
     }
     
   handleSnackClose = (event, reason) => {
@@ -384,7 +393,7 @@ class VinhasDetails extends React.Component {
                             Modulos
                         </Typography>
                         <IconButton color="inherit" href="/#/alertas">
-                            <Badge badgeContent={this.state.count[0].count} color="secondary">
+                            <Badge badgeContent={this.state.count} color="secondary">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>
@@ -501,7 +510,8 @@ class VinhasDetails extends React.Component {
 
                          }}
                          onRowClick={(event, rowData) => this.props.history.push('/user/' + rowData.user_id)}
-                         actions={[
+                         
+                         actions={this.state.isDono === true && [
                              {
                                  icon: AddBox,
                                  tooltip: 'Add User',
@@ -673,6 +683,9 @@ class VinhasDetails extends React.Component {
                             />
                             {this.state.moduleError === true &&
                                 <FormHelperText fullWidth id="module-error-text">O ID da estação nao pode ser vazio</FormHelperText>
+                            }
+                            {this.state.moduleError2 === true &&
+                                <FormHelperText fullWidth id="module-error-text">O ID da estação nao e valido</FormHelperText>
                             }
                             <TextField
                                 autoFocus

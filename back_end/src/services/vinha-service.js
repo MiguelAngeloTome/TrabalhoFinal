@@ -21,6 +21,16 @@ exports.getVinhaSingle = id =>{
     });
 }
 
+exports.getDonoVinha = id =>{
+    return new Promise((resolve,reject)=>{
+        db.all(`Select dono from vinha where vinha_id = ?`, [id],
+        (err,row)=>{
+            if(err) reject (err);
+            resolve(row);
+        });
+    });
+}
+
 exports.insertVinha = body =>{
     return new Promise((resolve,reject)=>{
         const id = uuid();

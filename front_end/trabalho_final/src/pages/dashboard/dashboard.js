@@ -135,7 +135,7 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      count:[{count:0}],
+      count:0,
       open: true,
       datas: undefined,
       vinhas: [],
@@ -205,7 +205,7 @@ class Dashboard extends React.Component {
               Dashboard
           </Typography>
             <IconButton color="inherit" href="/#/alertas">
-              <Badge badgeContent={this.state.count[0].count} color="secondary">
+              <Badge badgeContent={this.state.count} color="secondary">
                   <NotificationsIcon />
               </Badge>
             </IconButton>

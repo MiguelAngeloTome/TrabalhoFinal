@@ -188,7 +188,7 @@ class Compare extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            count:[{count:0}],
+            count:0,
             open: true,
             data:undefined,
             value: 0,
@@ -552,7 +552,7 @@ class Compare extends React.Component {
                             Modulos
                         </Typography>
                         <IconButton color="inherit" href="/#/alertas">
-                            <Badge badgeContent={this.state.count[0].count} color="secondary">
+                            <Badge badgeContent={this.state.count} color="secondary">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>
