@@ -264,8 +264,13 @@ class ListaVinhas extends React.Component {
             vinhaService.update(id, { localizacao: this.state.localizacao, nome: this.state.nome, coordenadas: this.state.coordenadas });
             vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
         } else {
-            vinhaService.delete(id);
+            dataService.getUserModulos(id).then(data => {
+                for(let i = 0; i < data.length; i++){
+                    moduleService.remove(data[i].module_id);
+                }
+            });
             userService.deleteUserVinha({vinha_id:id, user_id:this.context.user.id}).then(vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch());
+            vinhaService.delete(id);
         }
 
     }

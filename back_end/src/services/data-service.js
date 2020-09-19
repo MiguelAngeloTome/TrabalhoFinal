@@ -32,6 +32,10 @@ exports.CountUserAvisos = async (id) => {
     return userAvisos.CountUserAvisos(id);
 }
 
+exports.getModulosVinha = async (id) => {
+    return userAvisos.getUserModulos(id);
+}
+
 exports.getDataSingle = id => {
     return new Promise((resolve, reject) => {
         db.all(`select * from data where data_id = ?`, [id],

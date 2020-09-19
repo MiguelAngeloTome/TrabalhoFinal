@@ -18,6 +18,12 @@ exports.getUserAvisos = (req, res) => {
     .catch(err => res.status(500).json({erro: err.message}));
 };
 
+exports.getModulosVinha = (req, res) => {
+    dataService.getModulosVinha(req.params.id)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
+};
+
 exports.CountUserAvisos = (req, res) => {
     dataService.CountUserAvisos(req.params.id)
     .then(result => res.json(result))
