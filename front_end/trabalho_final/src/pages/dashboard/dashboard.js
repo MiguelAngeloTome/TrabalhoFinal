@@ -3,10 +3,8 @@ import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
-//import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-//import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
@@ -14,7 +12,6 @@ import Badge from '@material-ui/core/Badge';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-//import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -23,13 +20,17 @@ import CompareGrah from '../graphs/CompareGraph';
 import SideNav from '../../components/global/sideNav'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AuthContext from "../../configs/authContext";
-import dataService from '../../services/data';
-import vinhaService from '../../services/vinha';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import MuiAlert from '@material-ui/lab/Alert';
+import services from "../../services/"
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const drawerWidth = 240;
 
@@ -140,6 +141,8 @@ class Dashboard extends React.Component {
       datas: undefined,
       vinhas: [],
       selected: undefined,
+      noData: false,
+      noVinhas: false,
     }
   }
 
@@ -148,20 +151,32 @@ class Dashboard extends React.Component {
   static contextType = AuthContext;
 
   componentDidMount() {
-    dataService.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
+    services.avisos.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
     let a;
-    vinhaService.getModulesUser(this.context.user.id)
-    .then(data =>{a=data[0].modules[0].module_id;
-      this.setState({ vinhas: data, selected:data[0].modules[0].module_id });
-      dataService.getLast(a).then(data => this.setState({ datas: data[0] })).catch();
-
+    services.vinha.getModulesUser(this.context.user.id).then (data =>{
+      console.log(this.context.user.id)
+      if(data.length !== 0){
+        a=data[0].modules[0].module_id;
+        this.setState({ vinhas: data, selected:data[0].modules[0].module_id });
+        services.data.getLast(a).then(data =>{
+          if(data.length === 0) this.setState({noData:true})
+          else this.setState({ datas: data[0] });
+        }).catch();
+      }else{
+        this.setState({noVinhas: true});
+        this.setState({noData:true})
+      }
     })
   }
 
   upd= a =>{
+    this.setState({noData:false})
     this.setState({selected: a})
     this.setState({datas: undefined})
-    dataService.getLast(a).then(data => this.setState({ datas: data[0] })).catch();
+    services.data.getLast(a).then(data => {
+      if(data.length === 0) this.setState({noData:true})
+      else this.setState({ datas: data[0] })
+    }).catch();
   }
 
   render() {
@@ -231,6 +246,13 @@ class Dashboard extends React.Component {
           <Divider />
           <SideNav />
         </Drawer>
+
+
+
+
+
+
+        
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           {vinhas !== undefined &&
@@ -254,8 +276,21 @@ class Dashboard extends React.Component {
               </Select>
             </FormControl>
           }
-          <Container maxWidth="lg" className={classes.container}>
 
+          {this.state.noVinhas &&
+            <container>
+              <Alert severity="warning">Nao existe nenhuma vinha para representar a informacao</Alert>
+              <div className={classes.appBarSpacer} />
+            </container>
+          }
+
+          {this.state.noData &&
+            <Alert severity="warning">Nao existe informacao associada a esta vinha</Alert>
+          }
+
+          
+          <Container maxWidth="lg" className={classes.container}>
+          {this.state.noData === false &&
             <Grid container spacing={3}>
               {/* Chart */}
               <Grid item xs={12} md={6} lg={6} >
@@ -336,7 +371,7 @@ class Dashboard extends React.Component {
                   }
                 </Paper>
               </Grid>
-            </Grid>
+            </Grid>}
           </Container>
         </main>
       </div>

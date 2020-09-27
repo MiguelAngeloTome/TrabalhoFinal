@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container} from 'react-bootstrap';
-import dataService from '../../services/data';
+import services from '../../services/';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -136,8 +136,8 @@ class DetailsPage extends React.Component {
     static contextType = AuthContext;
 
     componentDidMount() {
-      dataService.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
-      dataService.getOne(this.props.match.params.id).then(data=>this.setState({datas: data[0]})).catch();
+      services.avisos.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
+      services.data.getOne(this.props.match.params.id).then(data=>this.setState({datas: data[0]})).catch();
     }
 
     render() {

@@ -17,7 +17,6 @@ import SideNav from '../../components/global/sideNav'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MaterialTable from 'material-table';
 import AuthContext from "../../configs/authContext";
-import vinhaService from '../../services/vinha';
 import { forwardRef } from 'react';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
@@ -40,9 +39,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import dataService from '../../services/data';
-import userService from '../../services/userService';
-import moduleService from '../../services/module';
+import services from '../../services/';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -213,6 +210,7 @@ class ListaVinhas extends React.Component {
             latError: "",
             longError: "",
             localError: "",
+            moduleAlreadyAssigned: false,
             module: "",
             nomeModule: "",
             nomeModuleError: false,
@@ -225,8 +223,8 @@ class ListaVinhas extends React.Component {
     static contextType = AuthContext;
 
     componentDidMount() {
-        dataService.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
-        vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
+        services.avisos.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
+        services.vinha.getAllUser(this.context.user.id).then(data => {console.log(data);this.setState({ datas: data })}).catch();
     }
 
     addVinha() {
@@ -250,9 +248,9 @@ class ListaVinhas extends React.Component {
         }
     }
     connectUserVinha (data) {
-        userService.addUserVinha({user_id:this.context.user.id, vinha_id:data.vinha_id}).catch();
-        vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
-        moduleService.add({vinha_id: data.vinha_id,localizacao:this.state.nomeModule,lat:this.state.latMapa,lng:this.state.lngMapa});
+        services.user.addUserVinha({user_id:this.context.user.id, vinha_id:data.vinha_id}).catch();
+        services.vinha.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
+        services.module.add({id: this.state.module, vinha_id: data.vinha_id, localizacao:this.state.nomeModule, lat:this.state.latMapa, lng:this.state.lngMapa});
     }
     
     handleFormClick() {
@@ -261,16 +259,18 @@ class ListaVinhas extends React.Component {
 
     submit(id, type) {
         if (type === 'update') {
-            vinhaService.update(id, { localizacao: this.state.localizacao, nome: this.state.nome, coordenadas: this.state.coordenadas });
-            vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
+            services.vinha.update(id, { localizacao: this.state.localizacao, nome: this.state.nome, coordenadas: this.state.coordenadas });
+            services.vinha.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
         } else {
-            dataService.getUserModulos(id).then(data => {
+            services.data.getModulesVinha(id).then(data => {
                 for(let i = 0; i < data.length; i++){
-                    moduleService.remove(data[i].module_id);
+                    services.module.remove(data[i].module_id);
                 }
+                services.user.deleteUserVinha({vinha_id:id, user_id:this.context.user.id}).then(
+                    services.vinha.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch()
+                );
             });
-            userService.deleteUserVinha({vinha_id:id, user_id:this.context.user.id}).then(vinhaService.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch());
-            vinhaService.delete(id);
+            
         }
 
     }
@@ -317,11 +317,17 @@ class ListaVinhas extends React.Component {
     }
 
     handleFormcloseModule2() {
-        moduleService.getSingleSecModule(this.state.module).then(data =>{
+        services.module.getSingleSecModule(this.state.module).then(data =>{
             if(data.length === 1){
-                if(this.state.nomeModule !== null && this.state.nomeModule !== undefined && this.state.nomeModule !=="" && this.state.module !== null && this.state.module !== undefined && this.state.module !==""){
-                    this.setState({ openDialogModule2: false, value: 1 });
-                }
+                services.module.getSingleModule(this.state.module).then(data => {
+                    if(data.length === 0){
+                        if(this.state.nomeModule !== null && this.state.nomeModule !== undefined && this.state.nomeModule !=="" && this.state.module !== null && this.state.module !== undefined && this.state.module !==""){
+                            this.setState({ openDialogModule2: false, value: 1 });
+                        }    
+                    }else{
+                        this.setState({moduleAlreadyAssigned: true})
+                    }
+                })
             }else{
                 this.setState({ moduleError2: true});
             }
@@ -345,6 +351,7 @@ class ListaVinhas extends React.Component {
         }
         this.setState({module:e});
         this.setState({moduleError2: false});
+        this.setState({moduleAlreadyAssigned: false});
     }
 
     callbackFunction = (childData) => {
@@ -361,7 +368,7 @@ class ListaVinhas extends React.Component {
 
     newModule = () =>{
         if(this.state.latMapa !== null && this.state.latMapa !== undefined && this.state.latMapa !=="" && this.state.lngMapa !== null && this.state.lngMapa !== undefined && this.state.lngMapa !=="" ){
-            vinhaService.add({nome: this.state.nomeVinha,lat:this.state.lat,lng:this.state.long,localizacao:this.state.local,dono:this.context.user.id}).then(data => this.connectUserVinha(data)).catch();
+            services.vinha.add({nome: this.state.nomeVinha,lat:this.state.lat,lng:this.state.long,localizacao:this.state.local,dono:this.context.user.id}).then(data => this.connectUserVinha(data)).catch();
             this.setState({value: 0});
         }else{
             this.setState({ snackOpen: true })
@@ -556,6 +563,9 @@ class ListaVinhas extends React.Component {
                                 }
                                 {this.state.moduleError2 === true &&
                                     <FormHelperText fullWidth id="module-error-text">O ID da estação nao e valido</FormHelperText>
+                                }
+                                {this.state.moduleAlreadyAssigned === true &&
+                                    <FormHelperText fullWidth id="module-error-text">O ID da estação já está associado a outra vinha</FormHelperText>
                                 }
                                 <TextField
                                     autoFocus

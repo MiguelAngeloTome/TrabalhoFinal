@@ -6,37 +6,7 @@ exports.getData = (req, res) => {
     .catch(err => res.status(500).json({erro: err.message}));
 };
 
-exports.getAvisos = (req, res) => {
-    dataService.getAvisos()
-    .then(result => res.json(result))
-    .catch(err => res.status(500).json({erro: err.message}));
-};
-
-exports.getUserAvisos = (req, res) => {
-    dataService.getUserAvisos(req.params.id)
-    .then(result => res.json(result))
-    .catch(err => res.status(500).json({erro: err.message}));
-};
-
-exports.getModulosVinha = (req, res) => {
-    dataService.getModulosVinha(req.params.id)
-    .then(result => res.json(result))
-    .catch(err => res.status(500).json({erro: err.message}));
-};
-
-exports.CountUserAvisos = (req, res) => {
-    dataService.CountUserAvisos(req.params.id)
-    .then(result => res.json(result))
-    .catch(err => res.status(500).json({erro: err.message}));
-};
-
 exports.getDataSingle = (req, res) => {
-    dataService.getDataSingle(req.params.id)
-    .then(result => res.json(result))
-    .catch(err => res.status(500).json({erro: err.message}));
-};
-
-exports.getAvisoSingle = (req, res) => {
     dataService.getDataSingle(req.params.id)
     .then(result => res.json(result))
     .catch(err => res.status(500).json({erro: err.message}));
@@ -48,8 +18,8 @@ exports.getDataModule = (req, res) => {
     .catch(err => res.status(500).json({erro: err.message}));
 };
 
-exports.getDataLast = (req, res) => {
-    dataService.getDataLast(req.params.id)
+exports.getDataModuloLast = (req, res) => {
+    dataService.getDataModuloLast(req.params.id)
     .then(result => res.json(result))
     .catch(err => res.status(500).json({erro: err.message}));
 };
@@ -66,20 +36,14 @@ exports.insertData = (req, res) => {
     .catch(err => res.status(500).json({erro: err.message}));
 };
 
-exports.updateData = (req, res) => {
-    dataService.updateData(req.params.id, req.body)
-    .then(result => res.json(result))
-    .catch(err => res.status(500).json({erro: err.message}));
-};
-
 exports.removeData = (req, res) => {
     dataService.removeData(req.params.id)
     .then(result => res.json(result))
     .catch(err => res.status(500).json({erro: err.message}));
 };
 
-exports.removeAviso = (req, res) => {
-    dataService.removeAviso(req.params.id)
+exports.updateData = (req, res) => {
+    dataService.updateData(req.params.id, req.body)
     .then(result => res.json(result))
     .catch(err => res.status(500).json({erro: err.message}));
 };

@@ -4,7 +4,6 @@ const FRIO = require("../Calc/HFrio.js");
 const INFEC = require("../Calc/PInfeccao.js");
 const CRESPUC = require("../Calc/TCrepuscular.js");
 
-
 exports.getETPOverTime = async (req, res) => {
      await ETP.ETPOverTime(req.body)
     .then(result => res.json(result))
@@ -46,5 +45,3 @@ exports.TCrepuscular = async (req, res) => {
    .then(result => res.json(result))
    .catch(err => res.status(500).json({erro: err.message}));
 };
-
-

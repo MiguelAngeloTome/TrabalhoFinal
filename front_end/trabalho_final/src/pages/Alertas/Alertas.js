@@ -16,7 +16,6 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import SideNav from '../../components/global/sideNav'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AuthContext from "../../configs/authContext";
-import dataService from '../../services/data';
 import MuiAlert from '@material-ui/lab/Alert';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -32,6 +31,7 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
+import services from "../../services";
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -230,12 +230,12 @@ class Alertas extends React.Component {
     static contextType = AuthContext;
 
     componentDidMount() {
-        dataService.getUserAvisos(this.context.user.id).then(data => { this.setState({ datas: data }); this.sortAlertas() }).catch();
-        dataService.CountUserAvisos(this.context.user.id).then(data => { this.setState({ count: data }) }).catch();
+        services.avisos.getUserAvisos(this.context.user.id).then(data => { this.setState({ datas: data }); this.sortAlertas() }).catch();
+        services.avisos.CountUserAvisos(this.context.user.id).then(data => { this.setState({ count: data }) }).catch();
     }
 
     submitAlertas(id) {
-        dataService.removeAviso(id);
+        services.avisos.removeAviso(id);
         window.location.reload();
     }
 

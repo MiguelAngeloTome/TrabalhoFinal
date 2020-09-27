@@ -25,8 +25,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
-import userService from '../../services/userService';
-import dataService from '../../services/data';
+import services from '../../services/';
 
 
 function createData(name, value) {
@@ -165,11 +164,11 @@ class User extends React.Component {
   static contextType = AuthContext;
 
   componentDidMount() {
-    dataService.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
+    services.avisos.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
     if(window.location.hash.split("/")[2] === undefined){
-      userService.getUser(this.context.user.id).then(data => this.setState({datas: data})).catch();
+      services.user.getUser(this.context.user.id).then(data => this.setState({datas: data})).catch();
     }else{
-      userService.getUser(window.location.hash.split("/")[2]).then(data => this.setState({datas: data})).catch();
+      services.user.getUser(window.location.hash.split("/")[2]).then(data => this.setState({datas: data})).catch();
     }
     
   }
