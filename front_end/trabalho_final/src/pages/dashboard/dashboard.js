@@ -154,17 +154,20 @@ class Dashboard extends React.Component {
     services.avisos.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
     let a;
     services.vinha.getModulesUser(this.context.user.id).then (data =>{
-      console.log(this.context.user.id)
-      if(data.length !== 0){
+      this.setState({ vinhas: data});
+      if(data.length !== 0 && data[0].modules.length > 0){
         a=data[0].modules[0].module_id;
-        this.setState({ vinhas: data, selected:data[0].modules[0].module_id });
+        this.setState({ selected:data[0].modules[0].module_id });
         services.data.getLast(a).then(data =>{
           if(data.length === 0) this.setState({noData:true})
           else this.setState({ datas: data[0] });
         }).catch();
       }else{
-        this.setState({noVinhas: true});
-        this.setState({noData:true})
+        if(data.length === 0){
+          this.setState({noVinhas: true, noData: true});
+        }else if(data[0].modules.length === 0){
+          this.setState({noData: true});
+        }
       }
     })
   }

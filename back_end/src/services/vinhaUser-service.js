@@ -95,7 +95,7 @@ exports.deleteConnection = body => {
                 where vinha_id = ? and user_id = ?`, [body.vinha_id, body.user_id],
             err => {
                 if (err) reject(err);
-                resolve({ removed: 1 });
+                resolve({ removed: 1, vinha_id: body.vinha_id, user_id:body.user_id });
             });
     });
 };

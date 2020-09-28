@@ -218,31 +218,26 @@ class ListaVinhas extends React.Component {
             moduleError2: false,
             latMapa: undefined,
             lngMapa: undefined,
+            isCoordsVinha:true,
         }
     };
     static contextType = AuthContext;
 
     componentDidMount() {
         services.avisos.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
-        services.vinha.getAllUser(this.context.user.id).then(data => {console.log(data);this.setState({ datas: data })}).catch();
+        services.vinha.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
     }
 
     addVinha() {
         if(this.state.nomeVinha !== null && 
             this.state.nomeVinha !== undefined &&
             this.state.nomeVinha !=="" &&
-            this.state.long !== null && 
-            this.state.long !== undefined &&
-            this.state.long !=="" &&
-            this.state.lat !== null && 
-            this.state.lat !== undefined &&
-            this.state.lat !=="" &&
             this.state.local !== null && 
             this.state.local !== undefined &&
             this.state.local !==""
         ){
             this.setState({openDialogVinha:false});
-            this.setState({openDialogModule:true});
+            this.setState({value: 1 });
         }else{
             this.setState({ snackOpen: true })
         }
@@ -264,15 +259,19 @@ class ListaVinhas extends React.Component {
         } else {
             services.data.getModulesVinha(id).then(data => {
                 for(let i = 0; i < data.length; i++){
+                    services.data.getAllModule(data[i].module_id).then(data =>{
+                        for(let i = 0; i < data.length; i++){
+                            services.data.remove(data[i].data_id);
+                        }
+                    })
                     services.module.remove(data[i].module_id);
                 }
-                services.user.deleteUserVinha({vinha_id:id, user_id:this.context.user.id}).then(
+                services.user.deleteUserVinha({vinha_id:id, user_id:this.context.user.id}).then( data =>{
+                    services.vinha.delete(data.vinha_id);
                     services.vinha.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch()
-                );
+                });
             });
-            
         }
-
     }
 
     nomeVinhaChange = (e) =>{
@@ -355,7 +354,11 @@ class ListaVinhas extends React.Component {
     }
 
     callbackFunction = (childData) => {
-        this.setState({latMapa: childData.lat, lngMapa: childData.lng});
+        if(this.state.isCoordsVinha){
+            this.setState({lat: childData.lat, long: childData.lng});
+        }else{
+            this.setState({latMapa: childData.lat, lngMapa: childData.lng});
+        } 
     };
 
     handleSnackClose = (event, reason) => {
@@ -367,11 +370,19 @@ class ListaVinhas extends React.Component {
     };
 
     newModule = () =>{
-        if(this.state.latMapa !== null && this.state.latMapa !== undefined && this.state.latMapa !=="" && this.state.lngMapa !== null && this.state.lngMapa !== undefined && this.state.lngMapa !=="" ){
-            services.vinha.add({nome: this.state.nomeVinha,lat:this.state.lat,lng:this.state.long,localizacao:this.state.local,dono:this.context.user.id}).then(data => this.connectUserVinha(data)).catch();
-            this.setState({value: 0});
+        if(this.state.isCoordsVinha){
+            if(this.state.lat !== null && this.state.lat !== undefined && this.state.lat !=="" && this.state.long !== null && this.state.long !== undefined && this.state.long !=="" ){
+                this.setState({value: 0, openDialogModule:true, isCoordsVinha:false, snackOpen: false });
+            }else{
+                this.setState({ snackOpen: true})
+            }
         }else{
-            this.setState({ snackOpen: true })
+            if(this.state.latMapa !== null && this.state.latMapa !== undefined && this.state.latMapa !=="" && this.state.lngMapa !== null && this.state.lngMapa !== undefined && this.state.lngMapa !=="" ){
+                services.vinha.add({nome: this.state.nomeVinha,lat:this.state.lat,lng:this.state.long,localizacao:this.state.local,dono:this.context.user.id}).then(data => this.connectUserVinha(data)).catch();
+                this.setState({value: 0, snackOpen: false});
+            }else{
+                this.setState({ snackOpen: true })
+            }
         }
     }
 
@@ -469,7 +480,7 @@ class ListaVinhas extends React.Component {
                     </Container>
                     }
 
-                    {this.state.value === 1 &&
+                    {this.state.value === 1 &&          
                         <Container maxWidth="lg" className={classes.containerMap}>
                                 <div className={classes.root}>
                                     <Snackbar open={this.state.snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
@@ -478,7 +489,12 @@ class ListaVinhas extends React.Component {
                                     </Alert>
                                     </Snackbar>
                                 </div>
-                                <h2 style= {{"font-size": "medium", "padding": "5px",fontWeight: "bold"}} textAlign="center">Criar Modulo</h2>
+                                {this.state.isCoordsVinha === true &&
+                                    <h2 style= {{"font-size": "medium", "padding": "5px",fontWeight: "bold"}} textAlign="center">Localização da vinha</h2>
+                                }
+                                {this.state.isCoordsVinha === false &&
+                                    <h2 style= {{"font-size": "medium", "padding": "5px",fontWeight: "bold"}} textAlign="center">Localização do modulo</h2>
+                                }
                                 <ClickMap parentCallback = {this.callbackFunction}/>
                                 <Button variant="contained" color="primary" style= {{position: "absolute",bottom: 3,right:30}} onClick={() => this.newModule()}>
                                             SEGUINTE
@@ -499,14 +515,6 @@ class ListaVinhas extends React.Component {
                                     {this.state.nomeVinhaError === true &&
                                         <FormHelperText fullWidth id="nomeVinha-error-text">O nome da vinha nao pode estar vazio</FormHelperText>
                                     }
-                                    <TextField autoFocus margin="dense" value={this.state.lat} onChange = {(evt)=>this.latChange(evt.target.value)} label="Latitude" aria-describedby="lat-error-text" fullWidth />
-                                    {this.state.latError === true &&
-                                        <FormHelperText fullWidth id="lat-error-text">A latitude da vinha nao pode estar vazia</FormHelperText>
-                                    }
-                                    <TextField autoFocus margin="dense" value={this.state.long} onChange = {(evt)=>this.longChange(evt.target.value)} label="Longitude" aria-describedby="long-error-text" fullWidth />
-                                    {this.state.longError === true &&
-                                        <FormHelperText fullWidth id="long-error-text">A latitude da vinha nao pode estar vazia</FormHelperText>
-                                    }
                                     <TextField autoFocus margin="dense" value={this.state.local} onChange = {(evt)=>this.localChange(evt.target.value)} label="Localizacao" aria-describedby="local-error-text" fullWidth />
                                     {this.state.localError === true &&
                                         <FormHelperText fullWidth id="local-error-text">A localização da vinha nao pode estar vazia</FormHelperText>
@@ -515,7 +523,7 @@ class ListaVinhas extends React.Component {
                                 </DialogContent>
                                 <DialogActions>
                                     <Button onClick={() => this.addVinha()} color="primary">
-                                        Criar
+                                        SEGUINTE
                                     </Button>
                                 </DialogActions>
                             </Dialog>

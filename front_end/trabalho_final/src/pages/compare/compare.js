@@ -214,9 +214,11 @@ class Compare extends React.Component {
         let a;
         services.vinha.getModulesUser(this.context.user.id)
             .then(data => {
-                if(data.length > 0){
+                this.setState({ vinhas: data });
+                if(data.length > 0 && data[0].modules.length > 0){
+                    console.log(data)
                     a = data[0].modules[0].module_id;
-                    this.setState({ vinhas: data, selected: data[0].modules[0].module_id });
+                    this.setState({ selected: data[0].modules[0].module_id });
                     services.vinha.getModule(a).then(data => this.setState({ module: data[0] }))
                 }
             })
