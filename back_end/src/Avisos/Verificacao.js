@@ -1,8 +1,9 @@
 const db = require('../configs/mysql.js');
+const db2 = require('../configs/teste.js');
 const uuid = require('uuid').v4;
 const etp = require('../Calc/ETP.js');
 var nodemailer = require('nodemailer');
-const xl = require('excel4node');
+//const xl = require('excel4node');
 
 exports.verifica = async (module_id, date, temp, air_humidity, solo_humidity, isWet, pluviosidade, vel_vento, dir_vento, radiacao, mail) => {
     this.verData(mail, date, module_id);

@@ -1,6 +1,6 @@
 const testing = require("../Calc/PInfeccao.js")
 const db = require('../configs/mysql.js');
-const avisos = require('../Avisos/verificacao.js');
+const avisos = require('../Avisos/Verificacao.js');
 const userAvisos = require('./userAvisos.js');
 
 const uuid = require('uuid').v4;
@@ -121,6 +121,7 @@ exports.getEmail = async (module_id) => {
 }
 
 exports.insertData = async body => {
+    console.log("here");
     let mail = await this.getEmail(body.module_id);
     avisos.verifica(body.module_id, body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao, mail);
     return new Promise((resolve, reject) => {
