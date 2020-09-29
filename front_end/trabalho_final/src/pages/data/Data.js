@@ -1,6 +1,5 @@
 import React from 'react';
 import { Container} from 'react-bootstrap';
-import dataService from '../../services/data'
 import './Data.css';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
@@ -35,6 +34,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import services from "../../services";
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -196,8 +196,8 @@ class DataListPage extends React.Component {
     static contextType = AuthContext;
 
     componentDidMount() {
-        dataService.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
-        dataService.getAllModule(window.location.hash.split("/")[2]).then(data => this.setState({datas: data})).catch();
+        services.avisos.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
+        services.data.getAllModule(window.location.hash.split("/")[2]).then(data => this.setState({datas: data})).catch();
     }
 
     render() {

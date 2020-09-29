@@ -1,12 +1,11 @@
-const testing = require("../Calc/PInfeccao.js")
 const db = require('../configs/mysql.js');
 const avisos = require('../Avisos/Verificacao.js');
 const userAvisos = require('./userAvisos.js');
 
 const uuid = require('uuid').v4;
 
+//Retorna todos os datas
 exports.getData = async () => {
-    let a = await testing.Phumectacao("2009-06-29", "2009-06-30", "eadb8670-9c55-4298-8696-56d0c8040da0");
     return new Promise((resolve, reject) => {
         db.all(`select * from data`, (err, row) => {
             if (err) reject(err);
@@ -15,30 +14,11 @@ exports.getData = async () => {
     });
 }
 
-exports.getAvisos = () => {
-    return new Promise((resolve, reject) => {
-        db.all(`select * from avisos`, (err, row) => {
-            if (err) reject(err);
-            resolve(row);
-        });
-    });
-}
-
-exports.getUserAvisos = async(id) => {
-    return userAvisos.getUserAvisos(id);
-}
-
-exports.CountUserAvisos = async (id) => {
-    return userAvisos.CountUserAvisos(id);
-}
-
-exports.getModulosVinha = async (id) => {
-    return userAvisos.getUserModulos(id);
-}
-
+//Retorna um data atraves do seu id
 exports.getDataSingle = id => {
     return new Promise((resolve, reject) => {
-        db.all(`select * from data where data_id = ?`, [id],
+        db.all(`select * from data 
+                where data_id = ?`, [id],
             (err, row) => {
                 if (err) reject(err);
                 resolve(row);
@@ -47,20 +27,11 @@ exports.getDataSingle = id => {
     });
 }
 
-exports.getAvisoSingle = id => {
-    return new Promise((resolve, reject) => {
-        db.all(`select * from avisos where id = ?`, [id],
-            (err, row) => {
-                if (err) reject(err);
-                resolve(row);
-
-            });
-    });
-}
-
+//Retorna todos os datas de um modulo atraves do seu module id
 exports.getDataModule = id => {
     return new Promise((resolve, reject) => {
-        db.all(`select * from data where module_id = ?`, [id],
+        db.all(`select * from data 
+                where module_id = ?`, [id],
             (err, row) => {
                 if (err) reject(err);
                 resolve(row);
@@ -69,9 +40,12 @@ exports.getDataModule = id => {
     });
 }
 
-exports.getDataLast = id => {
+//Retorna o ultimo data de um modulo atraves do seu module id
+exports.getDataModuloLast = id => {
     return new Promise((resolve, reject) => {
-        db.all(`select * from data where module_id = ? order by date desc limit 1`, [id],
+        db.all(`select * from data 
+                where module_id = ? 
+                order by date desc limit 1`, [id],
             (err, row) => {
                 if (err) reject(err);
                 resolve(row);
@@ -79,9 +53,15 @@ exports.getDataLast = id => {
             });
     });
 }
+
+//Retorna data de um modulo, num determinado time frame atraves do module id, tempo inicial e tempo final (dentro do body)
 exports.getDataTimeFrame = (id, body) => {
     return new Promise((resolve, reject) => {
-        db.all(`select * from data where date > ? and date < ? and module_id =? order by date asc`,
+        db.all(`select * from data 
+                where date > ? 
+                and date < ? 
+                and module_id =? 
+                order by date asc`,
             [body.time1, body.time2, id], (err, row) => {
                 if (err) reject(err);
                 resolve(row);
@@ -89,40 +69,9 @@ exports.getDataTimeFrame = (id, body) => {
     });
 }
 
-exports.getEmail = async (module_id) => {
-    return new Promise((resolve, reject) => {
-        let send = [];
-        db.all(`select user_id from vinha_user
-                where vinha_id = (
-                    select vinha_id from module
-                    where module_id = ?
-                )`, [module_id],
-            (err, row) => {
-                if (err) {
-                    reject(err)
-                } else {
-                    for (i = 0; i < row.length; i++) {
-                        db.all(`Select email from user where user_id = ?`, [row[i].user_id],
-                            (err, row2) => {
-                                if (err) {
-                                    reject(err)
-                                } else {
-                                    send.push(row2[0]);
-                                    if (send.length == row.length) {
-                                        resolve(send);
-                                    }
-                                }
-                            }
-                        )
-                    }
-                };
-            });
-    });
-}
-
+//Inserir novo data
 exports.insertData = async body => {
-    console.log("here");
-    let mail = await this.getEmail(body.module_id);
+    let mail = await excelService.getUsersEmailsFromModule(body.module_id);
     avisos.verifica(body.module_id, body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao, mail);
     return new Promise((resolve, reject) => {
         const id = uuid();
@@ -135,6 +84,7 @@ exports.insertData = async body => {
     });
 };
 
+//Remover data
 exports.removeData = id => {
     return new Promise((resolve, reject) => {
         db.run(`delete from data where data_id = ?`, [id],
@@ -145,16 +95,7 @@ exports.removeData = id => {
     });
 };
 
-exports.removeAviso = id => {
-    return new Promise((resolve, reject) => {
-        db.run(`delete from avisos where id = ?`, [id],
-            err => {
-                if (err) reject(err);
-                resolve({ removed: 1, data_id: id });
-            });
-    });
-};
-
+//Update data
 exports.updateData = (id, body) => {
     return new Promise((resolve, reject) => {
         db.run(`update data set module_id = ?, date = ?, temp = ?, air_humidity = ?, solo_humidity = ?, isWet = ?, pluviosidade = ?, vel_vento = ?, dir_vento = ?, radiacao = ? where data_id = ?`,

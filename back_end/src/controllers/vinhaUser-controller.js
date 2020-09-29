@@ -1,38 +1,50 @@
 const vinhaUserService = require("../services/vinhaUser-service.js");
 
 
-exports.getVinha = (req, res) => {
-    vinhaUserService.getVinha()
+exports.getConnection = (req, res) => {
+    vinhaUserService.getConnection()
     .then(result => res.json(result))
     .catch(err => res.status(500).json({erro: err.message}));
 };
 
-exports.getVinhaSingle = (req, res) => {
-    vinhaUserService.getVinhaSingle(req.params.id)
+exports.getVinhaFromUser = (req, res) => {
+    vinhaUserService.getVinhaFromUser(req.params.id)
     .then(result => res.json(result))
     .catch(err => res.status(500).json({erro: err.message}));
 };
 
-exports.getModuleUsers = (req, res) => {
-    vinhaUserService.getModuleUsers(req.params.id)
+exports.getUserFromConnection = (req, res) => {
+    vinhaUserService.getUserFromConnection(req.params.id)
     .then(result => res.json(result))
     .catch(err => res.status(500).json({erro: err.message}));
 };
 
-exports.getUsersVinha = (req, res) => {
-    vinhaUserService.getUsersVinha(req.params.id)
+exports.getVinhaFromConnection = (req, res) => {
+    vinhaUserService.getVinhaFromConnection(req.params.id)
     .then(result => res.json(result))
     .catch(err => res.status(500).json({erro: err.message}));
 };
 
-exports.add = (req, res) => {
-    vinhaUserService.add(req.body)
+exports.getVinhaInfoFromUsers = (req, res) => {
+    vinhaUserService.getVinhaInfoFromUsers(req.params.id)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
+};
+
+exports.getUsersFromVinha = (req, res) => {
+    vinhaUserService.getUsersFromVinha(req.params.id)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
+};
+
+exports.addConnection = (req, res) => {
+    vinhaUserService.addConnection(req.body)
         .then(result => res.json(result))
         .catch(err => res.status(500).json({erro: err.message}));
 };
 
-exports.delete = (req, res) => {
-    vinhaUserService.delete(req.body)
+exports.deleteConnection = (req, res) => {
+    vinhaUserService.deleteConnection(req.body)
         .then(result => res.json(result))
         .catch(err => res.status(500).json({erro: err.message}));
 };

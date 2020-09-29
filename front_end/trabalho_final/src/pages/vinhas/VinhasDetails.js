@@ -17,9 +17,7 @@ import SideNav from '../../components/global/sideNav'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MaterialTable from 'material-table';
 import AuthContext from "../../configs/authContext";
-import vinhaService from '../../services/vinha';
-import moduleService from '../../services/module';
-import userService from '../../services/userService';
+import services from '../../services/';
 import { forwardRef } from 'react';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
@@ -52,7 +50,6 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import dataService from '../../services/data';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { lightGreen,} from '@material-ui/core/colors';
 import Avatar from '@material-ui/core/Avatar';
@@ -244,6 +241,8 @@ class VinhasDetails extends React.Component {
             nomeError: false,
             moduleError: false,
             moduleError2: false,
+            moduleAlreadyAssigned: false,
+            sameUserError: false,
             snackOpen: false,
             users:[],
             newUser: undefined,
@@ -255,25 +254,27 @@ class VinhasDetails extends React.Component {
     static contextType = AuthContext;
 
     componentDidMount() {
-        dataService.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
-        vinhaService.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data })).catch();
-        vinhaService.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
-        userService.userSimple().then(data => this.setState({ users: data })).catch();
-        vinhaService.getDonoVinha(window.location.hash.split("/")[3]).then(data =>{
+        services.avisos.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
+        services.vinha.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data })).catch();
+        services.vinha.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
+        services.user.userSimple().then(data => this.setState({ users: data })).catch();
+        services.vinha.getDonoVinha(window.location.hash.split("/")[3]).then(data =>{
             if(data[0].dono === this.context.user.id)this.setState({isDono:true});
         }).catch();
     }
 
     submitUsers(vinha_id, user_id) {
-        vinhaService.deleteUser_vinha({ vinha_id: vinha_id, user_id: user_id });
-        vinhaService.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data })).catch();
-        window.location.reload();
+        if(user_id === this.context.user.id){
+            this.setState({sameUserError: true});
+        }else{
+            services.vinha.deleteUser_vinha({ vinha_id: vinha_id, user_id: user_id });
+            services.vinha.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data })).catch();  
+        }  
     }
 
     submitModules(module_id) {
-        vinhaService.deleteModule_vinha(module_id);
-        vinhaService.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
-        window.location.reload();
+        services.vinha.deleteModule_vinha(module_id);
+        services.vinha.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
     }
 
     handleFormClickUser() {
@@ -294,11 +295,17 @@ class VinhasDetails extends React.Component {
     }
 
     handleFormcloseModule2() {
-        moduleService.getSingleSecModule(this.state.module).then(data =>{
+        services.module.getSingleSecModule(this.state.module).then(data =>{
             if(data.length === 1){
-                if(this.state.nome !== null && this.state.nome !== undefined && this.state.nome !=="" && this.state.module !== null && this.state.module !== undefined && this.state.module !==""){
-                    this.setState({ openDialogModule2: false, value: 3 });
-                }
+                services.module.getSingleModule(this.state.module).then(data => {
+                    if(data.length === 0){
+                        if(this.state.nome !== null && this.state.nome !== undefined && this.state.nome !=="" && this.state.module !== null && this.state.module !== undefined && this.state.module !==""){
+                            this.setState({ openDialogModule2: false, value: 3 });
+                        }    
+                    }else{
+                        this.setState({moduleAlreadyAssigned: true})
+                    }
+                })
             }else{
                 this.setState({ moduleError2: true});
             }
@@ -315,9 +322,9 @@ class VinhasDetails extends React.Component {
 
     newModule = () =>{
         if(this.state.lat !== null && this.state.lat !== undefined && this.state.lat !=="" && this.state.lng !== null && this.state.lng !== undefined && this.state.lng !=="" ){
-            moduleService.add({vinha_id: this.props.match.params.id,localizacao:this.state.nome,lat:this.state.lat,lng:this.state.lng});
-            vinhaService.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data, value:0 })).catch();
-            vinhaService.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
+            services.module.add({id: this.state.module, vinha_id: this.props.match.params.id,localizacao:this.state.nome,lat:this.state.lat,lng:this.state.lng});
+            services.vinha.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data, value:0 })).catch();
+            services.vinha.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
         }else{
             this.setState({ snackOpen: true })
         }
@@ -332,9 +339,9 @@ class VinhasDetails extends React.Component {
                 }
             }
             if(dup !== true){
-                vinhaService.addUser({vinha_id: this.props.match.params.id,user_id: this.state.newUser});
-                vinhaService.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data, value:1 })).catch();
-                vinhaService.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
+                services.vinha.addUser({vinha_id: this.props.match.params.id,user_id: this.state.newUser});
+                services.vinha.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data, value:1 })).catch();
+                services.vinha.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
                 this.setState({ openDialogUser: false })
             }else{
                 this.setState({dupAlert:true});
@@ -359,7 +366,8 @@ class VinhasDetails extends React.Component {
             this.setState({moduleError: true})
         }
         this.setState({module:e});
-        this.setState({ moduleError2: false});
+        this.setState({moduleError2: false});
+        this.setState({moduleAlreadyAssigned: false})
     }
     
   handleSnackClose = (event, reason) => {
@@ -369,6 +377,10 @@ class VinhasDetails extends React.Component {
 
     this.setState({ snackOpen: false })
   };
+
+  closeError = () => {
+      this.setState({sameUserError:false});
+  }
 
 
     render() {
@@ -462,15 +474,6 @@ class VinhasDetails extends React.Component {
                                     }
                                 ]}
                                 editable={{
-                                    /*onRowAdd: (newData) =>
-                                        new Promise((resolve) => {
-                                            setTimeout(() => {
-                                                resolve();
-                                                this.setState({localizacao: newData.localizacao});
-                                                this.setState({dono:user.id});
-                                                this.submit('','add');
-                                            }, 2);
-                                        }),*/
                                     onRowUpdate: (newData, oldData) =>
                                         new Promise((resolve) => {
                                             setTimeout(() => {
@@ -520,25 +523,6 @@ class VinhasDetails extends React.Component {
                              }
                          ]}
                          editable={{
-                             /*onRowAdd: (newData) =>
-                                 new Promise((resolve) => {
-                                     setTimeout(() => {
-                                         resolve();
-                                         this.setState({localizacao: newData.localizacao});
-                                         this.setState({dono:user.id});
-                                         this.submit('','add');
-                                     }, 2);
-                                 }),*/
-                             /*onRowUpdate: (newData, oldData) =>
-                                 new Promise((resolve) => {
-                                     setTimeout(() => {
-                                         resolve();
-                                         this.setState({ name: newData.name });
-                                         this.setState({ email: newData.email });
-                                         this.setState({ type: newData.type })
-                                         this.submit(oldData.vinha_id, 'update');
-                                     }, 600);
-                                 }),*/
                              onRowDelete: (oldData) =>
                                  new Promise((resolve) => {
                                      setTimeout(() => {
@@ -571,7 +555,7 @@ class VinhasDetails extends React.Component {
                             </Alert>
                             </Snackbar>
                         </div>
-                         <h2 style= {{"font-size": "medium", "padding": "5px",fontWeight: "bold"}} textAlign="center">Criar Modulo</h2>
+                         <h2 style= {{"font-size": "medium", "padding": "5px",fontWeight: "bold"}} textAlign="center">Localização do modulo</h2>
                      <ClickMap parentCallback = {this.callbackFunction}/>
                      <Button variant="contained" color="primary" style= {{position: "absolute",bottom: 3,right:30}} onClick={() => this.newModule()}>
                                     SEGUINTE
@@ -687,6 +671,9 @@ class VinhasDetails extends React.Component {
                             {this.state.moduleError2 === true &&
                                 <FormHelperText fullWidth id="module-error-text">O ID da estação nao e valido</FormHelperText>
                             }
+                            {this.state.moduleAlreadyAssigned === true &&
+                                    <FormHelperText fullWidth id="module-error-text">O ID da estação já está associado a outra vinha</FormHelperText>
+                            }
                             <TextField
                                 autoFocus
                                 value={this.state.nome}
@@ -707,6 +694,11 @@ class VinhasDetails extends React.Component {
                             </DialogActions>
 
                         </Dialog>
+                        <Snackbar open={this.state.sameUserError} autoHideDuration={6000} onClose={this.closeError}>
+                            <Alert onClose={this.closeError} severity="error">
+                                Nao se pode remover a si mesmo da vinha
+                            </Alert>
+                        </Snackbar>
                     </Container>
                 </main>
             </div >

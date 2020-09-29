@@ -1,7 +1,7 @@
 import React from 'react';
 import { Scatter} from 'react-chartjs-2';
 import { Container } from '@material-ui/core';
-import DataService from '../../services/data'
+import services from '../../services/'
 
 export default class CompareGraph extends React.Component{
 
@@ -50,7 +50,7 @@ export default class CompareGraph extends React.Component{
     }
 componentDidMount(){
  
-DataService.getTime(this.props.module,{time1:"2020-01-01 10:00:10", time2:"2020-01-01 13:25:10"}).then(data=>this.control(data));
+    services.data.getTime(this.props.module,{time1:"2020-01-01 10:00:10", time2:"2020-01-01 13:25:10"}).then(data=>this.control(data));
 
 }
 

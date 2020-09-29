@@ -8,12 +8,14 @@ const vinhaRoute = require("./routes/vinha-route.js")
 const vinhaUserRoute = require("./routes/vinhaUser-route.js")
 const calcRoute = require("./routes/calc-route.js")
 const excelRoute = require("./routes/excel-route.js")
+const avisosRoute = require("./routes/avisos-route")
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(cors ());
 
+app.use('/avisos', avisosRoute);
 app.use('/data', dataRoute);
 app.use('/user', userRoute);
 app.use('/module', moduleRoute);

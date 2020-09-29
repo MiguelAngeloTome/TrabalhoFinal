@@ -12,8 +12,20 @@ exports.getVinhaSingle = (req, res) => {
     .catch(err => res.status(500).json({erro: err.message}));
 };
 
+exports.getVinhaFromModule = (req, res) => {
+    vinhaService.getVinhaFromModule(req.params.id)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
+};
+
 exports.getDonoVinha = (req, res) => {
     vinhaService.getDonoVinha(req.params.id)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
+};
+
+exports.getVinhaName = (req, res) => {
+    vinhaService.getVinhaName(req.params.id)
     .then(result => res.json(result))
     .catch(err => res.status(500).json({erro: err.message}));
 };
@@ -24,14 +36,14 @@ exports.insertVinha = (req, res) => {
     .catch(err => res.status(500).json({erro: err.message}));
 };
 
-exports.updateVinha = (req, res) => {
-    vinhaService.updateVinha(req.params.id, req.body)
-    .then(result => res.json(result))
-    .catch(err => res.status(500).json({erro: err.message}));
-};
-
 exports.removeVinha = (req, res) => {
     vinhaService.removeVinha(req.params.id)
     .then(result => res.json(result))
     .catch(err=>res.status(500).json({erro: err.message}));
+};
+
+exports.updateVinha = (req, res) => {
+    vinhaService.updateVinha(req.params.id, req.body)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
 };

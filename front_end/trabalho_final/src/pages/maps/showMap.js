@@ -3,7 +3,7 @@ import 'leaflet/dist/leaflet.css'
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
 import L from 'leaflet';
 import userLocationURL from '../../assets/vinha_location.svg';
-import vinhaService from '../../services/vinha';
+import services from '../../services/';
 
 const mapContainerStyle = {
   height: "100%",
@@ -25,8 +25,8 @@ export default class ShowMap extends React.Component {
     }
   }
   componentDidMount() {
-    vinhaService.getModulesVinha(this.props.vinha).then(data => this.setState({ datas: data })).catch();
-    vinhaService.getOne(this.props.vinha).then(data => this.setState({ vinha: data[0] })).catch();
+    services.vinha.getModulesVinha(this.props.vinha).then(data => this.setState({ datas: data })).catch();
+    services.vinha.getOne(this.props.vinha).then(data => this.setState({ vinha: data[0] })).catch();
   }
   render() {
     return (
