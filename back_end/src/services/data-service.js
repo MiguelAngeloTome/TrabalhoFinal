@@ -1,16 +1,19 @@
 const db = require('../configs/mysql.js');
 const avisos = require('../Avisos/Verificacao.js');
-const userAvisos = require('./userAvisos.js');
+const excelService  = require('./excel-service')
+//const userAvisos = require('./userAvisos.js');
 
 const uuid = require('uuid').v4;
 
 //Retorna todos os datas
 exports.getData = async () => {
     return new Promise((resolve, reject) => {
-        db.all(`select * from data`, (err, row) => {
-            if (err) reject(err);
-            resolve(row);
-        });
+        db.all(`select * from data`,
+            (err, row) => {
+                if (err) reject(err);
+                resolve(row);
+
+            });
     });
 }
 

@@ -1,13 +1,21 @@
 var mysql = require('mysql');
 const path = require ('path');
 const { Transform } = require('stream');
+const os = require( 'os' );
 
 var db = mysql.createConnection({
-    host: "localhost",
+    host: "host.docker.internal",
     user: "khem",
     password: "khem",
-    database: "khem"
+    database: "khem",
+    port: 3306
   });
+
+  
+
+var networkInterfaces = os.networkInterfaces( );
+
+console.log( networkInterfaces );
   
   db.connect(function(err) {
     if (err) throw err;
@@ -79,3 +87,5 @@ db.query(`create table if not exists avisos(
     hora varchar(20),
     dia date)`
 );
+
+module.exports = db;
