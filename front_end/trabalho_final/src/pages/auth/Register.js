@@ -82,7 +82,7 @@ render(){
                 required
                 fullWidth
                 id="username"
-                label="username"
+                label="Username"
                 autoFocus
                 onChange={(evt) => this.setState({ username: evt.target.value })}
               />
@@ -93,9 +93,9 @@ render(){
                 required
                 fullWidth
                 id="name"
-                label="Name"
-                name="Name"
-                autoComplete="name"
+                label="Nome"
+                name="Nome"
+                autoComplete="Nome"
                 onChange={(evt) => this.setState({ name: evt.target.value })}
               />
             </Grid>
@@ -105,9 +105,9 @@ render(){
                 required
                 fullWidth
                 id="surname"
-                label="surname"
-                name="Surname"
-                autoComplete="Surname"
+                label="Sobrenome"
+                name="Sobrenome"
+                autoComplete="Sobrenome"
                 onChange={(evt) => this.setState({ surname: evt.target.value })}
               />
             </Grid>
@@ -117,9 +117,9 @@ render(){
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                label="Email"
+                name="Email"
+                autoComplete="Email"
                 onChange={(evt) => this.setState({ email: evt.target.value })}
               />
             </Grid>

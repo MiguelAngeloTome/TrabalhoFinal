@@ -32,6 +32,10 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import services from "../../services";
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import { green } from '@material-ui/core/colors';
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -208,6 +212,15 @@ const useStyles = theme => ({
     },
 });
 
+const cardAlert = {
+    textAlign: "center", 
+    position: "relative",
+    width:"30%",
+    top: "10%",
+    marginRight:"auto",
+    marginLeft:"auto"
+}
+
 
 function createData(id, nome, prioridade, msg, hora, dia) {
     return { id, nome, prioridade, msg, hora, dia };
@@ -225,12 +238,17 @@ class Alertas extends React.Component {
             datas: [],
             page: 0,
             rowsPerPage: 5,
+            noAlertas: false
         }
     };
     static contextType = AuthContext;
 
     componentDidMount() {
-        services.avisos.getUserAvisos(this.context.user.id).then(data => { this.setState({ datas: data }); this.sortAlertas() }).catch();
+        services.avisos.getUserAvisos(this.context.user.id).then(data => {
+            if(data.length === 0) this.setState({noAlertas: true})
+            this.setState({ datas: data }); 
+            this.sortAlertas();
+        }).catch();
         services.avisos.CountUserAvisos(this.context.user.id).then(data => { this.setState({ count: data }) }).catch();
     }
 
@@ -314,6 +332,21 @@ class Alertas extends React.Component {
 
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />
+
+                    {this.state.noAlertas &&
+                        <div style={cardAlert}>
+                            <Card >
+                                <CardContent>
+                                    <Typography variant="h5" component="h2">
+                                        Não tem nenhum alerta
+                                    </Typography>
+                                    <CheckCircleIcon fontSize="large" style={{ color: green[500] }} />
+                                </CardContent>
+                            </Card>
+                        </div>
+                    }
+
+                    {this.state.noAlertas === false &&
                     <Container maxWidth="lg" className={classes.container}>
                         <TableContainer component={Paper}>
                             <Table className={classes.table} aria-label="simple table">
@@ -377,6 +410,7 @@ class Alertas extends React.Component {
                             </Table>
                         </TableContainer>
                     </Container>
+                    } 
                 </main>
             </div >
         )

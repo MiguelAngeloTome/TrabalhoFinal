@@ -9,7 +9,7 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
-import Image from '../../assets/delete.jpg';
+import Image from '../../assets/LoginPage.png';
 import AuthContext from "../../configs/authContext";
 import services from "../../services";
 import Snackbar from '@material-ui/core/Snackbar';
@@ -147,7 +147,7 @@ render(){
             <Grid container>
               <Grid item>
                 <Link href="/#/register" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                  {"Nao tem conta? Criar conta"}
                 </Link>
               </Grid>
             </Grid>
