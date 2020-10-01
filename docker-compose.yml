@@ -35,8 +35,7 @@ services:
       - 5000:5000
     restart: unless-stopped
     depends_on:
-      db:
-          condition: service_healthy
+      - db
     
 
   react-service:
@@ -46,6 +45,6 @@ services:
       - 80:80
     restart: unless-stopped
     depends_on:
-      db:
-        condition: service_healthy
+      - db
+
 

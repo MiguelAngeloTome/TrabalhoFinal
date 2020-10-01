@@ -1,11 +1,11 @@
-const db = require('../configs/mysql.js');
+const db = require('../configs/teste.js');
 const vinhaUserService = require("../services/vinhaUser-service");
 const moduleService = require("../services/module-service")
 
 //Retorna todos os avisos
 exports.getAvisos = () => {
     return new Promise((resolve, reject) => {
-        db.all(`select * from avisos`, (err, row) => {
+        db.query(`select * from avisos`, (err, row) => {
             if (err) reject(err);
             resolve(row);
         });
@@ -15,7 +15,7 @@ exports.getAvisos = () => {
 //Retorna um aviso atraves do seu id
 exports.getAvisoSingle = id => {
     return new Promise((resolve, reject) => {
-        db.all(`select * from avisos 
+        db.query(`select * from avisos 
                 where id = ?`, [id],
             (err, row) => {
                 if (err) reject(err);
@@ -58,7 +58,7 @@ exports.countUserAvisos = async (id) => {
 //Retorna todos os avisos de um modulo atraves do module id
 exports.getModuleAvisos = async (id) => {
     return new Promise((resolve, reject) => {
-        db.all(`select * from avisos 
+        db.query(`select * from avisos 
                 where module_id = ?`, [id],
             (err, row) => {
                 if (err) reject(err);
@@ -70,7 +70,7 @@ exports.getModuleAvisos = async (id) => {
 //Remover aviso
 exports.removeAviso = id => {
     return new Promise((resolve, reject) => {
-        db.run(`delete from avisos 
+        db.query(`delete from avisos 
                 where id = ?`, [id],
             err => {
                 if (err) reject(err);

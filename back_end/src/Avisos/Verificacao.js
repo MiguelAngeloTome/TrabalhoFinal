@@ -1,5 +1,5 @@
-const db = require('../configs/mysql.js');
-//  const db2 = require('../configs/teste.js');
+const db2 = require('../configs/mysql.js');
+const db = require('../configs/teste.js');
 const uuid = require('uuid').v4;
 const etp = require('../Calc/ETP.js');
 var nodemailer = require('nodemailer');
@@ -46,7 +46,7 @@ exports.GetHora = async() => {
 
 exports.GetNomeVinha = async(module_id) => {
     return new Promise((resolve,reject)=>{
-        db.all(`select nome from vinha
+        db.query(`select nome from vinha
                 where vinha_id = (
                     select vinha_id from module
                     where module_id = ?
@@ -67,7 +67,7 @@ exports.verData = async(mail, date, module_id) => {
         await this.sendMail(mail,"A data inserida esta errada");
         return new Promise((resolve,reject)=>{
             const id = uuid();
-            db.run(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
+            db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
             [id, nome, module_id, "A data inserida esta errada", 1, hora, today],
             err=>{
                 if(err) reject (err);
@@ -86,7 +86,7 @@ exports.verTemp = async(mail, temp, module_id) =>{
         await this.sendMail(mail,"Temperatura inserida e inferior a -10 graus, gravidade 2");
         return new Promise((resolve,reject)=>{
             const id = uuid();
-            db.run(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
+            db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
             [id, nome, module_id, "Temperatura inserida e inferior a -10 graus", 2, hora, today],
             err=>{
                 if(err) reject (err);
@@ -98,7 +98,7 @@ exports.verTemp = async(mail, temp, module_id) =>{
         await this.sendMail(mail,"Temperatura inserida e superior a 50 graus, gravidade 2");
         return new Promise((resolve,reject)=>{
             const id = uuid();
-            db.run(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
+            db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
             [id, nome, module_id, "Temperatura inserida e superior a 50 graus", 3, hora, today],
             err=>{
                 if(err) reject (err);
@@ -116,7 +116,7 @@ exports.verAirHum = async(mail, air_humidity, module_id) =>{
         await this.sendMail(mail,"A humidade do ar e inferior a 0%");
         return new Promise((resolve,reject)=>{
             const id = uuid();
-            db.run(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
+            db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
             [id, nome, module_id, "A humidade do ar e inferior a 0%", 1, hora, today],
             err=>{
                 if(err) reject (err);
@@ -128,7 +128,7 @@ exports.verAirHum = async(mail, air_humidity, module_id) =>{
         await this.sendMail(mail,"A humidade do ar e superior a 100%");
         return new Promise((resolve,reject)=>{
             const id = uuid();
-            db.run(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
+            db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
             [id, nome, module_id, "A humidade do ar e superior a 100%", 2, hora, today],
             err=>{
                 if(err) reject (err);
@@ -146,7 +146,7 @@ exports.verSoloHum = async(mail, solo_humidity, module_id) =>{
         await this.sendMail(mail,"A humidade do solo e inferior a 0%");
         return new Promise((resolve,reject)=>{
             const id = uuid();
-            db.run(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
+            db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
             [id, nome, module_id, "A humidade do solo e inferior a 0%", 3, hora, today],
             err=>{
                 if(err) reject (err);
@@ -158,7 +158,7 @@ exports.verSoloHum = async(mail, solo_humidity, module_id) =>{
         await this.sendMail(mail,"A humidade do solo e superior a 100%");
         return new Promise((resolve,reject)=>{
             const id = uuid();
-            db.run(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
+            db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
             [id, nome, module_id, "A humidade do solo e superior a 100%", 1, hora, today],
             err=>{
                 if(err) reject (err);
@@ -176,7 +176,7 @@ exports.verWet = async(mail, isWet, module_id) =>{
         await this.sendMail(mail,"O valor do sensor de folha molhada e inferior a 0");
         return new Promise((resolve,reject)=>{
             const id = uuid();
-            db.run(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
+            db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
             [id, nome, module_id, "O valor do sensor de folha molhada e inferior a 0", 2, hora, today],
             err=>{
                 if(err) reject (err);
@@ -188,7 +188,7 @@ exports.verWet = async(mail, isWet, module_id) =>{
         await this.sendMail(mail,"O valor do sensor de folha molhada e superior a 6999");
         return new Promise((resolve,reject)=>{
             const id = uuid();
-            db.run(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
+            db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
             [id, nome, module_id, "O valor do sensor de folha molhada e superior a 6999", 3, hora, today],
             err=>{
                 if(err) reject (err);
@@ -212,7 +212,7 @@ exports.verDirVento = async(mail, dir_vento, module_id) =>{
         await this.sendMail(mail,"A direcao do vento e inferior a 0");
         return new Promise((resolve,reject)=>{
             const id = uuid();
-            db.run(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
+            db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
             [id, nome, module_id, "A direcao do vento e inferior a 0", 1, hora, today],
             err=>{
                 if(err) reject (err);
@@ -224,7 +224,7 @@ exports.verDirVento = async(mail, dir_vento, module_id) =>{
         await this.sendMail(mail,"A direcao do vento e superior a 360");
         return new Promise((resolve,reject)=>{
             const id = uuid();
-            db.run(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
+            db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
             [id, nome, module_id, "A direcao do vento e superior a 360", 2, hora, today],
             err=>{
                 if(err) reject (err);
@@ -242,7 +242,7 @@ exports.verRadiacao = async(mail, radiacao, module_id) =>{
         await this.sendMail(mail,"A radiacao e inferior a 0");
         return new Promise((resolve,reject)=>{
             const id = uuid();
-            db.run(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia-) VALUES(?,?,?,?,?,?,?)`,
+            db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia-) VALUES(?,?,?,?,?,?,?)`,
             [id, nome, module_id, "A radiacao e inferior a 0", 3, hora, today],
             err=>{
                 if(err) reject (err);
@@ -254,7 +254,7 @@ exports.verRadiacao = async(mail, radiacao, module_id) =>{
         await this.sendMail(mail,"A radiacao e superior a 500");
         return new Promise((resolve,reject)=>{
             const id = uuid();
-            db.run(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
+            db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
             [id, nome, module_id, "A radiacao e superior a 500", 1, hora, today],
             err=>{
                 if(err) reject (err);

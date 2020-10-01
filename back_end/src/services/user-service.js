@@ -1,4 +1,4 @@
-const db = require('../configs/mysql.js');
+const db = require('../configs/teste.js');
 const cipher = require('../helpers/cipher.js')
 const roles = require('../helpers/roles.js')
 const uuid = require('uuid').v4;
@@ -8,7 +8,7 @@ exports.register = (username, rawPassword, email, name, surname, type) => {
     return new Promise((resolve, reject) => {
         const id = uuid();
         try {
-            db.all(`Select * from user where username = ?`, [username],
+            db.query(`Select * from user where username = ?`, [username],
                 (err, row) => {
                     if (err) {
                         reject(err);
@@ -18,7 +18,7 @@ exports.register = (username, rawPassword, email, name, surname, type) => {
                         if (/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d$@$!%*#?&-.]{8,}$/.test(rawPassword)) {
                             const dataIv = cipher.generateIv();
                             const password = cipher.encrypt(rawPassword, dataIv);
-                            db.run(`insert into user(user_id, username, password, email, dataIv, name, surname, type) VALUES(?,?,?,?,?,?,?,?)`,
+                            db.query(`insert into user(user_id, username, password, email, dataIv, name, surname, type) VALUES(?,?,?,?,?,?,?,?)`,
                                 [id, username, password, email, dataIv, name, surname, type],
                                 err => {
                                     if (err) {
@@ -44,7 +44,7 @@ exports.register = (username, rawPassword, email, name, surname, type) => {
 //Verificar se o user existe na base de dados e fazer login
 exports.authenticate = (username, rawPassword) => {
     return new Promise((resolve, reject) => {
-        db.all(`Select * from user where username = ?`, [username],
+        db.query(`Select * from user where username = ?`, [username],
             (err, row) => {
                 if (err) {
                     reject(err);
@@ -66,7 +66,7 @@ exports.authenticate = (username, rawPassword) => {
 //Retorna todos os users
 exports.getUser = () => {
     return new Promise((resolve, reject) => {
-        db.all(`Select * From user`, (err, row) => {
+        db.query(`Select * From user`, (err, row) => {
             if (err) reject(err);
             resolve(row);
         });
@@ -76,7 +76,7 @@ exports.getUser = () => {
 //Retorna user atraves do seu id
 exports.getUserSingle = id => {
     return new Promise((resolve, reject) => {
-        db.all(`Select * From user 
+        db.query(`Select * From user 
                 where user_id = ?`, [id],
             (err, row) => {
                 if (err) reject(err);
@@ -88,7 +88,7 @@ exports.getUserSingle = id => {
 //Remover user
 exports.removeUser = id => {
     return new Promise((resolve, reject) => {
-        db.run(`delete from user where user_id = ?`, [id],
+        db.query(`delete from user where user_id = ?`, [id],
             err => {
                 if (err) reject(err);
                 resolve({ removed: 1, user_id: id });
@@ -99,7 +99,7 @@ exports.removeUser = id => {
 //Update user
 exports.updateUser = (id, body) => {
     return new Promise((resolve, reject) => {
-        db.run(`update user set username = ?, password = ?, email = ?, dataIv = ?, name = ?, type = ? where user_id = ?`,
+        db.query(`update user set username = ?, password = ?, email = ?, dataIv = ?, name = ?, type = ? where user_id = ?`,
             [body.username, body.password, body.email, body.dataIv, body.name, body.type, id],
             err => {
                 if (err) reject(err);
@@ -111,7 +111,7 @@ exports.updateUser = (id, body) => {
 //Retorna o user id, username, nome, sobre-nome de todos os users
 exports.getUserSimple = () => {
     return new Promise((resolve, reject) => {
-        db.all(`Select user_id, username, name, surname From user`, (err, row) => {
+        db.query(`Select user_id, username, name, surname From user`, (err, row) => {
             if (err) reject(err);
             resolve(row);
         });

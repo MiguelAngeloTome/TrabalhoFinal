@@ -1,4 +1,4 @@
-const db = require('../configs/mysql.js');
+const db = require('../configs/teste.js');
 const calc = require('./ETP.js');
 const { format } = require('mysql');
 
@@ -7,7 +7,7 @@ exports.getHum = async(dayInic, dayFim, module_id) =>{
     df.setDate(df.getDate()+1);
     df = await calc.getFormatedDate(df);
     return new Promise((resolve,reject)=>{
-        db.all(`select date, air_humidity from data where date BETWEEN ? and ? and module_id =? order by date asc`,[dayInic, df, module_id],(err,row)=>{
+        db.query(`select date, air_humidity from data where date BETWEEN ? and ? and module_id =? order by date asc`,[dayInic, df, module_id],(err,row)=>{
             if(err) reject (err);
             resolve(row);
         });

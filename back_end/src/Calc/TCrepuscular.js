@@ -1,4 +1,4 @@
-const db = require('../configs/mysql.js');
+const db = require('../configs/teste.js');
 const calc = require('./ETP.js');
 const { format } = require('mysql');
 
@@ -116,7 +116,7 @@ exports.horasNascerPor = async (sol, latitude, longitude, Num_dia) =>{
 
 exports.getTemp = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
-        db.all(`select temp as mtemp from data
+        db.query(`select temp as mtemp from data
                 where date like ? || '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
             if(err) reject (err);

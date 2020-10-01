@@ -1,4 +1,4 @@
-const db = require('../configs/mysql.js');
+const db = require('../configs/teste.js');
 var nodemailer = require('nodemailer');
 const xl = require('excel4node');
 const vinhaService = require("../services/vinha-service");
@@ -84,7 +84,7 @@ exports.sendMail = async (mail) => {
 //Retorna o email de um user atraves do seu user id
 exports.getUserEmail = async (id) => {
     return new Promise((resolve, reject) => {
-        db.all(`select email from user
+        db.query(`select email from user
                 where user_id = ?`, [id],
             (err, row) => {
                 if (err)

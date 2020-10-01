@@ -1,11 +1,11 @@
-const db = require('../configs/mysql.js');
+const db = require('../configs/teste.js');
 const uuid = require('uuid').v4;
 
 
 //Retorna todos os modulos
 exports.getModule = () => {
     return new Promise((resolve, reject) => {
-        db.all(`Select * from module`, (err, row) => {
+        db.query(`Select * from module`, (err, row) => {
             if (err) reject(err);
             resolve(row);
         });
@@ -15,7 +15,7 @@ exports.getModule = () => {
 //Retorna um modulo atraves do seu id
 exports.getModuleSingle = id => {
     return new Promise((resolve, reject) => {
-        db.all(`Select * from module 
+        db.query(`Select * from module 
                 where module_id = ?`, [id],
             (err, row) => {
                 if (err) reject(err);
@@ -27,7 +27,7 @@ exports.getModuleSingle = id => {
 //Retorna todos os modulos de uma vinha atraves do vinha id
 exports.getModuleVinha = id => {
     return new Promise((resolve, reject) => {
-        db.all(`Select * from module 
+        db.query(`Select * from module 
                 where vinha_id = ?`, [id],
             (err, row) => {
                 if (err) reject(err);
@@ -39,7 +39,7 @@ exports.getModuleVinha = id => {
 //Retorna todos os secure modules
 exports.getSecureModule = () => {
     return new Promise((resolve, reject) => {
-        db.all(`Select * from moduleList`, (err, row) => {
+        db.query(`Select * from moduleList`, (err, row) => {
             if (err) reject(err);
             resolve(row);
         });
@@ -49,7 +49,7 @@ exports.getSecureModule = () => {
 //Retorna um secure module atraves do seu id
 exports.getSingleSecureModule = id => {
     return new Promise((resolve, reject) => {
-        db.all(`Select * from moduleList 
+        db.query(`Select * from moduleList 
                 where module_id = ?`, [id],
             (err, row) => {
                 if (err) reject(err);
@@ -61,7 +61,7 @@ exports.getSingleSecureModule = id => {
 //Inserir um modulo
 exports.insertModule = body => {
     return new Promise((resolve, reject) => {
-        db.run(`insert into module(module_id, vinha_id, localizacao, lat, lng) VALUES(?,?,?,?,?)`,
+        db.query(`insert into module(module_id, vinha_id, localizacao, lat, lng) VALUES(?,?,?,?,?)`,
             [body.id, body.vinha_id, body.localizacao, body.lat, body.lng],
             err => {
                 if (err) reject(err);
@@ -74,7 +74,7 @@ exports.insertModule = body => {
 exports.insertSecureModule = () => {
     return new Promise((resolve, reject) => {
         const id = uuid();
-        db.run(`insert into moduleList(module_id) VALUES(?)`,
+        db.query(`insert into moduleList(module_id) VALUES(?)`,
             [id],
             err => {
                 if (err) reject(err);
@@ -86,7 +86,7 @@ exports.insertSecureModule = () => {
 //Remover um modulo
 exports.removeModule = id => {
     return new Promise((resolve, reject) => {
-        db.run(`delete from module 
+        db.query(`delete from module 
                 where module_id = ?`, [id],
             err => {
                 if (err) reject(err);
@@ -98,7 +98,7 @@ exports.removeModule = id => {
 //Remover um modulo seguro
 exports.removeSecureModule = id => {
     return new Promise((resolve, reject) => {
-        db.run(`delete from moduleList 
+        db.query(`delete from moduleList 
                 where module_id = ?`, [id],
             err => {
                 if (err) reject(err);
@@ -110,7 +110,7 @@ exports.removeSecureModule = id => {
 //Update a um modulo
 exports.updateModule = (id, body) => {
     return new Promise((resolve, reject) => {
-        db.run(`update module 
+        db.query(`update module 
                 set vinha_id = ?, localizacao = ? where module_id = ?`,
             [body.vinha_id, body.localizacao, id],
             err => {
