@@ -6,7 +6,7 @@ const userRoute = require("./routes/user-route.js")
 const moduleRoute = require("./routes/module-route.js")
 const vinhaRoute = require("./routes/vinha-route.js")
 const vinhaUserRoute = require("./routes/vinhaUser-route.js")
-const calcRoute = require("./routes/calc-route.js")
+const calcRoute = require("./routes/Calc-route.js")
 const excelRoute = require("./routes/excel-route.js")
 const avisosRoute = require("./routes/avisos-route")
 
