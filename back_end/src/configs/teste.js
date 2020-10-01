@@ -2,6 +2,7 @@ var mysql = require('mysql');
 const path = require ('path');
 const { Transform } = require('stream');
 const os = require( 'os' );
+const delay = require("delay")
 
 var db // global, to use later to db.query
 var dbInfo = {
@@ -11,8 +12,9 @@ var dbInfo = {
     database: "khem",
     port: 3306
 }
-function connectToDb(callback) {
-    const attemptConnection = () => {
+async function connectToDb(callback) {
+    const attemptConnection = async () => {
+     await delay(300000)
       console.log('Attempting to connect to db')
       dbInfo.connectTimeout = 2000  
       db = mysql.createConnection(dbInfo)
