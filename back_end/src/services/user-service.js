@@ -1,7 +1,8 @@
-const db = require('../configs/teste.js');
 const cipher = require('../helpers/cipher.js')
 const roles = require('../helpers/roles.js')
 const uuid = require('uuid').v4;
+
+const db = require('../configs/teste.js');
 
 //Registar um user
 exports.register = (username, rawPassword, email, name, surname, type) => {

@@ -1,6 +1,8 @@
-const db = require('../configs/teste.js');
+
 const vinhaUserService = require("../services/vinhaUser-service");
 const moduleService = require("../services/module-service")
+
+const db = require('../configs/teste.js');
 
 //Retorna todos os avisos
 exports.getAvisos = () => {

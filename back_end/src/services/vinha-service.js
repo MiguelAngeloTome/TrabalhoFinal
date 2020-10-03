@@ -1,5 +1,7 @@
-const db = require('../configs/teste.js');
+
 const uuid = require('uuid').v4;
+
+const db = require('../configs/teste.js');
 
 //Retorna todas as vinhas
 exports.getVinha = () => {

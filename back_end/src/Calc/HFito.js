@@ -1,6 +1,8 @@
-const db = require('../configs/teste.js');
+
 const calc = require('./HFrio.js');
 const { format } = require('mysql');
+const db = require('../configs/teste.js');
+
 
 exports.Fito = async (dayInic, dayFim, module_id) =>{
     let medHours = await calc.averageTemp(dayInic,dayFim, module_id);

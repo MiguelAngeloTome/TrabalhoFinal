@@ -1,6 +1,8 @@
-const db = require('../configs/teste.js');
+
 const calc = require('./ETP.js');
 const { format } = require('mysql');
+
+const db = require('../configs/teste.js');
 
 exports.horasNascerPor = async (sol, latitude, longitude, Num_dia) =>{
     

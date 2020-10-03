@@ -1,4 +1,3 @@
-const db2 = require('../configs/mysql.js');
 const db = require('../configs/teste.js');
 const uuid = require('uuid').v4;
 const etp = require('../Calc/ETP.js');

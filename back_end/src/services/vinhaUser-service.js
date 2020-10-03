@@ -1,8 +1,10 @@
-const db = require('../configs/teste.js');
 const uuid = require('uuid').v4;
 const moduleService = require("../services/module-service");
 const vinhaService = require("../services/vinha-service");
 const userService = require("../services/user-service");
+
+const db = require('../configs/teste.js');
+
 
 //Retorna todos as conexões
 exports.getConnection = () => {

@@ -1,7 +1,7 @@
-const db = require('../configs/teste.js');
+
 const uuid = require('uuid').v4;
 
-
+const db = require('../configs/teste.js');
 //Retorna todos os modulos
 exports.getModule = () => {
     return new Promise((resolve, reject) => {

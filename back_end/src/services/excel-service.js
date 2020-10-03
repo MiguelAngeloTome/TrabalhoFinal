@@ -1,8 +1,10 @@
-const db = require('../configs/teste.js');
+
 var nodemailer = require('nodemailer');
 const xl = require('excel4node');
 const vinhaService = require("../services/vinha-service");
 const vinhaUserService = require("../services/vinhaUser-service");
+
+const db = require('../configs/teste.js');
 
 //Cria o ficheiro excel e envia o mail
 exports.excel = async (body, user_id, vinha_id, module_name, tipo) => {

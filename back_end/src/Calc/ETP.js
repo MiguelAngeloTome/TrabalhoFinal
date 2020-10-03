@@ -1,5 +1,5 @@
-const db = require('../configs/teste.js');
 const { format } = require('mysql');
+const db = require('../configs/teste.js');
 
 exports.getMedTemp = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{

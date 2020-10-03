@@ -1,6 +1,6 @@
-const db = require('../configs/teste.js');
 const calc = require('./ETP.js');
 const { format } = require('mysql');
+const db = require('../configs/teste.js');
 
 exports.getHum = async(dayInic, dayFim, module_id) =>{
     let df = new Date(dayFim);

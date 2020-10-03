@@ -10,12 +10,12 @@ services:
     restart: always
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_DATABASE: khem
-      MYSQL_USER: khem
-      MYSQL_PASSWORD: khem
-      MYSQL_ROOT_PASSWORD: khem
+      MYSQL_DATABASE: 'khem'
+      MYSQL_USER: 'khem'
+      MYSQL_PASSWORD: 'khem'
+      MYSQL_ROOT_PASSWORD: 'khem'
     ports:
-      - 3306:3306
+      - 1022:3306
     expose:
       - 3306
     healthcheck:
@@ -32,8 +32,11 @@ services:
     networks:
       - khem
     ports:
-      - 5000:5000
+      - 1023:5000
     restart: unless-stopped
+    environment:
+      WAIT_HOSTS: 193.137.5.79:3306
+      WAIT_BEFORE_HOSTS: 10
     depends_on:
       - db
     
