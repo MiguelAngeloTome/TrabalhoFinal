@@ -188,7 +188,7 @@ class ListaVinhas extends React.Component {
         super(props);
         this.state = {
             value: 0,
-            count:0,
+            count: 0,
             open: true,
             openDialogVinha: false,
             openDialogModule: false,
@@ -218,7 +218,7 @@ class ListaVinhas extends React.Component {
             moduleError2: false,
             latMapa: undefined,
             lngMapa: undefined,
-            isCoordsVinha:true,
+            isCoordsVinha: true,
         }
     };
     static contextType = AuthContext;
@@ -229,25 +229,25 @@ class ListaVinhas extends React.Component {
     }
 
     addVinha() {
-        if(this.state.nomeVinha !== null && 
+        if (this.state.nomeVinha !== null &&
             this.state.nomeVinha !== undefined &&
-            this.state.nomeVinha !=="" &&
-            this.state.local !== null && 
+            this.state.nomeVinha !== "" &&
+            this.state.local !== null &&
             this.state.local !== undefined &&
-            this.state.local !==""
-        ){
-            this.setState({openDialogVinha:false});
-            this.setState({value: 1 });
-        }else{
+            this.state.local !== ""
+        ) {
+            this.setState({ openDialogVinha: false });
+            this.setState({ value: 1 });
+        } else {
             this.setState({ snackOpen: true })
         }
     }
-    connectUserVinha (data) {
-        services.user.addUserVinha({user_id:this.context.user.id, vinha_id:data.vinha_id}).catch();
+    connectUserVinha(data) {
+        services.user.addUserVinha({ user_id: this.context.user.id, vinha_id: data.vinha_id }).catch();
         services.vinha.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
-        services.module.add({id: this.state.module, vinha_id: data.vinha_id, localizacao:this.state.nomeModule, lat:this.state.latMapa, lng:this.state.lngMapa});
+        services.module.add({ id: this.state.module, vinha_id: data.vinha_id, localizacao: this.state.nomeModule, lat: this.state.latMapa, lng: this.state.lngMapa });
     }
-    
+
     handleFormClick() {
         this.setState({ openDialogVinha: true })
     }
@@ -258,15 +258,15 @@ class ListaVinhas extends React.Component {
             services.vinha.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch();
         } else {
             services.data.getModulesVinha(id).then(data => {
-                for(let i = 0; i < data.length; i++){
-                    services.data.getAllModule(data[i].module_id).then(data =>{
-                        for(let i = 0; i < data.length; i++){
+                for (let i = 0; i < data.length; i++) {
+                    services.data.getAllModule(data[i].module_id).then(data => {
+                        for (let i = 0; i < data.length; i++) {
                             services.data.remove(data[i].data_id);
                         }
                     })
                     services.module.remove(data[i].module_id);
                 }
-                services.user.deleteUserVinha({vinha_id:id, user_id:this.context.user.id}).then( data =>{
+                services.user.deleteUserVinha({ vinha_id: id, user_id: this.context.user.id }).then(data => {
                     services.vinha.delete(data.vinha_id);
                     services.vinha.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch()
                 });
@@ -274,40 +274,40 @@ class ListaVinhas extends React.Component {
         }
     }
 
-    nomeVinhaChange = (e) =>{
-        if(e !== null && e !== undefined && e !==""){
-            this.setState({nomeVinhaError: false})
-        }else{
-            this.setState({nomeVinhaError: true})
+    nomeVinhaChange = (e) => {
+        if (e !== null && e !== undefined && e !== "") {
+            this.setState({ nomeVinhaError: false })
+        } else {
+            this.setState({ nomeVinhaError: true })
         }
-        this.setState({nomeVinha:e});
+        this.setState({ nomeVinha: e });
     }
 
-    latChange = (e) =>{
-        if(e !== null && e !== undefined && e !==""){
-            this.setState({latError: false})
-        }else{
-            this.setState({latError: true})
+    latChange = (e) => {
+        if (e !== null && e !== undefined && e !== "") {
+            this.setState({ latError: false })
+        } else {
+            this.setState({ latError: true })
         }
-        this.setState({lat:e});
+        this.setState({ lat: e });
     }
 
-    longChange = (e) =>{
-        if(e !== null && e !== undefined && e !==""){
-            this.setState({longError: false})
-        }else{
-            this.setState({longError: true})
+    longChange = (e) => {
+        if (e !== null && e !== undefined && e !== "") {
+            this.setState({ longError: false })
+        } else {
+            this.setState({ longError: true })
         }
-        this.setState({long:e});
+        this.setState({ long: e });
     }
 
-    localChange = (e) =>{
-        if(e !== null && e !== undefined && e !==""){
-            this.setState({localError: false})
-        }else{
-            this.setState({localError: true})
+    localChange = (e) => {
+        if (e !== null && e !== undefined && e !== "") {
+            this.setState({ localError: false })
+        } else {
+            this.setState({ localError: true })
         }
-        this.setState({local:e});
+        this.setState({ local: e });
     }
 
     handleFormcloseModule() {
@@ -316,74 +316,86 @@ class ListaVinhas extends React.Component {
     }
 
     handleFormcloseModule2() {
-        services.module.getSingleSecModule(this.state.module).then(data =>{
-            if(data.length === 1){
+        services.module.getSingleSecModule(this.state.module).then(data => {
+            if (data.length === 1) {
                 services.module.getSingleModule(this.state.module).then(data => {
-                    if(data.length === 0){
-                        if(this.state.nomeModule !== null && this.state.nomeModule !== undefined && this.state.nomeModule !=="" && this.state.module !== null && this.state.module !== undefined && this.state.module !==""){
+                    if (data.length === 0) {
+                        if (this.state.nomeModule !== null && this.state.nomeModule !== undefined && this.state.nomeModule !== "" && this.state.module !== null && this.state.module !== undefined && this.state.module !== "") {
                             this.setState({ openDialogModule2: false, value: 1 });
-                        }    
-                    }else{
-                        this.setState({moduleAlreadyAssigned: true})
+                        }
+                    } else {
+                        this.setState({ moduleAlreadyAssigned: true })
                     }
                 })
-            }else{
-                this.setState({ moduleError2: true});
+            } else {
+                this.setState({ moduleError2: true });
             }
         }).catch();
     }
 
-    nomeModuleChange = (e) =>{
-        if(e !== null && e !== undefined && e !==""){
-            this.setState({nomeModuleError: false})
-        }else{
-            this.setState({nomeModuleError: true})
+    nomeModuleChange = (e) => {
+        if (e !== null && e !== undefined && e !== "") {
+            this.setState({ nomeModuleError: false })
+        } else {
+            this.setState({ nomeModuleError: true })
         }
-        this.setState({nomeModule:e});
+        this.setState({ nomeModule: e });
     }
 
-    moduleChange = (e) =>{
-        if(e !== null && e !== undefined && e !==""){
-            this.setState({moduleError: false})
-        }else{
-            this.setState({moduleError: true})
+    moduleChange = (e) => {
+        if (e !== null && e !== undefined && e !== "") {
+            this.setState({ moduleError: false })
+        } else {
+            this.setState({ moduleError: true })
         }
-        this.setState({module:e});
-        this.setState({moduleError2: false});
-        this.setState({moduleAlreadyAssigned: false});
+        this.setState({ module: e });
+        this.setState({ moduleError2: false });
+        this.setState({ moduleAlreadyAssigned: false });
     }
 
     callbackFunction = (childData) => {
-        if(this.state.isCoordsVinha){
-            this.setState({lat: childData.lat, long: childData.lng});
-        }else{
-            this.setState({latMapa: childData.lat, lngMapa: childData.lng});
-        } 
+        if (this.state.isCoordsVinha) {
+            this.setState({ lat: childData.lat, long: childData.lng });
+        } else {
+            this.setState({ latMapa: childData.lat, lngMapa: childData.lng });
+        }
     };
 
     handleSnackClose = (event, reason) => {
         if (reason === 'clickaway') {
-          return;
+            return;
         }
-    
+
         this.setState({ snackOpen: false })
     };
 
-    newModule = () =>{
-        if(this.state.isCoordsVinha){
-            if(this.state.lat !== null && this.state.lat !== undefined && this.state.lat !=="" && this.state.long !== null && this.state.long !== undefined && this.state.long !=="" ){
-                this.setState({value: 0, openDialogModule:true, isCoordsVinha:false, snackOpen: false });
-            }else{
-                this.setState({ snackOpen: true})
+    newModule = () => {
+        if (this.state.isCoordsVinha) {
+            if (this.state.lat !== null && this.state.lat !== undefined && this.state.lat !== "" && this.state.long !== null && this.state.long !== undefined && this.state.long !== "") {
+                this.setState({ value: 0, openDialogModule: true, isCoordsVinha: false, snackOpen: false });
+            } else {
+                this.setState({ snackOpen: true })
             }
-        }else{
-            if(this.state.latMapa !== null && this.state.latMapa !== undefined && this.state.latMapa !=="" && this.state.lngMapa !== null && this.state.lngMapa !== undefined && this.state.lngMapa !=="" ){
-                services.vinha.add({nome: this.state.nomeVinha,lat:this.state.lat,lng:this.state.long,localizacao:this.state.local,dono:this.context.user.id}).then(data => this.connectUserVinha(data)).catch();
-                this.setState({value: 0, snackOpen: false});
-            }else{
+        } else {
+            if (this.state.latMapa !== null && this.state.latMapa !== undefined && this.state.latMapa !== "" && this.state.lngMapa !== null && this.state.lngMapa !== undefined && this.state.lngMapa !== "") {
+                services.vinha.add({ nome: this.state.nomeVinha, lat: this.state.lat, lng: this.state.long, localizacao: this.state.local, dono: this.context.user.id }).then(data => this.connectUserVinha(data)).catch();
+                this.setState({ value: 0, snackOpen: false });
+            } else {
                 this.setState({ snackOpen: true })
             }
         }
+    }
+
+    closeVinhas = () => {
+        this.setState({ openDialogVinha: false, nomeVinha: "", local: "" });
+    }
+
+    closeModulo = () => {
+        this.setState({ openDialogModule: false, isCoordsVinha: true, nomeVinha: "", local: "", lat: "", long: "" });
+    }
+
+    closeModulo2 = () => {
+        this.setState({ openDialogModule2: false, isCoordsVinha: true, nomeVinha: "", local: "", module: "", nomeModule: "", lat: "", long: "", latMapa: "", lngMapa: "" });
     }
 
     render() {
@@ -396,18 +408,18 @@ class ListaVinhas extends React.Component {
                 <AppBar position="absolute" className={clsx(classes.appBar, this.state.open && classes.appBarShift)}>
                     <Toolbar className={classes.toolbar}>
                         <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={() => this.setState({ open: true })}
-                            className={clsx(classes.menuButton, this.state.open && classes.menuButtonHidden)}
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={() => this.setState({ open: true })}
+                        className={clsx(classes.menuButton, this.state.open && classes.menuButtonHidden)}
                         >
                             <MenuIcon />
                         </IconButton>
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                             Vinhas
-          </Typography>
-          <IconButton color="inherit" href="/#/alertas">
+                        </Typography>
+                        <IconButton color="inherit" href="/#/alertas">
                             <Badge badgeContent={this.state.count} color="secondary">
                                 <NotificationsIcon />
                             </Badge>
@@ -436,68 +448,68 @@ class ListaVinhas extends React.Component {
                 </Drawer>
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />
-                    
-                    {this.state.value === 0 &&
-                    <Container maxWidth="lg" className={classes.container}>
-                        <MaterialTable
-                            icons={tableIcons}
-                            title="Lista de Vinhas"
-                            columns={this.state.columns}
-                            data={this.state.datas}
-                            options={{
-                                actionsColumnIndex: -1,
 
-                            }}
-                            onRowClick={(event, rowData) => this.props.history.push(`/vinhas/details/${rowData.vinha_id}`)}
-                            actions={[
-                                {
-                                    icon: AddBox,
-                                    tooltip: 'Adicionar vinha',
-                                    isFreeAction: true,
-                                    onClick: () => this.handleFormClick()
-                                }
-                            ]}
-                            editable={{
-                                onRowUpdate: (newData, oldData) =>
-                                    new Promise((resolve) => {
-                                        setTimeout(() => {
-                                            resolve();
-                                            this.setState({ localizacao: newData.localizacao });
-                                            this.setState({ nome: newData.Nome });
-                                            this.setState({ coordenadas: newData.coordenadas })
-                                            this.submit(oldData.vinha_id, 'update');
-                                        }, 600);
-                                    }),
-                                onRowDelete: (oldData) =>
-                                    new Promise((resolve) => {
-                                        setTimeout(() => {
-                                            resolve();
-                                            this.submit(oldData.vinha_id, '');
-                                        }, 600);
-                                    }),
-                            }}
-                        />
-                    </Container>
+                    {this.state.value === 0 &&
+                        <Container maxWidth="lg" className={classes.container}>
+                            <MaterialTable
+                                icons={tableIcons}
+                                title="Lista de Vinhas"
+                                columns={this.state.columns}
+                                data={this.state.datas}
+                                options={{
+                                    actionsColumnIndex: -1,
+
+                                }}
+                                onRowClick={(event, rowData) => this.props.history.push(`/vinhas/details/${rowData.vinha_id}`)}
+                                actions={[
+                                    {
+                                        icon: AddBox,
+                                        tooltip: 'Adicionar vinha',
+                                        isFreeAction: true,
+                                        onClick: () => this.handleFormClick()
+                                    }
+                                ]}
+                                editable={{
+                                    onRowUpdate: (newData, oldData) =>
+                                        new Promise((resolve) => {
+                                            setTimeout(() => {
+                                                resolve();
+                                                this.setState({ localizacao: newData.localizacao });
+                                                this.setState({ nome: newData.Nome });
+                                                this.setState({ coordenadas: newData.coordenadas })
+                                                this.submit(oldData.vinha_id, 'update');
+                                            }, 600);
+                                        }),
+                                    onRowDelete: (oldData) =>
+                                        new Promise((resolve) => {
+                                            setTimeout(() => {
+                                                resolve();
+                                                this.submit(oldData.vinha_id, '');
+                                            }, 600);
+                                        }),
+                                }}
+                            />
+                        </Container>
                     }
 
-                    {this.state.value === 1 &&          
+                    {this.state.value === 1 &&
                         <Container maxWidth="lg" className={classes.containerMap}>
-                                <div className={classes.root}>
-                                    <Snackbar open={this.state.snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
+                            <div className={classes.root}>
+                                <Snackbar open={this.state.snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
                                     <Alert onClose={this.handleSnackClose} severity="error">
                                         Precisa de escolher a sua localização.
                                     </Alert>
-                                    </Snackbar>
-                                </div>
-                                {this.state.isCoordsVinha === true &&
-                                    <h2 style= {{"font-size": "medium", "padding": "5px",fontWeight: "bold"}} textAlign="center">Localização da vinha</h2>
-                                }
-                                {this.state.isCoordsVinha === false &&
-                                    <h2 style= {{"font-size": "medium", "padding": "5px",fontWeight: "bold"}} textAlign="center">Localização do modulo</h2>
-                                }
-                                <ClickMap parentCallback = {this.callbackFunction}/>
-                                <Button variant="contained" color="primary" style= {{position: "absolute",bottom: 3,right:30}} onClick={() => this.newModule()}>
-                                            SEGUINTE
+                                </Snackbar>
+                            </div>
+                            {this.state.isCoordsVinha === true &&
+                                <h2 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }} textAlign="center">Localização da vinha</h2>
+                            }
+                            {this.state.isCoordsVinha === false &&
+                                <h2 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }} textAlign="center">Localização do modulo</h2>
+                            }
+                            <ClickMap parentCallback={this.callbackFunction} />
+                            <Button variant="contained" color="primary" style={{ position: "absolute", bottom: 3, right: 30 }} onClick={() => this.newModule()}>
+                                SEGUINTE
                                 </Button>
                         </Container>
                     }
@@ -506,33 +518,33 @@ class ListaVinhas extends React.Component {
 
 
 
-                        <Container maxWidth="lg" className={classes.container}>
-                            <Dialog fullWidth minWidth="500px" open={this.state.openDialogVinha} onClose={() => this.setState({openDialogVinha: false})} aria-labelledby="form-dialog-title">
-                                <DialogTitle id="form-dialog-title">Criar uma vinha</DialogTitle>
-                                <DialogContent fullWidth>
+                    <Container maxWidth="lg" className={classes.container}>
+                        <Dialog fullWidth minWidth="500px" open={this.state.openDialogVinha} onClose={() => this.closeVinhas()} aria-labelledby="form-dialog-title">
+                            <DialogTitle id="form-dialog-title">Criar uma vinha</DialogTitle>
+                            <DialogContent fullWidth>
                                 <FormControl error fullWidth>
-                                    <TextField autoFocus margin="dense" value={this.state.nomeVinha} onChange = {(evt)=>this.nomeVinhaChange(evt.target.value)} label="Nome da vinha" aria-describedby="nomeVinha-error-text" fullWidth />
+                                    <TextField autoFocus margin="dense" value={this.state.nomeVinha} onChange={(evt) => this.nomeVinhaChange(evt.target.value)} label="Nome da vinha" aria-describedby="nomeVinha-error-text" fullWidth />
                                     {this.state.nomeVinhaError === true &&
                                         <FormHelperText fullWidth id="nomeVinha-error-text">O nome da vinha nao pode estar vazio</FormHelperText>
                                     }
-                                    <TextField autoFocus margin="dense" value={this.state.local} onChange = {(evt)=>this.localChange(evt.target.value)} label="Localizacao" aria-describedby="local-error-text" fullWidth />
+                                    <TextField autoFocus margin="dense" value={this.state.local} onChange={(evt) => this.localChange(evt.target.value)} label="Localizacao" aria-describedby="local-error-text" fullWidth />
                                     {this.state.localError === true &&
                                         <FormHelperText fullWidth id="local-error-text">A localização da vinha nao pode estar vazia</FormHelperText>
                                     }
                                 </FormControl>
-                                </DialogContent>
-                                <DialogActions>
-                                    <Button onClick={() => this.addVinha()} color="primary">
-                                        SEGUINTE
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={() => this.addVinha()} color="primary">
+                                    SEGUINTE
                                     </Button>
-                                </DialogActions>
-                            </Dialog>
+                            </DialogActions>
+                        </Dialog>
 
 
 
-                            <Dialog open={this.state.openDialogModule} onClose={() => this.setState({openDialogModule:false})} aria-labelledby="form-dialog-title">
-                                <DialogTitle id="form-dialog-title">CRIAR UM MODULO</DialogTitle>
-                                <DialogContent>
+                        <Dialog open={this.state.openDialogModule} onClose={() => this.closeModulo()} aria-labelledby="form-dialog-title">
+                            <DialogTitle id="form-dialog-title">CRIAR UM MODULO</DialogTitle>
+                            <DialogContent>
                                 <DialogContentText>
                                 </DialogContentText>
                                 <DialogContentText>
@@ -544,58 +556,58 @@ class ListaVinhas extends React.Component {
                                 <DialogContentText>
                                     Terá também de escolher no mapa a sua Localização. Isto ajudará nos cálculos para os tornar mais precisos.
                                 </DialogContentText>
-                                    
-                                </DialogContent>
-                                <DialogActions>
-                                    <Button onClick={() => this.handleFormcloseModule()} color="primary">
-                                        SEGUINTE
-                                    </Button>
-                                </DialogActions>
-                            </Dialog>
 
-                            <Dialog fullWidth minWidth="500px" open={this.state.openDialogModule2} onClose={() => this.setState({openDialogModule2:false})} aria-labelledby="form-dialog-title">
-                                <DialogTitle id="form-dialog-title">CRIAR UM MODULO</DialogTitle>
-                                <DialogContent fullWidth>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={() => this.handleFormcloseModule()} color="primary">
+                                    SEGUINTE
+                                    </Button>
+                            </DialogActions>
+                        </Dialog>
+
+                        <Dialog fullWidth minWidth="500px" open={this.state.openDialogModule2} onClose={() => this.closeModulo2()} aria-labelledby="form-dialog-title">
+                            <DialogTitle id="form-dialog-title">CRIAR UM MODULO</DialogTitle>
+                            <DialogContent fullWidth>
                                 <FormControl error fullWidth>
-                                <TextField
-                                    autoFocus
-                                    margin="dense"
-                                    value={this.state.module}
-                                    onChange = {(evt)=>this.moduleChange(evt.target.value)}
-                                    label=" Introduza o número de série da sua estação."
-                                    aria-describedby="module-error-text"
-                                    fullWidth
-                                />
-                                {this.state.moduleError === true &&
-                                    <FormHelperText fullWidth id="module-error-text">O ID da estação nao pode ser vazio</FormHelperText>
-                                }
-                                {this.state.moduleError2 === true &&
-                                    <FormHelperText fullWidth id="module-error-text">O ID da estação nao e valido</FormHelperText>
-                                }
-                                {this.state.moduleAlreadyAssigned === true &&
-                                    <FormHelperText fullWidth id="module-error-text">O ID da estação já está associado a outra vinha</FormHelperText>
-                                }
-                                <TextField
-                                    autoFocus
-                                    value={this.state.nomeModule}
-                                    onChange = {(evt)=>this.nomeModuleChange(evt.target.value)}
-                                    label="Introduza o nome para a sua estação."
-                                    aria-describedby="nome-error-text"
-                                    fullWidth
-                                />
-                                {this.state.nomeModuleError === true &&
-                                    <FormHelperText fullWidth id="module-error-text">O NOME da estação nao pode ser vazio</FormHelperText>
-                                }
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        value={this.state.module}
+                                        onChange={(evt) => this.moduleChange(evt.target.value)}
+                                        label=" Introduza o número de série da sua estação."
+                                        aria-describedby="module-error-text"
+                                        fullWidth
+                                    />
+                                    {this.state.moduleError === true &&
+                                        <FormHelperText fullWidth id="module-error-text">O ID da estação nao pode ser vazio</FormHelperText>
+                                    }
+                                    {this.state.moduleError2 === true &&
+                                        <FormHelperText fullWidth id="module-error-text">O ID da estação nao e valido</FormHelperText>
+                                    }
+                                    {this.state.moduleAlreadyAssigned === true &&
+                                        <FormHelperText fullWidth id="module-error-text">O ID da estação já está associado a outra vinha</FormHelperText>
+                                    }
+                                    <TextField
+                                        autoFocus
+                                        value={this.state.nomeModule}
+                                        onChange={(evt) => this.nomeModuleChange(evt.target.value)}
+                                        label="Introduza o nome para a sua estação."
+                                        aria-describedby="nome-error-text"
+                                        fullWidth
+                                    />
+                                    {this.state.nomeModuleError === true &&
+                                        <FormHelperText fullWidth id="module-error-text">O NOME da estação não pode ser vazio</FormHelperText>
+                                    }
                                 </FormControl>
-                                </DialogContent>
-                                <DialogActions>
-                                    <Button onClick={() => this.handleFormcloseModule2()} color="primary">
-                                        SEGUINTE
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={() => this.handleFormcloseModule2()} color="primary">
+                                    SEGUINTE
                                     </Button>
-                                </DialogActions>
+                            </DialogActions>
 
-                            </Dialog>
-                        </Container>
+                        </Dialog>
+                    </Container>
                 </main>
             </div >
         )

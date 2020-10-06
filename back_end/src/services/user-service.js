@@ -13,28 +13,31 @@ exports.register = (username, rawPassword, email, name, surname, type) => {
                 (err, row) => {
                     if (err) {
                         reject(err);
-
                     }
                     if (row.length < 1) {
-                        if (/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d$@$!%*#?&-.]{8,}$/.test(rawPassword)) {
-                            const dataIv = cipher.generateIv();
-                            const password = cipher.encrypt(rawPassword, dataIv);
-                            db.query(`insert into user(user_id, username, password, email, dataIv, name, surname, type) VALUES(?,?,?,?,?,?,?,?)`,
-                                [id, username, password, email, dataIv, name, surname, type],
-                                err => {
-                                    if (err) {
-
-                                        reject(err);
-
-                                    } else {
-
-                                        resolve({ inserted: 1, user_id: id });
-                                    }
-
-                                });
-                        } else reject("invalid password")
+                        db.query(`Select * from user where email = ?`, [email],
+                            (err, row2) => {
+                                if (err) {
+                                    reject(err);
+                                }
+                                if (row2.length < 1) {
+                                    if (/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d$@$!%*#?&-.]{8,}$/.test(rawPassword)) {
+                                        const dataIv = cipher.generateIv();
+                                        const password = cipher.encrypt(rawPassword, dataIv);
+                                        db.query(`insert into user(user_id, username, password, email, dataIv, name, surname, type) VALUES(?,?,?,?,?,?,?,?)`,
+                                            [id, username, password, email, dataIv, name, surname, type],
+                                            err => {
+                                                if (err) {
+                                                    reject(err);
+                                                } else {
+                                                    resolve({ inserted: 1, user_id: id });
+                                                }
+                                            });
+                                    } else reject("invalid password")
+                                } else reject("invalid email")
+                            }
+                        )
                     } else reject("username in use")
-
                 });
         } catch (error) {
         }

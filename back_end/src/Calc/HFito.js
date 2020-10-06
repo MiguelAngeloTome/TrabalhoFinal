@@ -7,6 +7,7 @@ const db = require('../configs/teste.js');
 exports.Fito = async (dayInic, dayFim, module_id) =>{
     let medHours = await calc.averageTemp(dayInic,dayFim, module_id);
     let send = [];
+    if(medHours === null) return send;
 
     for(i =0; i<medHours.length; i++){
         if(medHours[i].avg > 10){

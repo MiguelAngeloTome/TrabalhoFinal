@@ -49,6 +49,10 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import services from "../../services";
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import ErrorIcon from '@material-ui/icons/Error';
+import { red } from '@material-ui/core/colors';
 
 
 
@@ -179,6 +183,20 @@ const useStyles = theme => ({
 
 });
 
+const cardAlert = {
+    textAlign: "center",
+    position: "relative",
+    width: "60%",
+    top: "10%",
+    marginRight: "auto",
+    marginLeft: "auto"
+}
+
+const corteStyle = {
+    marginTop: "1%",
+    position: "relative",
+}
+
 class Compare extends React.Component {
     constructor(props) {
         super(props);
@@ -215,7 +233,7 @@ class Compare extends React.Component {
         services.vinha.getModulesUser(this.context.user.id)
             .then(data => {
                 this.setState({ vinhas: data });
-                if(data.length > 0 && data[0].modules.length > 0){
+                if (data.length > 0 && data[0].modules.length > 0) {
                     console.log(data)
                     a = data[0].modules[0].module_id;
                     this.setState({ selected: data[0].modules[0].module_id });
@@ -275,7 +293,7 @@ class Compare extends React.Component {
         let dataIni = services.calc.formatedDate(dIn);
         let dataFim = services.calc.formatedDate(dFim);
         services.calc.hFito({ dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected }).then(
-            data => { if (data.length !== 0) { let M = services.calc.MaxMinPhum(data); if (M != null) { this.setState({ key: this.state.key + 1, oldInic: dataIni, oldFim: dataFim, data: data, Max: M[0], Min: M[1], first: false, checked: false }) } } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch();
+            data => { console.log(data);if (data.length !== 0) { let M = services.calc.MaxMinPhum(data); if (M != null) { this.setState({ key: this.state.key + 1, oldInic: dataIni, oldFim: dataFim, data: data, Max: M[0], Min: M[1], first: false, checked: false }) } } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch(err => console.log(err));
     };
 
     calcTcrepusc = (dIn, dFim, m_id) => {
@@ -751,9 +769,16 @@ class Compare extends React.Component {
                             ) : (
                                     <div>
                                         {this.state.first !== true &&
-                                            <Container maxWidth="lg" className={classes.container}>
-                                                <p>Não existem dados suficientes para fazer o calculo da evapotranspiracao, se este erro persistir por favor entrar em contacto</p>
-                                            </Container>
+                                            <div style={cardAlert}>
+                                                <Card >
+                                                    <CardContent>
+                                                        <Typography variant="h5" component="h2">
+                                                            Não existem dados suficientes para fazer o cálculo da evapotranspiracao, se este erro persistir por favor entrar em contacto
+                                                        </Typography>
+                                                        <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                                                    </CardContent>
+                                                </Card>
+                                            </div>
                                         }
                                     </div>
                                 )}
@@ -824,7 +849,7 @@ class Compare extends React.Component {
                                                             'aria-label': 'change date',
                                                         }}
                                                     />
-                                                    <TextField inputProps={{ min: "0", max: "100", step: "1" }} type="number" id="outlined-basic" label="Corte" variant="outlined" value={this.state.corte} onChange={(val) => this.corteupd(val.target.value)} />
+                                                    <TextField style={corteStyle} inputProps={{ min: "0", max: "100", step: "1" }} type="number" id="outlined-basic" label="Corte" variant="outlined" value={this.state.corte} onChange={(val) => this.corteupd(val.target.value)} />
                                                 </Grid>
                                             </MuiPickersUtilsProvider>
                                             <div className={classes.colapseButton} >
@@ -889,9 +914,16 @@ class Compare extends React.Component {
 
                                                 <div>
                                                     {this.state.first !== true &&
-                                                        <Container maxWidth="lg" className={classes.container}>
-                                                            <p>Não existem dados suficientes para fazer o calculo da evapotranspiracao, se este erro persistir por favor entrar em contacto</p>
-                                                        </Container>
+                                                        <div style={cardAlert}>
+                                                            <Card >
+                                                                <CardContent>
+                                                                    <Typography variant="h5" component="h2">
+                                                                        Não existem dados suficientes para fazer o cálculo dos periodos de humidade, se este erro persistir por favor entrar em contacto
+                                                                </Typography>
+                                                                    <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                                                                </CardContent>
+                                                            </Card>
+                                                        </div>
                                                     }
                                                 </div>
 
@@ -1023,9 +1055,16 @@ class Compare extends React.Component {
 
                                                 <div>
                                                     {this.state.first !== true &&
-                                                        <Container maxWidth="lg" className={classes.container}>
-                                                            <p>Não existem dados suficientes para fazer o calculo da evapotranspiracao, se este erro persistir por favor entrar em contacto</p>
-                                                        </Container>
+                                                        <div style={cardAlert}>
+                                                            <Card >
+                                                                <CardContent>
+                                                                    <Typography variant="h5" component="h2">
+                                                                        Não existem dados suficientes para fazer o cálculo dos periodos de infeção, se este erro persistir por favor entrar em contacto
+                                                                    </Typography>
+                                                                    <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                                                                </CardContent>
+                                                            </Card>
+                                                        </div>
                                                     }
                                                 </div>
 
@@ -1169,9 +1208,16 @@ class Compare extends React.Component {
 
                                                 <div>
                                                     {this.state.first !== true &&
-                                                        <Container maxWidth="lg" className={classes.container}>
-                                                            <p>Não existem dados suficientes para fazer o calculo da evapotranspiracao, se este erro persistir por favor entrar em contacto</p>
-                                                        </Container>
+                                                        <div style={cardAlert}>
+                                                            <Card >
+                                                                <CardContent>
+                                                                    <Typography variant="h5" component="h2">
+                                                                        Não existem dados suficientes para fazer o cálculo dos periodos de humectação, se este erro persistir por favor entrar em contacto
+                                                                    </Typography>
+                                                                    <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                                                                </CardContent>
+                                                            </Card>
+                                                        </div>
                                                     }
                                                 </div>
 
@@ -1307,9 +1353,16 @@ class Compare extends React.Component {
 
                                                 <div>
                                                     {this.state.first !== true &&
-                                                        <Container maxWidth="lg" className={classes.container}>
-                                                            <p>Não existem dados suficientes para fazer o calculo da evapotranspiracao, se este erro persistir por favor entrar em contacto</p>
-                                                        </Container>
+                                                        <div style={cardAlert}>
+                                                            <Card >
+                                                                <CardContent>
+                                                                    <Typography variant="h5" component="h2">
+                                                                        Não existem dados suficientes para fazer o cálculo das horas fitoativas, se este erro persistir por favor entrar em contacto
+                                                                    </Typography>
+                                                                    <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                                                                </CardContent>
+                                                            </Card>
+                                                        </div>
                                                     }
                                                 </div>
 
@@ -1441,9 +1494,16 @@ class Compare extends React.Component {
 
                                                 <div>
                                                     {this.state.first !== true &&
-                                                        <Container maxWidth="lg" className={classes.container}>
-                                                            <p>Não existem dados suficientes para fazer o calculo da evapotranspiracao, se este erro persistir por favor entrar em contacto</p>
-                                                        </Container>
+                                                        <div style={cardAlert}>
+                                                            <Card >
+                                                                <CardContent>
+                                                                    <Typography variant="h5" component="h2">
+                                                                        Não existem dados suficientes para fazer o cálculo das horas de frio, se este erro persistir por favor entrar em contacto
+                                                                    </Typography>
+                                                                    <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                                                                </CardContent>
+                                                            </Card>
+                                                        </div>
                                                     }
                                                 </div>
 
@@ -1587,9 +1647,16 @@ class Compare extends React.Component {
 
                                                 <div>
                                                     {this.state.first !== true &&
-                                                        <Container maxWidth="lg" className={classes.container}>
-                                                            <p>Não existem dados suficientes para fazer o calculo da evapotranspiracao, se este erro persistir por favor entrar em contacto</p>
-                                                        </Container>
+                                                        <div style={cardAlert}>
+                                                            <Card >
+                                                                <CardContent>
+                                                                    <Typography variant="h5" component="h2">
+                                                                        Não existem dados suficientes para fazer o cálculo das temperaturas crepusculares, se este erro persistir por favor entrar em contacto
+                                                                    </Typography>
+                                                                    <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                                                                </CardContent>
+                                                            </Card>
+                                                        </div>
                                                     }
                                                 </div>
 

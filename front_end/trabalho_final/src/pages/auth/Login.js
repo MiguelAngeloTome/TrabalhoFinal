@@ -142,7 +142,7 @@ render(){
               color="primary"
               className={classes.submit}
             >
-              Sign In
+              Log in
             </Button>
             <Grid container>
               <Grid item>

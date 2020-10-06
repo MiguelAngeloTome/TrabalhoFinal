@@ -27,6 +27,10 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import MuiAlert from '@material-ui/lab/Alert';
 import services from "../../services/"
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import ErrorIcon from '@material-ui/icons/Error';
+import { red } from '@material-ui/core/colors';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -130,6 +134,15 @@ const useStyles = theme => ({
     fontSize:'x-large'
   },
 });
+
+const cardAlert = {
+  textAlign: "center", 
+  position: "relative",
+  width:"30%",
+  top: "10%",
+  marginRight:"auto",
+  marginLeft:"auto"
+}
 
 
 class Dashboard extends React.Component {
@@ -281,14 +294,29 @@ class Dashboard extends React.Component {
           }
 
           {this.state.noVinhas &&
-            <container>
-              <Alert severity="warning">Nao existe nenhuma vinha para representar a informacao</Alert>
-              <div className={classes.appBarSpacer} />
-            </container>
+            <div style={cardAlert}>
+              <Card >
+                  <CardContent>
+                      <Typography variant="h5" component="h2">
+                          Não tem nenhuma vinha criada
+                      </Typography>
+                      <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                  </CardContent>
+              </Card>
+            </div>
           }
 
-          {this.state.noData &&
-            <Alert severity="warning">Nao existe informacao associada a esta vinha</Alert>
+          {!this.state.noVinhas && this.state.noData &&
+            <div style={cardAlert}>
+              <Card >
+                  <CardContent>
+                      <Typography variant="h5" component="h2">
+                          A vinha não tem informação
+                      </Typography>
+                      <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                  </CardContent>
+              </Card>
+            </div>
           }
 
           

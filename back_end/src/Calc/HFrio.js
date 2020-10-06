@@ -11,7 +11,10 @@ exports.getTemp= async(dayInic, dayFim, module_id) =>{
     return new Promise((resolve,reject)=>{
         db.query(`select date, temp from data where date BETWEEN ? and ? and module_id =? order by date asc`,[dayInic, df, module_id],(err,row)=>{
             if(err) reject (err);
-            resolve(row);
+            if (row.length > 0){
+                resolve(row);
+            }
+            resolve(null);
         });
     });
 };
@@ -19,6 +22,8 @@ exports.getTemp= async(dayInic, dayFim, module_id) =>{
 exports.averageTemp = async(dayInic, dayFim, module_id) =>{
 
     let tempValues = await this.getTemp(dayInic, dayFim, module_id);
+    console.log(tempValues)
+    if(tempValues === null) return null;
    /* let tempValues = [{ date: '2009-06-29 11:08:59', temp: 20 },
     { date: '2009-06-29 11:23:59', temp: 90 },
     { date: '2009-06-29 11:40:59', temp: 91 },
