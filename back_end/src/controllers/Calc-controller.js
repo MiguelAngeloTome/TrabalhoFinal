@@ -17,7 +17,7 @@ exports.HorasFito = async (req, res) => {
 };
 
 exports.averageTemp = async (req, res) => {
-    await FRIO.averageTemp(req.body)
+    await FRIO.AverageSend(req.body)
    .then(result => res.json(result))
    .catch(err => res.status(500).json({erro: err.message}));
 };

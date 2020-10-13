@@ -9,7 +9,7 @@ const vinhaUserRoute = require("./routes/vinhaUser-route.js")
 const calcRoute = require("./routes/Calc-route.js")
 const excelRoute = require("./routes/excel-route.js")
 const avisosRoute = require("./routes/avisos-route")
-
+const riscosRoute = require("./routes/riscos-route")
 const app = express();
 
 app.use(bodyParser.json());
@@ -23,6 +23,7 @@ app.use('/vinha', vinhaRoute);
 app.use('/vinhauser', vinhaUserRoute);
 app.use('/calc', calcRoute);
 app.use('/excel', excelRoute);
+app.use('/risco', riscosRoute);
 
 const port = process.env.port || 5000;
 app.listen(port, ()=>{

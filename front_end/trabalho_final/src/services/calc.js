@@ -74,6 +74,7 @@ export default {
     pInf: (body) => apiRequest("POST", `/calc/infec`, body),
     pHume: (body) => apiRequest("POST", `/calc/humc`, body),
     hFito: (body) => apiRequest("POST", `/calc/fito`, body),
+    hFrio: (body) => apiRequest("POST", `/calc/average`, body),
     tcrepusc: (body) => apiRequest("POST", `/calc/tcrepusc`, body),
     MaxMin,
     formatedDate,

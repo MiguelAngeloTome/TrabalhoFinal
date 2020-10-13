@@ -121,24 +121,24 @@ exports.Phumectacao = async (dayInic, dayFim, module_id,) => {
     if(isWetValues.length >0){
         
         if(isWetValues[0].isWet != 6999){
-            inic = isWetValues[0].date;
+            inic = isWetValues[0].date.getFullYear() +"-"+ (isWetValues[0].date.getMonth()+1)+"-"+isWetValues[0].date.getDate() +" "+isWetValues[0].date.getHours()+":"+isWetValues[0].date.getMinutes()+":"+isWetValues[0].date.getSeconds()
             flagIntervalo = true;
         }
 
         for(i=1; i< isWetValues.length; i++){
 
             if(isWetValues[i].isWet != 6999 && !flagIntervalo){
-                inic = isWetValues[i].date;
+                inic = isWetValues[i].date.getFullYear() +"-"+ (isWetValues[i].date.getMonth()+1)+"-"+isWetValues[i].date.getDate() +" "+isWetValues[i].date.getHours()+":"+isWetValues[i].date.getMinutes()+":"+isWetValues[i].date.getSeconds()
                 flagIntervalo = true;
             }
             else{
                 if(isWetValues[i].isWet == 6999 && flagIntervalo){
-                    send.push({inic: inic , fim: isWetValues[i-1].date});
+                    send.push({inic: inic , fim: isWetValues[i-1].date.getFullYear() +"-"+ (isWetValues[i-1].date.getMonth()+1)+"-"+isWetValues[i-1].date.getDate() +" "+isWetValues[i-1].date.getHours()+":"+isWetValues[i-1].date.getMinutes()+":"+isWetValues[i-1].date.getSeconds()});
                     flagIntervalo = false;
                 }
             }
             if(flagIntervalo && (i + 1) == isWetValues.length){
-                    send.push({inic: inic , fim: isWetValues[i].date});
+                    send.push({inic: inic , fim: isWetValues[i].date.getFullYear() +"-"+ (isWetValues[i].date.getMonth()+1)+"-"+isWetValues[i].date.getDate() +" "+isWetValues[i].date.getHours()+":"+isWetValues[i].date.getMinutes()+":"+isWetValues[i].date.getSeconds()});
                     flagIntervalo = false;
             }
         }

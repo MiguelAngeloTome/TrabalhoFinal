@@ -4,7 +4,7 @@ const etp = require('../Calc/ETP.js');
 var nodemailer = require('nodemailer');
 //const xl = require('excel4node');
 
-exports.verifica = async (module_id, date, temp, air_humidity, solo_humidity, isWet, pluviosidade, vel_vento, dir_vento, radiacao, mail) => {
+exports.verifica = async (module_id, date, temp, air_humidity, solo_humidity, solo_temp, isWet, pluviosidade, vel_vento, dir_vento, radiacao, mail) => {
     this.verData(mail, date, module_id);
     this.verTemp(mail, temp, module_id);
     this.verAirHum(mail, air_humidity, module_id);

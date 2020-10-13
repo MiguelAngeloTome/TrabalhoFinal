@@ -6,6 +6,7 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import EcoIcon from '@material-ui/icons/Eco';
 import AnnouncementIcon from '@material-ui/icons/Announcement';
+import WarningIcon from '@material-ui/icons/Warning';
 import Avatar from '@material-ui/core/Avatar';
 import { withStyles } from '@material-ui/core/styles';
 import { lightGreen,} from '@material-ui/core/colors';
@@ -50,8 +51,18 @@ class SideNav extends React.Component{
           <ListItemIcon>
             <TrendingUpIcon />
           </ListItemIcon>
-          <ListItemText primary="Comparações" />
+          <ListItemText primary="Calculos" />
         </ListItem>
+        <ListItem  button component="a" href="/#/risco">
+          <ListItemIcon>
+            <WarningIcon />
+          </ListItemIcon>
+          <ListItemText primary="Calculo de Riscos" />
+        </ListItem>
+
+
+
+
         <ListItem  button component="a" href="/#/alertas">
           <ListItemIcon>
             <AnnouncementIcon />

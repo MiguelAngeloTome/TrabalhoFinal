@@ -2,13 +2,16 @@ const { format } = require('mysql');
 const db = require('../configs/teste.js');
 
 exports.getMedTemp = async(day, module_id) =>{
+    console.log(day)
     return new Promise((resolve,reject)=>{
         db.query(`select avg(temp) as mtemp from data
-                where date like ? || '%'
+                where date like ? '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
                     if(err) reject (err);
                     if (row.length > 0){
+                        console.log(row)
                         resolve(row[0].mtemp);
+                        
                     }
                     resolve(null);
                 });
@@ -18,7 +21,7 @@ exports.getMedTemp = async(day, module_id) =>{
 exports.getMaxTemp = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
         db.query(`select max(temp) as mtemp from data
-                where date like ? || '%'
+                where date like ? '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
                     if(err) reject (err);
                     if (row.length > 0){
@@ -32,7 +35,7 @@ exports.getMaxTemp = async(day, module_id) =>{
 exports.getMinTemp = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
         db.query(`select min(temp) as mtemp from data
-                where date like ? || '%'
+                where date like ? '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
                     if(err) reject (err);
                     if (row.length > 0){
@@ -46,7 +49,7 @@ exports.getMinTemp = async(day, module_id) =>{
 exports.getRadMed = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
         db.query(`select avg(radiacao) as mrad from data
-                where date like ? || '%'
+                where date like ? '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
                     if(err) reject (err);
                     if (row.length > 0){
@@ -60,7 +63,7 @@ exports.getRadMed = async(day, module_id) =>{
 exports.getHumMax = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
         db.query(`select max(air_humidity) as mhum from data
-                where date like ? || '%'
+                where date like ? '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
                     if(err) reject (err);
                     if (row.length > 0){
@@ -74,7 +77,7 @@ exports.getHumMax = async(day, module_id) =>{
 exports.getHumMin = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
         db.query(`select min(air_humidity) as mhum from data
-                where date like ? || '%'
+                where date like ? '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
                     if(err) reject (err);
                     if (row.length > 0){
@@ -88,7 +91,7 @@ exports.getHumMin = async(day, module_id) =>{
 exports.getVentoMed = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
         db.query(`select avg(vel_vento) as mvento from data
-                where date like ? || '%'
+                where date like ? '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
                     if(err) reject (err);
                     if (row.length > 0){

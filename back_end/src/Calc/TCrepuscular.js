@@ -119,7 +119,7 @@ exports.horasNascerPor = async (sol, latitude, longitude, Num_dia) =>{
 exports.getTemp = async(day, module_id) =>{
     return new Promise((resolve,reject)=>{
         db.query(`select temp as mtemp from data
-                where date like ? || '%'
+                where date like ? '%'
                 and module_id = ?`,[day, module_id],(err,row)=>{
             if(err) reject (err);
             if (row.length > 0){
@@ -142,8 +142,10 @@ exports.Tempcrepuscular = async (dayInic, dayFim, module_id) =>{
     let tempC;
     for(data; data<=DataF;data.setDate(data.getDate()+1)){
         d = await calc.getFormatedDate(data);
+        
         diaAno = await calc.diaToDiaAno(d);
         horaCrepuscular = await this.horasNascerPor(false, lat, lng, diaAno)
+        console.log(horaCrepuscular);
         d= d + " "+ horaCrepuscular;
         tempC = await this.getTemp(d, module_id);
         if(tempC != null){

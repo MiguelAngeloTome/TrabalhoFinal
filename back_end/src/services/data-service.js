@@ -8,7 +8,7 @@ const uuid = require('uuid').v4;
 //Retorna todos os datas
 exports.getData = async () => {
     return new Promise((resolve, reject) => {
-        db.query(`select * from data`,
+        db.query(`select * from data `,
             (err, row) => {
                 if (err) reject(err);
                 resolve(row);
@@ -34,7 +34,7 @@ exports.getDataSingle = id => {
 exports.getDataModule = id => {
     return new Promise((resolve, reject) => {
         db.query(`select * from data 
-                where module_id = ?`, [id],
+                where module_id = ? order by date desc`, [id],
             (err, row) => {
                 if (err) reject(err);
                 resolve(row);
