@@ -1,7 +1,7 @@
 const db = require('../configs/teste.js');
 const avisos = require('../Avisos/Verificacao.js');
-const excelService  = require('./excel-service')
-//const userAvisos = require('./userAvisos.js');
+const excelService  = require('./excel-service');
+const vinhaService = require ('./vinha-service');
 
 const uuid = require('uuid').v4;
 
@@ -74,8 +74,14 @@ exports.getDataTimeFrame = (id, body) => {
 
 //Inserir novo data
 exports.insertData = async body => {
+    let vinha_id = await vinhaService.getVinhaFromModule(body.module_id);
+    vinha_id = vinha_id[0].vinha_id;
+    let user_id = await vinhaService.getDonoVinha(vinha_id);
+    user_id = user_id[0].dono
+
     let mail = await excelService.getUsersEmailsFromModule(body.module_id);
-    avisos.verifica(body.module_id, body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao, mail);
+
+    avisos.verifica(vinha_id, user_id, body.module_id, body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao, mail);
     return new Promise((resolve, reject) => {
         const id = uuid();
         db.query(`insert into data(data_id, module_id, date, temp, air_humidity, solo_humidity, isWet, pluviosidade, vel_vento, dir_vento, radiacao) VALUES(?,?,?,?,?,?,?,?,?,?,?)`,
@@ -101,7 +107,8 @@ exports.removeData = id => {
 //Update data
 exports.updateData = (id, body) => {
     return new Promise((resolve, reject) => {
-        db.query(`update data set module_id = ?, date = ?, temp = ?, air_humidity = ?, solo_humidity = ?, isWet = ?, pluviosidade = ?, vel_vento = ?, dir_vento = ?, radiacao = ? where data_id = ?`,
+        db.query(`update data set module_id = ?, date = ?, temp = ?, air_humidity = ?, solo_humidity = ?, isWet = ?, pluviosidade = ?, vel_vento = ?, dir_vento = ?, radiacao = ? 
+                  where data_id = ?`,
             [body.module_id, body.date, body.temp, body.air_humidity, body.solo_humidity, body.isWet, body.pluviosidade, body.vel_vento, body.dir_vento, body.radiacao, id],
             err => {
                 if (err) reject(err);

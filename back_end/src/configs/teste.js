@@ -82,10 +82,34 @@ db.query(`create table if not exists avisos(
     id varchar(36) NOT NULL primary key,
     nomeVinha varchar(50),
     module_id varchar(36),
-    msgErro varchar(36),
+    msgErro varchar(100),
     prioridade int,
     hora varchar(20),
     dia date)`
+);
+
+db.query(`create table if not exists userPrefs(
+    vinha_id varchar(36),
+    user_id varchar(36),
+    tempMin float,
+    tempMax float,
+    airHumidityMin float,
+    airHumidityMax float,
+    soloHumidityMin float,
+    soloHumidityMax float,
+    isWetMin int,
+    isWetMax int,
+    pluviosidadeMin float,
+    pluviosidadeMax float,
+    velVentoMin float,
+    velVentoMax float,
+    dirVentoMin int,
+    dirVentoMax int,
+    radiacaoMin float,
+    radiacaoMax float,
+    foreign key (user_id) REFERENCES user(user_id),
+    foreign key (vinha_id) REFERENCES vinha(vinha_id),
+    primary key(vinha_id, user_id))`
 );
 
 module.exports = db;

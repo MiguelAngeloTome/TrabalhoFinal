@@ -1,7 +1,5 @@
-
 const vinhaUserService = require("../services/vinhaUser-service");
 const moduleService = require("../services/module-service")
-
 const db = require('../configs/teste.js');
 
 //Retorna todos os avisos
@@ -77,6 +75,63 @@ exports.removeAviso = id => {
             err => {
                 if (err) reject(err);
                 resolve({ removed: 1, data_id: id });
+            });
+    });
+};
+
+exports.getUserPrefs = () => {
+    return new Promise((resolve, reject) => {
+        db.query(`select * from userPrefs`, (err, row) => {
+            if (err) reject(err);
+            resolve(row);
+        });
+    });
+}
+
+exports.getUserPrefsSingle = body => {
+    return new Promise((resolve, reject) => {
+        db.query(`select * from userPrefs
+                where vinha_id = ? and
+                user_id = ?`, [body.vinha_id, body.user_id], (err, row) => {
+            if (err) reject(err);
+            resolve(row);
+        });
+    });
+}
+
+exports.insertUserPrefs = body => {
+    return new Promise((resolve, reject) => {
+        db.query(`insert into userPrefs(vinha_id, user_id, tempMin, tempMax, airHumidityMin, airHumidityMax, soloHumidityMin, soloHumidityMax, isWetMin, isWetMax, pluviosidadeMin, pluviosidadeMax, velVentoMin, velVentoMax, dirVentoMin, dirVentoMax, radiacaoMin, radiacaoMax)
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                [body.vinha_id, body.user_id, body.tempMin, body.tempMax, body.airHumidityMin, body.airHumidityMax, body.soloHumidityMin, body.soloHumidityMax, body.isWetMin, body.isWetMax, body.pluviosidadeMin, body.pluviosidadeMax, body.velVentoMin, body.velVentoMax, body.dirVentoMin, body.dirVentoMax, body.radiacaoMin, body.radiacaoMax],
+            err => {
+                if (err) reject(err);
+                resolve({ inserted: 1, vinha_id: body.vinha_id });
+            });
+    });
+};
+
+//Remover preferencias
+exports.removeUserPrefs = body => {
+    return new Promise((resolve, reject) => {
+        db.query(`delete from userPrefs 
+                where vinha_id = ? and
+                user_id = ?`, [body.vinha_id, body.user_id],
+            err => {
+                if (err) reject(err);
+                resolve({ removed: 1, vinha_id: body.vinha_id });
+            });
+    });
+};
+
+exports.updateUserPrefs = (body) => {
+    return new Promise((resolve, reject) => {
+        db.query(`update userPrefs set tempMin = ?, tempMax = ?, airHumidityMin = ?, airHumidityMax = ?, soloHumidityMin = ?, soloHumidityMax = ?, isWetMin = ?, isWetMax = ?, pluviosidadeMin = ?, pluviosidadeMax = ?, velVentoMin = ?, velVentoMax = ?, dirVentoMin = ?, dirVentoMax = ?, radiacaoMin = ?, radiacaoMax = ?
+                  where vinha_id = ? and user_id = ?`, 
+                [body.tempMin, body.tempMax, body.airHumidityMin, body.airHumidityMax, body.soloHumidityMin, body.soloHumidityMax, body.isWetMin, body.isWetMax, body.pluviosidadeMin, body.pluviosidadeMax, body.velVentoMin, body.velVentoMax, body.dirVentoMin, body.dirVentoMax, body.radiacaoMin, body.radiacaoMax, body.vinha_id, body.user_id],
+            err => {
+                if (err) reject(err);
+                resolve({ updated: 1, vinha_id: body.vinha_id });
             });
     });
 };

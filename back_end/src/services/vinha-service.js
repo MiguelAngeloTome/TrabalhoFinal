@@ -1,7 +1,6 @@
-
 const uuid = require('uuid').v4;
-
 const db = require('../configs/teste.js');
+const avisosService = require ('./avisos-service')
 
 //Retorna todas as vinhas
 exports.getVinha = () => {
@@ -63,9 +62,38 @@ exports.getVinhaName = async (id) => {
 }
 
 //Inserir uma vinha
-exports.insertVinha = body => {
+exports.insertVinha = async body => {
+    const id = uuid();
+
+    await this.insertVinha2(id, body);
+
+    avisosService.insertUserPrefs({
+        vinha_id: id,
+        user_id: body.dono,
+        tempMin: -10,
+        tempMax: 40,
+        airHumidityMin: 0,
+        airHumidityMax: 100,
+        soloHumidityMin: 0,
+        soloHumidityMax: 100,
+        isWetMin: 0,
+        isWetMax: 6999,
+        pluviosidadeMin: 0,
+        pluviosidadeMax: 1000,
+        velVentoMin: 0,
+        velVentoMax: 500,
+        dirVentoMin: 0,
+        dirVentoMax: 360,
+        radiacaoMin: 0,
+        radiacaoMax: 500
+      }).catch(
+          err => console.log(err)
+      )
+    return {vinha_id:id};
+};
+
+exports.insertVinha2 = async (id, body) => {
     return new Promise((resolve, reject) => {
-        const id = uuid();
         db.query(`insert into vinha(vinha_id, Nome, lat, lng, localizacao, dono) VALUES(?,?,?,?,?,?)`,
             [id, body.nome, body.lat, body.lng, body.localizacao, body.dono],
             err => {
@@ -73,7 +101,7 @@ exports.insertVinha = body => {
                 resolve({ inserted: 1, vinha_id: id });
             });
     });
-};
+}
 
 //Remover uma vinha
 exports.removeVinha = id => {

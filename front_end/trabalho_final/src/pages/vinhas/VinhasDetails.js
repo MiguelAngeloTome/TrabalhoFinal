@@ -51,11 +51,17 @@ import FormControl from '@material-ui/core/FormControl';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { lightGreen,} from '@material-ui/core/colors';
+import { lightGreen, } from '@material-ui/core/colors';
 import Avatar from '@material-ui/core/Avatar';
 import Collapse from '@material-ui/core/Collapse';
 import CloseIcon from '@material-ui/icons/Close';
-
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -77,14 +83,16 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-
-
-
-
 const drawerWidth = 240;
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
-  }
+}
+
+function createData(nome, min, max) {
+    return { nome, min, max };
+}
+
+const rows = [];
 
 const useStyles = theme => ({
     root: {
@@ -198,15 +206,38 @@ const useStyles = theme => ({
         color: theme.palette.getContrastText(lightGreen[900]),
         backgroundColor: lightGreen[900],
         marginRight: '20px'
-      },
+    },
 
 });
+
+const tableStyle = {
+    position: "relative",
+    marginRight: "auto",
+    marginLeft: "auto",
+    width: "50%",
+    top: "3%"
+}
+
+const prefsBtn = {
+    position:"relative",
+    zIndex:1000,
+    top: "4.3%",
+    left: "1%"
+}
+
+const txtField = {
+    position: "relative",
+    width:"50%",
+    marginRight:"auto",
+    marginLeft:"auto",
+    padding:"0px 7% 0px 0px",
+}
 
 class VinhasDetails extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            count:0,
+            count: 0,
             open: true,
             openDialogUser: false,
             openDialogModule: false,
@@ -237,18 +268,35 @@ class VinhasDetails extends React.Component {
             lat: undefined,
             lng: undefined,
             module: "",
-            nome:"",
+            nome: "",
             nomeError: false,
             moduleError: false,
             moduleError2: false,
             moduleAlreadyAssigned: false,
             sameUserError: false,
             snackOpen: false,
-            users:[],
+            users: [],
             newUser: undefined,
-            dupAlert:false,
-            userError:false,
+            dupAlert: false,
+            userError: false,
             isDono: false,
+            prefsOpen: false,
+            tempMin: "",
+            tempMax: "",
+            airHumidityMin: "",
+            airHumidityMax: "",
+            soloHumidityMin: "",
+            soloHumidityMax: "",
+            isWetMin: "",
+            isWetMax: "",
+            pluviosidadeMin: "",
+            pluviosidadeMax: "",
+            velVentoMin: "",
+            velVentoMax: "",
+            dirVentoMin: "",
+            dirVentoMax: "",
+            radiacaoMin: "",
+            radiacaoMax: ""
         }
     };
     static contextType = AuthContext;
@@ -258,18 +306,35 @@ class VinhasDetails extends React.Component {
         services.vinha.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data })).catch();
         services.vinha.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
         services.user.userSimple().then(data => this.setState({ users: data })).catch();
-        services.vinha.getDonoVinha(window.location.hash.split("/")[3]).then(data =>{
-            if(data[0].dono === this.context.user.id)this.setState({isDono:true});
+        services.vinha.getDonoVinha(window.location.hash.split("/")[3]).then(data => {
+            if (data[0].dono === this.context.user.id) this.setState({ isDono: true });
         }).catch();
+
+        services.avisos.getPrefsSingle({ vinha_id: window.location.hash.split("/")[3], user_id: this.context.user.id }).then(data => {
+            this.setState({ prefs: data[0] })
+            rows.push(
+                createData('Temperatura', this.state.prefs.tempMin, this.state.prefs.tempMax),
+                createData('Humidade do ar', this.state.prefs.airHumidityMin, this.state.prefs.airHumidityMax),
+                createData('Humidade do solo', this.state.prefs.soloHumidityMin, this.state.prefs.soloHumidityMax),
+                createData('Folha molhada', this.state.prefs.isWetMin, this.state.prefs.isWetMax),
+                createData('Pluviosidade', this.state.prefs.pluviosidadeMin, this.state.prefs.pluviosidadeMax),
+                createData('Velocidade do vento', this.state.prefs.velVentoMin, this.state.prefs.velVentoMax),
+                createData('Direção do vento', this.state.prefs.dirVentoMin, this.state.prefs.dirVentoMax),
+                createData('Radiação', this.state.prefs.radiacaoMin, this.state.prefs.radiacaoMax),
+            );
+        });
+
+
+
     }
 
     submitUsers(vinha_id, user_id) {
-        if(user_id === this.context.user.id){
-            this.setState({sameUserError: true});
-        }else{
+        if (user_id === this.context.user.id) {
+            this.setState({ sameUserError: true });
+        } else {
             services.vinha.deleteUser_vinha({ vinha_id: vinha_id, user_id: user_id });
-            services.vinha.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data })).catch();  
-        }  
+            services.vinha.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data })).catch();
+        }
     }
 
     submitModules(module_id) {
@@ -295,19 +360,19 @@ class VinhasDetails extends React.Component {
     }
 
     handleFormcloseModule2() {
-        services.module.getSingleSecModule(this.state.module).then(data =>{
-            if(data.length === 1){
+        services.module.getSingleSecModule(this.state.module).then(data => {
+            if (data.length === 1) {
                 services.module.getSingleModule(this.state.module).then(data => {
-                    if(data.length === 0){
-                        if(this.state.nome !== null && this.state.nome !== undefined && this.state.nome !=="" && this.state.module !== null && this.state.module !== undefined && this.state.module !==""){
-                            this.setState({ openDialogModule2: false, value: 3 });
-                        }    
-                    }else{
-                        this.setState({moduleAlreadyAssigned: true})
+                    if (data.length === 0) {
+                        if (this.state.nome !== null && this.state.nome !== undefined && this.state.nome !== "" && this.state.module !== null && this.state.module !== undefined && this.state.module !== "") {
+                            this.setState({ openDialogModule2: false, value: 4 });
+                        }
+                    } else {
+                        this.setState({ moduleAlreadyAssigned: true })
                     }
                 })
-            }else{
-                this.setState({ moduleError2: true});
+            } else {
+                this.setState({ moduleError2: true });
             }
         }).catch();
     }
@@ -317,71 +382,122 @@ class VinhasDetails extends React.Component {
     };
 
     callbackFunction = (childData) => {
-        this.setState({lat: childData.lat, lng: childData.lng});
+        this.setState({ lat: childData.lat, lng: childData.lng });
     };
 
-    newModule = () =>{
-        if(this.state.lat !== null && this.state.lat !== undefined && this.state.lat !=="" && this.state.lng !== null && this.state.lng !== undefined && this.state.lng !=="" ){
-            services.module.add({id: this.state.module, vinha_id: this.props.match.params.id,localizacao:this.state.nome,lat:this.state.lat,lng:this.state.lng});
-            services.vinha.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data, value:0 })).catch();
+    newModule = () => {
+        if (this.state.lat !== null && this.state.lat !== undefined && this.state.lat !== "" && this.state.lng !== null && this.state.lng !== undefined && this.state.lng !== "") {
+            services.module.add({ id: this.state.module, vinha_id: this.props.match.params.id, localizacao: this.state.nome, lat: this.state.lat, lng: this.state.lng });
+            services.vinha.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data, value: 0 })).catch();
             services.vinha.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
-        }else{
+        } else {
             this.setState({ snackOpen: true })
         }
     }
 
-    newUser = () =>{
+    newUser = () => {
         let dup = false;
-        if(this.state.newUser !== null && this.state.newUser !== undefined &&  this.state.newUser !== "" ){
-            for(let i=0; i<this.state.datas2.length; i++){
-                if(this.state.newUser === this.state.datas2[i].user_id){
+        if (this.state.newUser !== null && this.state.newUser !== undefined && this.state.newUser !== "") {
+            for (let i = 0; i < this.state.datas2.length; i++) {
+                if (this.state.newUser === this.state.datas2[i].user_id) {
                     dup = true;
                 }
             }
-            if(dup !== true){
-                services.vinha.addUser({vinha_id: this.props.match.params.id,user_id: this.state.newUser});
-                services.vinha.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data, value:1 })).catch();
+            if (dup !== true) {
+                services.vinha.addUser({ vinha_id: this.props.match.params.id, user_id: this.state.newUser });
+                services.vinha.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data, value: 1 })).catch();
                 services.vinha.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
                 this.setState({ openDialogUser: false })
-            }else{
-                this.setState({dupAlert:true});
+            } else {
+                this.setState({ dupAlert: true });
             }
         }
 
     }
 
-    nomeChange = (e) =>{
-        if(e !== null && e !== undefined && e !==""){
-            this.setState({nomeError: false})
-        }else{
-            this.setState({nomeError: true})
+    nomeChange = (e) => {
+        if (e !== null && e !== undefined && e !== "") {
+            this.setState({ nomeError: false })
+        } else {
+            this.setState({ nomeError: true })
         }
-        this.setState({nome:e});
+        this.setState({ nome: e });
     }
 
-    moduleChange = (e) =>{
-        if(e !== null && e !== undefined && e !==""){
-            this.setState({moduleError: false})
-        }else{
-            this.setState({moduleError: true})
+    moduleChange = (e) => {
+        if (e !== null && e !== undefined && e !== "") {
+            this.setState({ moduleError: false })
+        } else {
+            this.setState({ moduleError: true })
         }
-        this.setState({module:e});
-        this.setState({moduleError2: false});
-        this.setState({moduleAlreadyAssigned: false})
-    }
-    
-  handleSnackClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
+        this.setState({ module: e });
+        this.setState({ moduleError2: false });
+        this.setState({ moduleAlreadyAssigned: false })
     }
 
-    this.setState({ snackOpen: false })
-  };
+    handleSnackClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
 
-  closeError = () => {
-      this.setState({sameUserError:false});
-  }
+        this.setState({ snackOpen: false })
+    };
 
+    closeError = () => {
+        this.setState({ sameUserError: false });
+    }
+
+    clickPrefsBtn() {
+        this.setState({ prefsOpen: true })
+        this.setState({
+            tempMin: this.state.prefs.tempMin,
+            tempMax: this.state.prefs.tempMax,
+            airHumidityMin: this.state.prefs.airHumidityMin,
+            airHumidityMax: this.state.prefs.airHumidityMax,
+            soloHumidityMin: this.state.prefs.soloHumidityMin,
+            soloHumidityMax: this.state.prefs.soloHumidityMax,
+            isWetMin: this.state.prefs.isWetMin,
+            isWetMax: this.state.prefs.isWetMax,
+            pluviosidadeMin: this.state.prefs.pluviosidadeMin,
+            pluviosidadeMax: this.state.prefs.pluviosidadeMax,
+            velVentoMin: this.state.prefs.velVentoMin,
+            velVentoMax: this.state.prefs.velVentoMax,
+            dirVentoMin: this.state.prefs.dirVentoMin,
+            dirVentoMax: this.state.prefs.dirVentoMax,
+            radiacaoMin: this.state.prefs.radiacaoMin,
+            radiacaoMax: this.state.prefs.radiacaoMax
+        })
+    }
+
+    closePrefs(){
+        this.setState({prefsOpen: false})
+    }
+
+    handlePrefsSubmit(){
+        this.setState({prefsOpen: false})
+        services.avisos.updateUserPrefs({
+            vinha_id : window.location.hash.split("/")[3],
+            user_id : this.context.user.id,
+            tempMin: this.state.tempMin,
+            tempMax: this.state.tempMax,
+            airHumidityMin: this.state.airHumidityMin,
+            airHumidityMax: this.state.airHumidityMax,
+            soloHumidityMin: this.state.soloHumidityMin,
+            soloHumidityMax: this.state.soloHumidityMax,
+            isWetMin: this.state.isWetMin,
+            isWetMax: this.state.isWetMax,
+            pluviosidadeMin: this.state.pluviosidadeMin,
+            pluviosidadeMax: this.state.pluviosidadeMax,
+            velVentoMin: this.state.velVentoMin,
+            velVentoMax: this.state.velVentoMax,
+            dirVentoMin: this.state.dirVentoMin,
+            dirVentoMax: this.state.dirVentoMax,
+            radiacaoMin: this.state.radiacaoMin,
+            radiacaoMax: this.state.radiacaoMax
+        }).then(
+            window.location.reload()
+        ).catch(err => console.log(err));
+    }
 
     render() {
         const { logout } = this.context;
@@ -437,6 +553,17 @@ class VinhasDetails extends React.Component {
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />
 
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        style={prefsBtn}
+                        className={classes.button}
+                        startIcon={<SettingsIcon />}
+                        onClick={() => { this.clickPrefsBtn() }}
+                    >
+                        Preferências de alertas
+                    </Button>
+
                     <Paper className={classes.root}>
                         <Tabs
                             value={this.state.value}
@@ -449,6 +576,7 @@ class VinhasDetails extends React.Component {
                             <Tab label="Modulos" />
                             <Tab label="Utilizadores" />
                             <Tab label="Localização" />
+                            <Tab label="Preferências" />
                         </Tabs>
                     </Paper>
 
@@ -501,126 +629,150 @@ class VinhasDetails extends React.Component {
 
 
                     {this.state.value === 1 &&
-                     <Container maxWidth="lg" className={classes.container}>
+                        <Container maxWidth="lg" className={classes.container}>
 
-                     <MaterialTable
-                         icons={tableIcons}
-                         title="Lista de utilizadores"
-                         columns={this.state.columns2}
-                         data={this.state.datas2}
-                         options={{
-                             actionsColumnIndex: -1,
+                            <MaterialTable
+                                icons={tableIcons}
+                                title="Lista de utilizadores"
+                                columns={this.state.columns2}
+                                data={this.state.datas2}
+                                options={{
+                                    actionsColumnIndex: -1,
 
-                         }}
-                         onRowClick={(event, rowData) => this.props.history.push('/user/' + rowData.user_id)}
-                         
-                         actions={this.state.isDono === true && [
-                             {
-                                 icon: AddBox,
-                                 tooltip: 'Add User',
-                                 isFreeAction: true,
-                                 onClick: () => this.handleFormClickUser()
-                             }
-                         ]}
-                         editable={{
-                             onRowDelete: (oldData) =>
-                                 new Promise((resolve) => {
-                                     setTimeout(() => {
-                                         resolve();
-                                         this.submitUsers(this.props.match.params.id, oldData.user_id);
-                                     }, 600);
-                                 }),
-                         }}
-                     />
+                                }}
+                                onRowClick={(event, rowData) => this.props.history.push('/user/' + rowData.user_id)}
+
+                                actions={this.state.isDono === true && [
+                                    {
+                                        icon: AddBox,
+                                        tooltip: 'Add User',
+                                        isFreeAction: true,
+                                        onClick: () => this.handleFormClickUser()
+                                    }
+                                ]}
+                                editable={{
+                                    onRowDelete: (oldData) =>
+                                        new Promise((resolve) => {
+                                            setTimeout(() => {
+                                                resolve();
+                                                this.submitUsers(this.props.match.params.id, oldData.user_id);
+                                            }, 600);
+                                        }),
+                                }}
+                            />
 
 
-                 </Container>
-                    
-                }
-                   
+                        </Container>
+
+                    }
+
                     {this.state.value === 2 &&
-                     <Container maxWidth="lg" className={classes.containerMap}>
+                        <Container maxWidth="lg" className={classes.containerMap}>
 
-                     <ShowMap vinha={this.props.match.params.id} />
-                     </Container>
+                            <ShowMap vinha={this.props.match.params.id} />
+                        </Container>
 
-                    
-                }
+
+                    }
                     {this.state.value === 3 &&
-                     <Container maxWidth="lg" className={classes.containerMap}>
-                         <div className={classes.root}>
-                            <Snackbar open={this.state.snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
-                            <Alert onClose={this.handleSnackClose} severity="error">
-                                Precisa de escolher a sua localização.
+                        <TableContainer component={Paper} style={tableStyle}>
+                            <Table className={classes.table} aria-label="simple table" >
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="center">Nome</TableCell>
+                                        <TableCell align="center">Minimo</TableCell>
+                                        <TableCell align="center">Máximo</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {rows.map((row) => (
+                                        <TableRow key={row.nome}>
+                                            <TableCell component="th" scope="row" align="center">
+                                                {row.nome}
+                                            </TableCell>
+                                            <TableCell align="center">{row.min}</TableCell>
+                                            <TableCell align="center">{row.max}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    }
+                    {this.state.value === 4 &&
+                        <Container maxWidth="lg" className={classes.containerMap}>
+                            <div className={classes.root}>
+                                <Snackbar open={this.state.snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
+                                    <Alert onClose={this.handleSnackClose} severity="error">
+                                        Precisa de escolher a sua localização.
                             </Alert>
-                            </Snackbar>
-                        </div>
-                         <h2 style= {{"font-size": "medium", "padding": "5px",fontWeight: "bold"}} textAlign="center">Localização do modulo</h2>
-                     <ClickMap parentCallback = {this.callbackFunction}/>
-                     <Button variant="contained" color="primary" style= {{position: "absolute",bottom: 3,right:30}} onClick={() => this.newModule()}>
-                                    SEGUINTE
+                                </Snackbar>
+                            </div>
+                            <h2 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }} textAlign="center">Localização do modulo</h2>
+                            <ClickMap parentCallback={this.callbackFunction} />
+                            <Button variant="contained" color="primary" style={{ position: "absolute", bottom: 3, right: 30 }} onClick={() => this.newModule()}>
+                                SEGUINTE
                     </Button>
-                     </Container>
+                        </Container>
 
-                    
-                }
+
+                    }
                     <Container maxWidth="lg" className={classes.container}>
-                        <Dialog open={this.state.openDialogUser} onClose={() => this.setState({openDialogUser:false})} aria-labelledby="form-dialog-title">
+                        <Dialog open={this.state.openDialogUser} onClose={() => this.setState({ openDialogUser: false })} aria-labelledby="form-dialog-title">
                             <DialogTitle id="form-dialog-title">Adicionar um utilizador</DialogTitle>
                             <DialogContent>
-                            <DialogContentText>
-                                Para adicionar um utilizador a sua vinha escreva o username ou o nome.
+                                <DialogContentText>
+                                    Para adicionar um utilizador a sua vinha escreva o username ou o nome.
                             </DialogContentText>
-                            <Autocomplete
-                                id="free-solo-demo"
-                                PopperComponent = {"bottom-start"}
-                                fullWidth
-                                options={this.state.users}
-                                getOptionLabel={(option) => option.username+": "+ option.name+ " "+ option.surname}
-                                renderOption={(option) => (
-                                    <React.Fragment fullWidth>
-                                        <Avatar className={classes.green}>{option.name.charAt(0)+option.surname.charAt(0)}</Avatar>
-                                    {option.username}: {option.name} {option.surname}
-                                  </React.Fragment>
-                                  )}
-                                onChange={(event, newValue) => {
-                                    this.setState({userError:false});
-                                    if(newValue != null) this.setState({newUser:newValue.user_id})
-                                    else {
-                                        this.setState({newUser:null});
-                                        this.setState({userError:true});
-                                    }
-                                    this.setState({dupAlert:false})
-                                  }}
-                                renderInput={(params) => (
-                                    <TextField
+                                <Autocomplete
+                                    id="free-solo-demo"
+                                    PopperComponent={"bottom-start"}
                                     fullWidth
-                                        {...params}
-                                        label="Escolha um utilizador"
-                                        variant="outlined"
-                                        error={this.state.userError}
-                                    />
-                                )}
-                            />
+                                    options={this.state.users}
+                                    getOptionLabel={(option) => option.username + ": " + option.name + " " + option.surname}
+                                    renderOption={(option) => (
+                                        <React.Fragment fullWidth>
+                                            <Avatar className={classes.green}>{option.name.charAt(0) + option.surname.charAt(0)}</Avatar>
+                                            {option.username}: {option.name} {option.surname}
+                                        </React.Fragment>
+                                    )}
+                                    onChange={(event, newValue) => {
+                                        this.setState({ userError: false });
+                                        if (newValue != null) this.setState({ newUser: newValue.user_id })
+                                        else {
+                                            this.setState({ newUser: null });
+                                            this.setState({ userError: true });
+                                        }
+                                        this.setState({ dupAlert: false })
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            fullWidth
+                                            {...params}
+                                            label="Escolha um utilizador"
+                                            variant="outlined"
+                                            error={this.state.userError}
+                                        />
+                                    )}
+                                />
 
                             </DialogContent>
                             <Container>
                                 <Collapse in={this.state.dupAlert}>
                                     <Alert severity="error"
-                                    action={
-                                        <IconButton
-                                        aria-label="close"
-                                        color="inherit"
-                                        size="small"
-                                        onClick={() => {
-                                            this.setState({dupAlert:false})
-                                        }}
-                                        >
-                                        <CloseIcon fontSize="inherit" />
-                                        </IconButton>
-                                    }
+                                        action={
+                                            <IconButton
+                                                aria-label="close"
+                                                color="inherit"
+                                                size="small"
+                                                onClick={() => {
+                                                    this.setState({ dupAlert: false })
+                                                }}
+                                            >
+                                                <CloseIcon fontSize="inherit" />
+                                            </IconButton>
+                                        }
                                     >
-                                    O utilizador que tentou adicionar já esta associado a esta vinha
+                                        O utilizador que tentou adicionar já esta associado a esta vinha
                                     </Alert>
                                 </Collapse>
                             </Container>
@@ -631,19 +783,19 @@ class VinhasDetails extends React.Component {
                             </DialogActions>
                         </Dialog>
 
-                        <Dialog open={this.state.openDialogModule} onClose={() => this.setState({openDialogModule:false})} aria-labelledby="form-dialog-title">
+                        <Dialog open={this.state.openDialogModule} onClose={() => this.setState({ openDialogModule: false })} aria-labelledby="form-dialog-title">
                             <DialogTitle id="form-dialog-title">CRIAR UM MODULO</DialogTitle>
                             <DialogContent>
-                            <DialogContentText>
-                                Para criar um módulo terá de introduzir o número de série da sua estação.
+                                <DialogContentText>
+                                    Para criar um módulo terá de introduzir o número de série da sua estação.
                              </DialogContentText>
-                             <DialogContentText>
-                                Insira também um nome para lhe ser mais fácil de identificar os módulos.
+                                <DialogContentText>
+                                    Insira também um nome para lhe ser mais fácil de identificar os módulos.
                              </DialogContentText>
-                             <DialogContentText>
-                                Terá também de escolher no mapa a sua Localização. Isto ajudará nos cálculos para os tornar mais precisos.
+                                <DialogContentText>
+                                    Terá também de escolher no mapa a sua Localização. Isto ajudará nos cálculos para os tornar mais precisos.
                              </DialogContentText>
-                                
+
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={() => this.handleFormcloseModule()} color="primary">
@@ -652,40 +804,40 @@ class VinhasDetails extends React.Component {
                             </DialogActions>
                         </Dialog>
 
-                        <Dialog fullWidth minWidth="500px" open={this.state.openDialogModule2} onClose={() => this.setState({openDialogModule2:false})} aria-labelledby="form-dialog-title">
+                        <Dialog fullWidth minWidth="500px" open={this.state.openDialogModule2} onClose={() => this.setState({ openDialogModule2: false })} aria-labelledby="form-dialog-title">
                             <DialogTitle id="form-dialog-title">CRIAR UM MODULO</DialogTitle>
                             <DialogContent fullWidth>
-                            <FormControl error fullWidth>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                value={this.state.module}
-                                onChange = {(evt)=>this.moduleChange(evt.target.value)}
-                                label=" Introduza o número de série da sua estação."
-                                aria-describedby="module-error-text"
-                                fullWidth
-                            />
-                            {this.state.moduleError === true &&
-                                <FormHelperText fullWidth id="module-error-text">O ID da estação nao pode ser vazio</FormHelperText>
-                            }
-                            {this.state.moduleError2 === true &&
-                                <FormHelperText fullWidth id="module-error-text">O ID da estação nao e valido</FormHelperText>
-                            }
-                            {this.state.moduleAlreadyAssigned === true &&
-                                    <FormHelperText fullWidth id="module-error-text">O ID da estação já está associado a outra vinha</FormHelperText>
-                            }
-                            <TextField
-                                autoFocus
-                                value={this.state.nome}
-                                onChange = {(evt)=>this.nomeChange(evt.target.value)}
-                                label="Introduza o nome para a sua estação."
-                                aria-describedby="nome-error-text"
-                                fullWidth
-                            />
-                            {this.state.nomeError === true &&
-                                <FormHelperText fullWidth id="module-error-text">O NOME da estação nao pode ser vazio</FormHelperText>
-                            }
-                            </FormControl>
+                                <FormControl error fullWidth>
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        value={this.state.module}
+                                        onChange={(evt) => this.moduleChange(evt.target.value)}
+                                        label=" Introduza o número de série da sua estação."
+                                        aria-describedby="module-error-text"
+                                        fullWidth
+                                    />
+                                    {this.state.moduleError === true &&
+                                        <FormHelperText fullWidth id="module-error-text">O ID da estação nao pode ser vazio</FormHelperText>
+                                    }
+                                    {this.state.moduleError2 === true &&
+                                        <FormHelperText fullWidth id="module-error-text">O ID da estação nao e valido</FormHelperText>
+                                    }
+                                    {this.state.moduleAlreadyAssigned === true &&
+                                        <FormHelperText fullWidth id="module-error-text">O ID da estação já está associado a outra vinha</FormHelperText>
+                                    }
+                                    <TextField
+                                        autoFocus
+                                        value={this.state.nome}
+                                        onChange={(evt) => this.nomeChange(evt.target.value)}
+                                        label="Introduza o nome para a sua estação."
+                                        aria-describedby="nome-error-text"
+                                        fullWidth
+                                    />
+                                    {this.state.nomeError === true &&
+                                        <FormHelperText fullWidth id="module-error-text">O NOME da estação nao pode ser vazio</FormHelperText>
+                                    }
+                                </FormControl>
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={() => this.handleFormcloseModule2()} color="primary">
@@ -700,6 +852,204 @@ class VinhasDetails extends React.Component {
                             </Alert>
                         </Snackbar>
                     </Container>
+                    <Dialog open={this.state.prefsOpen} onClose={() => this.closePrefs()} aria-labelledby="form-dialog-title">
+                            <DialogTitle id="form-dialog-title" >Preferências</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText >
+                                    Aqui poderá especificar em que situacões lhe será enviado um email sobre problemas na vinha
+                                </DialogContentText>
+                                <h6>Temperatura</h6>
+                                <TextField
+                                    style={txtField}
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    id="tempMin"
+                                    label="Temperatura minima"
+                                    name="Temperatura minima"
+                                    autoComplete="Temperatura minima"
+                                    autoFocus
+                                    value={this.state.tempMin} onChange={(evt) => this.setState({ tempMin: evt.target.value })}
+                                />
+                                <TextField
+                                    style={txtField}
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    id="tempMax"
+                                    label="Temperatura máxima"
+                                    name="Temperatura máxima"
+                                    autoComplete="Temperatura máxima"
+                                    value={this.state.tempMax} onChange={(evt) => this.setState({ tempMax: evt.target.value })}
+                                />
+                                <h6>Humidade do ar</h6>
+                                <TextField
+                                    style={txtField}
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    id="airHumidityMin"
+                                    label="Humidade do ar minima"
+                                    name="airHumidityMin"
+                                    autoComplete="Humidade do ar minima"
+                                    value={this.state.airHumidityMin} onChange={(evt) => this.setState({ airHumidityMin: evt.target.value })}
+                                />
+                                <TextField
+                                    style={txtField}
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    id="airHumidityMax"
+                                    label="Humidade do ar máxima"
+                                    name="airHumidityMax"
+                                    autoComplete="Humidade do ar máxima"
+                                    value={this.state.airHumidityMax} onChange={(evt) => this.setState({ airHumidityMax: evt.target.value })}
+                                />
+                                <h6>Humidade do solo</h6>
+                                <TextField
+                                    style={txtField}
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    id="soloHumidityMin"
+                                    label="Humidade do solo minima"
+                                    name="soloHumidityMin"
+                                    autoComplete="Humidade do solo minima"
+                                    value={this.state.soloHumidityMin} onChange={(evt) => this.setState({ soloHumidityMin: evt.target.value })}
+                                />
+                                <TextField
+                                    style={txtField}
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    id="soloHumidityMax"
+                                    label="Humidade do solo máxima"
+                                    name="soloHumidityMax"
+                                    autoComplete="Humidade do solo máxima"
+                                    value={this.state.soloHumidityMax} onChange={(evt) => this.setState({ soloHumidityMax: evt.target.value })}
+                                />
+                                <h6>Folha Molhada (entre 0 6999)</h6>
+                                <TextField
+                                    style={txtField}
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    id="isWetMin"
+                                    label="Valor do sensor de folha molhada minimo"
+                                    name="isWetMin"
+                                    autoComplete="Valor do sensor de folha molhada minimo"
+                                    value={this.state.isWetMin} onChange={(evt) => this.setState({ isWetMin: evt.target.value })}
+                                />
+                                <TextField
+                                    style={txtField}
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    id="isWetMax"
+                                    label="Valor do sensor de folha molhada maximo"
+                                    name="isWetMax"
+                                    autoComplete="Valor do sensor de folha molhada maximo"
+                                    value={this.state.isWetMax} onChange={(evt) => this.setState({ isWetMax: evt.target.value })}
+                                />
+                                <h6>Pluviosidade</h6>
+                                <TextField
+                                    style={txtField}
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    id="pluviosidadeMin"
+                                    label="Pluviosidade minima"
+                                    name="pluviosidadeMin"
+                                    autoComplete="Pluviosidade minima"
+                                    value={this.state.pluviosidadeMin} onChange={(evt) => this.setState({ pluviosidadeMin: evt.target.value })}
+                                />
+                                <TextField
+                                    style={txtField}
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    id="pluviosidadeMax"
+                                    label="Pluviosidade maxima"
+                                    name="pluviosidadeMax"
+                                    autoComplete="Pluviosidade maxima"
+                                    value={this.state.pluviosidadeMax} onChange={(evt) => this.setState({ pluviosidadeMax: evt.target.value })}
+                                />
+                                <h6>Velocidade do vento</h6>
+                                <TextField
+                                    style={txtField}
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    id="velVentoMin"
+                                    label="Velocidade do vento minima"
+                                    name="velVentoMin"
+                                    autoComplete="Velocidade do vento minima"
+                                    value={this.state.velVentoMin} onChange={(evt) => this.setState({ velVentoMin: evt.target.value })}
+                                />
+                                <TextField
+                                    style={txtField}
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    id="velVentoMax"
+                                    label="Velocidade do vento maxima"
+                                    name="velVentoMax"
+                                    autoComplete="Velocidade do vento maxima"
+                                    value={this.state.velVentoMax} onChange={(evt) => this.setState({ velVentoMax: evt.target.value })}
+                                />
+                                <h6>Direção do vento em graus (0 a 360)</h6>
+                                <TextField
+                                    style={txtField}
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    id="dirVentoMin"
+                                    label="Direção do vento minima"
+                                    name="dirVentoMin"
+                                    autoComplete="Direção do vento minima"
+                                    value={this.state.dirVentoMin} onChange={(evt) => this.setState({ dirVentoMin: evt.target.value })}
+                                />
+                                <TextField
+                                    style={txtField}
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    id="dirVentoMax"
+                                    label="Direção do vento maxima"
+                                    name="dirVentoMax"
+                                    autoComplete="Direção do vento maxima"
+                                    value={this.state.dirVentoMax} onChange={(evt) => this.setState({ dirVentoMax: evt.target.value })}
+                                />
+                                <h6>Radiação (0 a 500)</h6>
+                                <TextField
+                                    style={txtField}
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    id="radiacaoMin"
+                                    label="Radiação minima"
+                                    name="radiacaoMin"
+                                    autoComplete="Radiação minima"
+                                    value={this.state.radiacaoMin} onChange={(evt) => this.setState({ radiacaoMin: evt.target.value })}
+                                />
+                                <TextField
+                                    style={txtField}
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    id="radiacaoMax"
+                                    label="Radiação maxima"
+                                    name="radiacaoMax"
+                                    autoComplete="Radiação maxima"
+                                    value={this.state.radiacaoMax} onChange={(evt) => this.setState({ radiacaoMax: evt.target.value })}
+                                />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={() => this.handlePrefsSubmit()} color="primary">
+                                    OK
+                                </Button>
+                            </DialogActions>
+                        </Dialog> 
                 </main>
             </div >
         )

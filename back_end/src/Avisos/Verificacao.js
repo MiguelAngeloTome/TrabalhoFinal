@@ -2,18 +2,21 @@ const db = require('../configs/teste.js');
 const uuid = require('uuid').v4;
 const etp = require('../Calc/ETP.js');
 var nodemailer = require('nodemailer');
+const avisosService = require('../services/avisos-service')
 //const xl = require('excel4node');
 
-exports.verifica = async (module_id, date, temp, air_humidity, solo_humidity, solo_temp, isWet, pluviosidade, vel_vento, dir_vento, radiacao, mail) => {
+exports.verifica = async (vinha_id, user_id, module_id, date, temp, air_humidity, solo_humidity, isWet, pluviosidade, vel_vento, dir_vento, radiacao, mail) => {
+    let prefs = await avisosService.getUserPrefsSingle({vinha_id:vinha_id, user_id:user_id});
+    prefs = prefs[0];
     this.verData(mail, date, module_id);
-    this.verTemp(mail, temp, module_id);
-    this.verAirHum(mail, air_humidity, module_id);
-    this.verSoloHum(mail, solo_humidity, module_id);
-    this.verWet(mail, isWet, module_id);
-    this.verPluv(mail, pluviosidade, module_id);
-    this.verVelVento(mail, vel_vento, module_id);
-    this.verDirVento(mail, dir_vento, module_id);
-    this.verRadiacao(mail, radiacao, module_id);
+    this.verTemp(prefs, mail, temp, module_id);
+    this.verAirHum(prefs, mail, air_humidity, module_id);
+    this.verSoloHum(prefs, mail, solo_humidity, module_id);
+    this.verWet(prefs, mail, isWet, module_id);
+    this.verPluv(prefs, mail, pluviosidade, module_id);
+    this.verVelVento(prefs, mail, vel_vento, module_id);
+    this.verDirVento(prefs, mail, dir_vento, module_id);
+    this.verRadiacao(prefs, mail, radiacao, module_id);
 }
 
 exports.sendMail = async(mail, msg) => {
@@ -25,10 +28,9 @@ exports.sendMail = async(mail, msg) => {
                 pass: 'khemkhemipt'
             }
         });
-    
         var mailOptions = {
             from: 'khemipt@gmail.com',
-            to: mail[i].email,
+            to: mail[i][0].email,
             subject: 'Alerta nas vinhas',
             text: msg,
         };
@@ -76,29 +78,30 @@ exports.verData = async(mail, date, module_id) => {
     }
 }
 
-exports.verTemp = async(mail, temp, module_id) =>{
+exports.verTemp = async(prefs, mail, temp, module_id) =>{
     //Verificao da temperatura
     let nome = await this.GetNomeVinha(module_id);
     let hora = await this.GetHora();
     let today = await etp.getFormatedDate(new Date());
-    if(temp < -10){
-        await this.sendMail(mail,"Temperatura inserida e inferior a -10 graus, gravidade 2");
+    
+    if(temp < prefs.tempMin){
+        await this.sendMail(mail, "A temperatura inserida foi " + temp + " graus, que é inferior ao valor limite de " + prefs.tempMin + " graus");
         return new Promise((resolve,reject)=>{
             const id = uuid();
             db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
-            [id, nome, module_id, "Temperatura inserida e inferior a -10 graus", 2, hora, today],
+            [id, nome, module_id, "A temperatura inserida foi " + temp + " graus, que é inferior ao valor limite de " + prefs.tempMin + " graus", 2, hora, today],
             err=>{
                 if(err) reject (err);
                 resolve({inserted:1, data_id: id});
             });
         });
     }
-    if(temp > 50){
-        await this.sendMail(mail,"Temperatura inserida e superior a 50 graus, gravidade 2");
+    if(temp > prefs.tempMax){
+        await this.sendMail(mail,"A temperatura inserida foi " + temp + " graus, que é superior ao valor limite de " + prefs.tempMax + " graus");
         return new Promise((resolve,reject)=>{
             const id = uuid();
             db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
-            [id, nome, module_id, "Temperatura inserida e superior a 50 graus", 3, hora, today],
+            [id, nome, module_id, "A temperatura inserida foi " + temp + " graus, que é superior ao valor limite de " + prefs.tempMax + " graus", 3, hora, today],
             err=>{
                 if(err) reject (err);
                 resolve({inserted:1, data_id: id});
@@ -106,29 +109,29 @@ exports.verTemp = async(mail, temp, module_id) =>{
         });
     }
 }
-exports.verAirHum = async(mail, air_humidity, module_id) =>{
+exports.verAirHum = async(prefs, mail, air_humidity, module_id) =>{
     //verificacao da humidade do ar
     let nome = await this.GetNomeVinha(module_id);
     let hora = await this.GetHora();
     let today = await etp.getFormatedDate(new Date());
-    if(air_humidity < 0){
-        await this.sendMail(mail,"A humidade do ar e inferior a 0%");
+    if(air_humidity < prefs.airHumidityMin){
+        await this.sendMail(mail,"A humidade do ar inserida foi de " + air_humidity + "%, que é inferior ao valor limite de " + prefs.airHumidityMin + "%");
         return new Promise((resolve,reject)=>{
             const id = uuid();
             db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
-            [id, nome, module_id, "A humidade do ar e inferior a 0%", 1, hora, today],
+            [id, nome, module_id, "A humidade do ar inserida foi de " + air_humidity + "%, que é inferior ao valor limite de " + prefs.airHumidityMin + "%", 1, hora, today],
             err=>{
                 if(err) reject (err);
                 resolve({inserted:1, data_id: id});
             });
         });
     }
-    if(air_humidity > 100){
-        await this.sendMail(mail,"A humidade do ar e superior a 100%");
+    if(air_humidity > prefs.airHumidityMax){
+        await this.sendMail(mail,"A humidade do ar inserida foi de " + air_humidity + "%, que é superior ao valor limite de " + prefs.airHumidityMax + "%");
         return new Promise((resolve,reject)=>{
             const id = uuid();
             db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
-            [id, nome, module_id, "A humidade do ar e superior a 100%", 2, hora, today],
+            [id, nome, module_id, "A humidade do ar inserida foi de " + air_humidity + "%, que é superior ao valor limite de " + prefs.airHumidityMax + "%", 2, hora, today],
             err=>{
                 if(err) reject (err);
                 resolve({inserted:1, data_id: id});
@@ -136,29 +139,29 @@ exports.verAirHum = async(mail, air_humidity, module_id) =>{
         });
     }
 }
-exports.verSoloHum = async(mail, solo_humidity, module_id) =>{
+exports.verSoloHum = async(prefs, mail, solo_humidity, module_id) =>{
     //verificacao da humidade do solo
     let nome = await this.GetNomeVinha(module_id);
     let hora = await this.GetHora();
     let today = await etp.getFormatedDate(new Date());
-    if(solo_humidity < 0){
-        await this.sendMail(mail,"A humidade do solo e inferior a 0%");
+    if(solo_humidity < prefs.soloHumidityMin){
+        await this.sendMail(mail,"A humidade do solo inserida foi de " + solo_humidity + "%, que é inferior ao valor limite de " + prefs.soloHumidityMin + "%");
         return new Promise((resolve,reject)=>{
             const id = uuid();
             db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
-            [id, nome, module_id, "A humidade do solo e inferior a 0%", 3, hora, today],
+            [id, nome, module_id, "A humidade do solo inserida foi de " + solo_humidity + "%, que é inferior ao valor limite de " + prefs.soloHumidityMin + "%", 3, hora, today],
             err=>{
                 if(err) reject (err);
                 resolve({inserted:1, data_id: id});
             });
         });
     }
-    if(solo_humidity > 100){
-        await this.sendMail(mail,"A humidade do solo e superior a 100%");
+    if(solo_humidity > prefs.soloHumidityMax){
+        await this.sendMail(mail, "A humidade do solo inserida foi de " + solo_humidity + "%, que é superior ao valor limite de " + prefs.soloHumidityMax + "%");
         return new Promise((resolve,reject)=>{
             const id = uuid();
             db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
-            [id, nome, module_id, "A humidade do solo e superior a 100%", 1, hora, today],
+            [id, nome, module_id, "A humidade do solo inserida foi de " + solo_humidity + "%, que é superior ao valor limite de " + prefs.soloHumidityMax + "%", 1, hora, today],
             err=>{
                 if(err) reject (err);
                 resolve({inserted:1, data_id: id});
@@ -166,29 +169,29 @@ exports.verSoloHum = async(mail, solo_humidity, module_id) =>{
         });
     }    
 }
-exports.verWet = async(mail, isWet, module_id) =>{
+exports.verWet = async(prefs, mail, isWet, module_id) =>{
     //verificacao de folha molhada
     let nome = await this.GetNomeVinha(module_id);
     let hora = await this.GetHora();
     let today = await etp.getFormatedDate(new Date());
-    if(isWet < 0){
-        await this.sendMail(mail,"O valor do sensor de folha molhada e inferior a 0");
+    if(isWet < prefs.isWetMin){
+        await this.sendMail(mail,"O valor do sensor de folha molhada foi de " + isWet + ", que é inferior ao valor limite de " + prefs.isWetMin);
         return new Promise((resolve,reject)=>{
             const id = uuid();
             db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
-            [id, nome, module_id, "O valor do sensor de folha molhada e inferior a 0", 2, hora, today],
+            [id, nome, module_id, "O valor do sensor de folha molhada foi de " + isWet + ", que é inferior ao valor limite de " + prefs.isWetMin, 2, hora, today],
             err=>{
                 if(err) reject (err);
                 resolve({inserted:1, data_id: id});
             });
         });
     }
-    if(isWet > 6999){
-        await this.sendMail(mail,"O valor do sensor de folha molhada e superior a 6999");
+    if(isWet > prefs.isWetMax){
+        await this.sendMail(mail, "O valor do sensor de folha molhada foi de " + isWet + ", que é superior ao valor limite de " + prefs.isWetMax);
         return new Promise((resolve,reject)=>{
             const id = uuid();
             db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
-            [id, nome, module_id, "O valor do sensor de folha molhada e superior a 6999", 3, hora, today],
+            [id, nome, module_id, "O valor do sensor de folha molhada foi de " + isWet + ", que é superior ao valor limite de " + prefs.isWetMax, 3, hora, today],
             err=>{
                 if(err) reject (err);
                 resolve({inserted:1, data_id: id});
@@ -196,35 +199,59 @@ exports.verWet = async(mail, isWet, module_id) =>{
         });
     } 
 }
-exports.verPluv = async(mail, pluviosidade, module_id) =>{
+exports.verPluv = async(prefs, mail, pluviosidade, module_id) =>{
     //verificacao da pluviosidade
+    let nome = await this.GetNomeVinha(module_id);
+    let hora = await this.GetHora();
+    let today = await etp.getFormatedDate(new Date());
+    if(pluviosidade < prefs.pluviosidadeMin){
+        await this.sendMail(mail,"A pluviosidade foi de " + pluviosidade + ", que é inferior ao valor limite de " + prefs.pluviosidadeMin);
+        return new Promise((resolve,reject)=>{
+            const id = uuid();
+            db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
+            [id, nome, module_id, "A pluviosidade foi de " + pluviosidade + ", que é inferior ao valor limite de " + prefs.pluviosidadeMin, 2, hora, today],
+            err=>{
+                if(err) reject (err);
+                resolve({inserted:1, data_id: id});
+            });
+        });
+    }
+    if(pluviosidade > prefs.pluviosidadeMax){
+        await this.sendMail(mail, "A pluviosidade foi de " + pluviosidade + ", que é superior ao valor limite de " + prefs.pluviosidadeMax);
+        return new Promise((resolve,reject)=>{
+            const id = uuid();
+            db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
+            [id, nome, module_id, "A pluviosidade foi de " + pluviosidade + ", que é superior ao valor limite de " + prefs.pluviosidadeMax, 3, hora, today],
+            err=>{
+                if(err) reject (err);
+                resolve({inserted:1, data_id: id});
+            });
+        });
+    } 
 }
-exports.verVelVento = async(mail, vel_vento, module_id) =>{
+exports.verVelVento = async(prefs, mail, vel_vento, module_id) =>{
     //verificacao da velocidade do vento
-}
-exports.verDirVento = async(mail, dir_vento, module_id) =>{
-    //verificacao da direcao do vento
     let nome = await this.GetNomeVinha(module_id);
     let hora = await this.GetHora();
     let today = await etp.getFormatedDate(new Date());
-    if(dir_vento < 0){
-        await this.sendMail(mail,"A direcao do vento e inferior a 0");
+    if(vel_vento < prefs.velVentoMin){
+        await this.sendMail(mail, "A velocidade do vento foi de " + vel_vento + ", que é inferior ao valor limite de " + prefs.velVentoMin);
         return new Promise((resolve,reject)=>{
             const id = uuid();
             db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
-            [id, nome, module_id, "A direcao do vento e inferior a 0", 1, hora, today],
+            [id, nome, module_id, "A velocidade do vento foi de " + vel_vento + ", que é inferior ao valor limite de " + prefs.velVentoMin, 2, hora, today],
             err=>{
                 if(err) reject (err);
                 resolve({inserted:1, data_id: id});
             });
         });
     }
-    if(dir_vento > 360){
-        await this.sendMail(mail,"A direcao do vento e superior a 360");
+    if(vel_vento > prefs.velVentoMax){
+        await this.sendMail(mail, "A velocidade do vento foi de " + vel_vento + ", que é superior ao valor limite de " + prefs.velVentoMax);
         return new Promise((resolve,reject)=>{
             const id = uuid();
             db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
-            [id, nome, module_id, "A direcao do vento e superior a 360", 2, hora, today],
+            [id, nome, module_id, "A velocidade do vento foi de " + vel_vento + ", que é superior ao valor limite de " + prefs.velVentoMax, 3, hora, today],
             err=>{
                 if(err) reject (err);
                 resolve({inserted:1, data_id: id});
@@ -232,29 +259,59 @@ exports.verDirVento = async(mail, dir_vento, module_id) =>{
         });
     }
 }
-exports.verRadiacao = async(mail, radiacao, module_id) =>{
+exports.verDirVento = async(prefs, mail, dir_vento, module_id) =>{
     //verificacao da direcao do vento
     let nome = await this.GetNomeVinha(module_id);
     let hora = await this.GetHora();
     let today = await etp.getFormatedDate(new Date());
-    if(radiacao < 0){
-        await this.sendMail(mail,"A radiacao e inferior a 0");
+    if(dir_vento < prefs.dirVentoMin){
+        await this.sendMail(mail,"A direção do vento foi de " + dir_vento + ", que é inferior ao valor limite de " + prefs.dirVentoMin);
+        return new Promise((resolve,reject)=>{
+            const id = uuid();
+            db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
+            [id, nome, module_id, "A direção do vento foi de " + dir_vento + ", que é inferior ao valor limite de " + prefs.dirVentoMin, 1, hora, today],
+            err=>{
+                if(err) reject (err);
+                resolve({inserted:1, data_id: id});
+            });
+        });
+    }
+    if(dir_vento > prefs.dirVentoMax){
+        await this.sendMail(mail, "A direção do vento foi de " + dir_vento + ", que é superior ao valor limite de " + prefs.dirVentoMax);
+        return new Promise((resolve,reject)=>{
+            const id = uuid();
+            db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
+            [id, nome, module_id, "A direção do vento foi de " + dir_vento + ", que é superior ao valor limite de " + prefs.dirVentoMax, 2, hora, today],
+            err=>{
+                if(err) reject (err);
+                resolve({inserted:1, data_id: id});
+            });
+        });
+    }
+}
+exports.verRadiacao = async(prefs, mail, radiacao, module_id) =>{
+    //verificacao da direcao do vento
+    let nome = await this.GetNomeVinha(module_id);
+    let hora = await this.GetHora();
+    let today = await etp.getFormatedDate(new Date());
+    if(radiacao < prefs.radiacaoMin){
+        await this.sendMail(mail,"A radiação foi de " + radiacao + ", que é inferior ao valor limite de " + prefs.radiacaoMin);
         return new Promise((resolve,reject)=>{
             const id = uuid();
             db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia-) VALUES(?,?,?,?,?,?,?)`,
-            [id, nome, module_id, "A radiacao e inferior a 0", 3, hora, today],
+            [id, nome, module_id, "A radiação foi de " + radiacao + ", que é inferior ao valor limite de " + prefs.radiacaoMin, 3, hora, today],
             err=>{
                 if(err) reject (err);
                 resolve({inserted:1, data_id: id});
             });
         });
     }
-    if(radiacao > 500){
-        await this.sendMail(mail,"A radiacao e superior a 500");
+    if(radiacao > prefs.radiacaoMax){
+        await this.sendMail(mail,"A radiação foi de " + radiacao + ", que é superior ao valor limite de " + prefs.radiacaoMax);
         return new Promise((resolve,reject)=>{
             const id = uuid();
             db.query(`insert into avisos(id, nomeVinha, module_id, msgErro, prioridade, hora, dia) VALUES(?,?,?,?,?,?,?)`,
-            [id, nome, module_id, "A radiacao e superior a 500", 1, hora, today],
+            [id, nome, module_id, "A radiação foi de " + radiacao + ", que é superior ao valor limite de " + prefs.radiacaoMax, 1, hora, today],
             err=>{
                 if(err) reject (err);
                 resolve({inserted:1, data_id: id});
