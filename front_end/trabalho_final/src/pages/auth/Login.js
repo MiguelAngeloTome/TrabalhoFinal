@@ -107,7 +107,7 @@ render(){
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Log in
           </Typography>
           <form className={classes.form} onSubmit={(evt) => this.handleSubmit(evt)} noValidate>
             <TextField

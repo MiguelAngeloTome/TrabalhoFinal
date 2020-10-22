@@ -311,17 +311,19 @@ class VinhasDetails extends React.Component {
         }).catch();
 
         services.avisos.getPrefsSingle({ vinha_id: window.location.hash.split("/")[3], user_id: this.context.user.id }).then(data => {
-            this.setState({ prefs: data[0] })
-            rows.push(
-                createData('Temperatura', this.state.prefs.tempMin, this.state.prefs.tempMax),
-                createData('Humidade do ar', this.state.prefs.airHumidityMin, this.state.prefs.airHumidityMax),
-                createData('Humidade do solo', this.state.prefs.soloHumidityMin, this.state.prefs.soloHumidityMax),
-                createData('Folha molhada', this.state.prefs.isWetMin, this.state.prefs.isWetMax),
-                createData('Pluviosidade', this.state.prefs.pluviosidadeMin, this.state.prefs.pluviosidadeMax),
-                createData('Velocidade do vento', this.state.prefs.velVentoMin, this.state.prefs.velVentoMax),
-                createData('Direção do vento', this.state.prefs.dirVentoMin, this.state.prefs.dirVentoMax),
-                createData('Radiação', this.state.prefs.radiacaoMin, this.state.prefs.radiacaoMax),
-            );
+            if(data.length > 0){
+                this.setState({ prefs: data[0] })
+                rows.push(
+                    createData('Temperatura', this.state.prefs.tempMin, this.state.prefs.tempMax),
+                    createData('Humidade do ar', this.state.prefs.airHumidityMin, this.state.prefs.airHumidityMax),
+                    createData('Humidade do solo', this.state.prefs.soloHumidityMin, this.state.prefs.soloHumidityMax),
+                    createData('Folha molhada', this.state.prefs.isWetMin, this.state.prefs.isWetMax),
+                    createData('Pluviosidade', this.state.prefs.pluviosidadeMin, this.state.prefs.pluviosidadeMax),
+                    createData('Velocidade do vento', this.state.prefs.velVentoMin, this.state.prefs.velVentoMax),
+                    createData('Direção do vento', this.state.prefs.dirVentoMin, this.state.prefs.dirVentoMax),
+                    createData('Radiação', this.state.prefs.radiacaoMin, this.state.prefs.radiacaoMax),
+                );
+            }
         });
 
 
@@ -407,6 +409,26 @@ class VinhasDetails extends React.Component {
                 services.vinha.addUser({ vinha_id: this.props.match.params.id, user_id: this.state.newUser });
                 services.vinha.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data, value: 1 })).catch();
                 services.vinha.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
+                services.avisos.insertUserPrefs({
+                    vinha_id: window.location.hash.split("/")[3],
+                    user_id: this.state.newUser,
+                    tempMin: -10,
+                    tempMax: 40,
+                    airHumidityMin: 0,
+                    airHumidityMax: 100,
+                    soloHumidityMin: 0,
+                    soloHumidityMax: 100,
+                    isWetMin: 0,
+                    isWetMax: 6999,
+                    pluviosidadeMin: 0,
+                    pluviosidadeMax: 1000,
+                    velVentoMin: 0,
+                    velVentoMax: 500,
+                    dirVentoMin: 0,
+                    dirVentoMax: 360,
+                    radiacaoMin: 0,
+                    radiacaoMax: 500
+                })
                 this.setState({ openDialogUser: false })
             } else {
                 this.setState({ dupAlert: true });
@@ -449,24 +471,26 @@ class VinhasDetails extends React.Component {
 
     clickPrefsBtn() {
         this.setState({ prefsOpen: true })
-        this.setState({
-            tempMin: this.state.prefs.tempMin,
-            tempMax: this.state.prefs.tempMax,
-            airHumidityMin: this.state.prefs.airHumidityMin,
-            airHumidityMax: this.state.prefs.airHumidityMax,
-            soloHumidityMin: this.state.prefs.soloHumidityMin,
-            soloHumidityMax: this.state.prefs.soloHumidityMax,
-            isWetMin: this.state.prefs.isWetMin,
-            isWetMax: this.state.prefs.isWetMax,
-            pluviosidadeMin: this.state.prefs.pluviosidadeMin,
-            pluviosidadeMax: this.state.prefs.pluviosidadeMax,
-            velVentoMin: this.state.prefs.velVentoMin,
-            velVentoMax: this.state.prefs.velVentoMax,
-            dirVentoMin: this.state.prefs.dirVentoMin,
-            dirVentoMax: this.state.prefs.dirVentoMax,
-            radiacaoMin: this.state.prefs.radiacaoMin,
-            radiacaoMax: this.state.prefs.radiacaoMax
-        })
+        if(this.state.prefs !== undefined){
+            this.setState({
+                tempMin: this.state.prefs.tempMin,
+                tempMax: this.state.prefs.tempMax,
+                airHumidityMin: this.state.prefs.airHumidityMin,
+                airHumidityMax: this.state.prefs.airHumidityMax,
+                soloHumidityMin: this.state.prefs.soloHumidityMin,
+                soloHumidityMax: this.state.prefs.soloHumidityMax,
+                isWetMin: this.state.prefs.isWetMin,
+                isWetMax: this.state.prefs.isWetMax,
+                pluviosidadeMin: this.state.prefs.pluviosidadeMin,
+                pluviosidadeMax: this.state.prefs.pluviosidadeMax,
+                velVentoMin: this.state.prefs.velVentoMin,
+                velVentoMax: this.state.prefs.velVentoMax,
+                dirVentoMin: this.state.prefs.dirVentoMin,
+                dirVentoMax: this.state.prefs.dirVentoMax,
+                radiacaoMin: this.state.prefs.radiacaoMin,
+                radiacaoMax: this.state.prefs.radiacaoMax
+            })
+        }
     }
 
     closePrefs(){
@@ -601,7 +625,7 @@ class VinhasDetails extends React.Component {
                                         onClick: () => this.handleFormClickModule()
                                     }
                                 ]}
-                                editable={{
+                                editable={this.state.isDono === true && {
                                     onRowUpdate: (newData, oldData) =>
                                         new Promise((resolve) => {
                                             setTimeout(() => {
@@ -645,12 +669,12 @@ class VinhasDetails extends React.Component {
                                 actions={this.state.isDono === true && [
                                     {
                                         icon: AddBox,
-                                        tooltip: 'Add User',
+                                        tooltip: 'Adicionar utilizador',
                                         isFreeAction: true,
                                         onClick: () => this.handleFormClickUser()
                                     }
                                 ]}
-                                editable={{
+                                editable={this.state.isDono === true && {
                                     onRowDelete: (oldData) =>
                                         new Promise((resolve) => {
                                             setTimeout(() => {
@@ -721,7 +745,7 @@ class VinhasDetails extends React.Component {
                             <DialogTitle id="form-dialog-title">Adicionar um utilizador</DialogTitle>
                             <DialogContent>
                                 <DialogContentText>
-                                    Para adicionar um utilizador a sua vinha escreva o username ou o nome.
+                                    Para adicionar um utilizador à sua vinha escreva o username ou o nome.
                             </DialogContentText>
                                 <Autocomplete
                                     id="free-solo-demo"

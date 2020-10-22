@@ -219,7 +219,7 @@ class DetailsPage extends React.Component {
                 <Paper className={clsx(classes.paper)}>
                   {datas !== undefined &&
                     <Typography component="h1" variant="h6" noWrap className={classes.titleK}>
-                      {datas.isWet ? (
+                      {datas.isWet !== 6300 ? (
                         'Folha Molhada'
                       ) : (
                           'Folha Seca'
@@ -233,11 +233,24 @@ class DetailsPage extends React.Component {
                 <Paper className={clsx(classes.paper)}>
                   {datas !== undefined &&
                     <Typography component="h1" variant="h6" noWrap className={classes.titleK}>
-
-                      Direção do Vento: {datas.dir_vento}
-
+                      Direção do Vento: {
+                        datas.dir_vento < 22.5 && datas.dir_vento > 337.5 ?
+                        ("Norte"):
+                        datas.dir_vento < 67.5 && datas.dir_vento > 22.5 ?
+                        ("Nordeste"):
+                        datas.dir_vento < 112.5 && datas.dir_vento > 67.5 ?
+                        ("Este"):
+                        datas.dir_vento < 157.5 && datas.dir_vento > 112.5 ?
+                        ("Sudeste"):
+                        datas.dir_vento < 202.5 && datas.dir_vento > 157.5 ?
+                        ("Sul"):
+                        datas.dir_vento < 247.5 && datas.dir_vento > 202.5 ?
+                        ("Sudoeste"):
+                        datas.dir_vento < 292.5 && datas.dir_vento > 247.5 ?
+                        ("Oeste"):
+                        ("Noroeste")
+                      }
                     </Typography>
-                    
                   }
                 </Paper>
               </Grid>

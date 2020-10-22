@@ -53,7 +53,7 @@ exports.GetNomeVinha = async(module_id) => {
                     where module_id = ?
                 )`, [module_id],(err,row)=>{
             if(err) reject (err);
-            resolve(row[0].Nome);
+            resolve(row[0].nome);
         });
     });
 }

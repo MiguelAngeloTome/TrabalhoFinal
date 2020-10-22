@@ -219,6 +219,7 @@ class ListaVinhas extends React.Component {
             latMapa: undefined,
             lngMapa: undefined,
             isCoordsVinha: true,
+            donoError: false,
         }
     };
     static contextType = AuthContext;
@@ -398,6 +399,10 @@ class ListaVinhas extends React.Component {
         this.setState({ openDialogModule2: false, isCoordsVinha: true, nomeVinha: "", local: "", module: "", nomeModule: "", lat: "", long: "", latMapa: "", lngMapa: "" });
     }
 
+    closeDonoError = () => {
+        this.setState({ donoError:false })
+    }
+
     render() {
         const { logout } = this.context;
         const { classes } = this.props;
@@ -484,7 +489,13 @@ class ListaVinhas extends React.Component {
                                         new Promise((resolve) => {
                                             setTimeout(() => {
                                                 resolve();
-                                                this.submit(oldData.vinha_id, '');
+                                                services.vinha.getDonoVinha(oldData.vinha_id).then(data => {
+                                                    if (data[0].dono !== this.context.user.id){
+                                                        this.setState({ donoError: true });
+                                                    }else{
+                                                        this.submit(oldData.vinha_id, '');
+                                                    }
+                                                }).catch();
                                             }, 600);
                                         }),
                                 }}
@@ -502,10 +513,16 @@ class ListaVinhas extends React.Component {
                                 </Snackbar>
                             </div>
                             {this.state.isCoordsVinha === true &&
-                                <h2 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }} textAlign="center">Localização da vinha</h2>
+                                <Container>
+                                    <h2 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }} textAlign="center">Localização da vinha</h2>
+                                    <h6 style={{ "padding": "5px" }} textAlign="center">Por favor selecione no mapa a localização da sua vinha</h6>
+                                </Container>  
                             }
                             {this.state.isCoordsVinha === false &&
-                                <h2 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }} textAlign="center">Localização do modulo</h2>
+                                <Container>
+                                    <h2 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }} textAlign="center">Localização do modulo</h2>
+                                    <h6 style={{ "padding": "5px" }} textAlign="center">Por favor selecione no mapa a localização do seu módulo</h6>
+                                </Container>
                             }
                             <ClickMap parentCallback={this.callbackFunction} />
                             <Button variant="contained" color="primary" style={{ position: "absolute", bottom: 3, right: 30 }} onClick={() => this.newModule()}>
@@ -605,8 +622,12 @@ class ListaVinhas extends React.Component {
                                     SEGUINTE
                                     </Button>
                             </DialogActions>
-
                         </Dialog>
+                        <Snackbar open={this.state.donoError} autoHideDuration={6000} onClose={this.closeDonoError}>
+                            <Alert onClose={this.closeDonoError} severity="error">
+                                Nao pode remover uma vinha de a qual nao seja o dono
+                            </Alert>
+                        </Snackbar>
                     </Container>
                 </main>
             </div >
