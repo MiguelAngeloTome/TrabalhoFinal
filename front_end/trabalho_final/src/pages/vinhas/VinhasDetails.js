@@ -311,6 +311,7 @@ class VinhasDetails extends React.Component {
         }).catch();
 
         services.avisos.getPrefsSingle({ vinha_id: window.location.hash.split("/")[3], user_id: this.context.user.id }).then(data => {
+            rows.length = 0;
             if(data.length > 0){
                 this.setState({ prefs: data[0] })
                 rows.push(
