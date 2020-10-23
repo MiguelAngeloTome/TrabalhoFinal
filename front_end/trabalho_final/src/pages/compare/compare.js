@@ -443,8 +443,8 @@ class Compare extends React.Component {
             let dataIni = services.calc.formatedDate(f);
             let dataFim = services.calc.formatedDate(d);
 
-            services.calc.pInf({ dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected }).then(
-                data => { if (data.length !== 0) { let M = services.calc.MaxMinPhum(data); if (M != null) { this.setState({ key: this.state.key + 1, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, oldInic: dataIni, oldFim: dataFim, data: data, Max: M[0], Min: M[1], first: false, checked: false }) } } else { this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }) } }).catch(this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }));
+            services.calc.hFrio({ dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected, max: this.state.max, min: this.state.min, critico: this.state.critico }).then(
+                data => { console.log(data);if (data.length !== 0) {  this.setState({ key: this.state.key + 1, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, oldInic: dataIni, oldFim: dataFim, data: data, first: false, checked: false }) } else { this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }) } }).catch(this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }));
 
         }
         if (newValue === 2) {

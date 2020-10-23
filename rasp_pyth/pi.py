@@ -1,5 +1,10 @@
 import requests
 import json
+import Adafruit_DHT as dht
+import threading
+import sched, time
+import datetime
+import sys
 from velocidade_vento import vel_vento
 from folha_molhada import isWet
 from pluviosidade import pluv
@@ -7,9 +12,9 @@ from radiacao import rad
 from vento_dir import vento_dir
 from solo_humidity import solo_hum
 
-url = 'http://localhost:5000/data'
+url = 'http://193.137.5.79:1023/data'
+DHT_PIN = 4
 
-a=1
 
 solo = solo_hum()
 vel = vel_vento()
@@ -17,10 +22,24 @@ wet = isWet()
 pluv = pluv()
 rad = rad()
 Vdir = vento_dir()
- 
+s=sched.scheduler(time.time, time.sleep)
+f= open("erros.txt","w+")
+def ler_sensor(sc):
+ x = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+ h,t = dht.read_retry(dht.DHT22,4)
+ temp = "%.1f" %t
+ hum = "%.1f" %h
+ print ("temp",temp)
+ print ("hum", hum)
+ print (x)
+ dados = {'date': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),'module_id':'f3716fc3-ca92-4bad-bec8-8853d1aee514' ,'temp': temp, 'air_humidity': hum, 'solo_hu$
+ try:
+  r = requests.post(url,json = dados)
+  print(r.text)
+ except:
+  f.write("Erro no modulo f3716fc3-ca92-4bad-bec8-8853d1aee514 "+ x + "\n" )
+  print("error")
+ s.enter(900,1,ler_sensor, (sc,))
 
-dados = {'date': '2020-09-20 11:08:59','module_id':'b7a99d83-4168-4223-ab61-ac13bcc7245d' ,'temp': a, 'air_humidity': a, 'solo_humidity': solo, 'isWet': wet,'pluviosidade': pluv, 'vel_vento': vel, 'dir_vento': Vdir, 'radiacao': rad }
-
-r = requests.post(url,json = dados)
-
-print(r.text)
+s.enter(2,1,ler_sensor, (s,))
+s.run()

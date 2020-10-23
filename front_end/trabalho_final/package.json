@@ -12,6 +12,7 @@
     "axios": "^0.20.0",
     "bootstrap": "^4.4.1",
     "chart.js": "^2.9.3",
+    "chartjs-plugin-zoom": "^0.7.7",
     "leaflet": "^1.6.0",
     "material-table": "^1.57.2",
     "mui-autocomplete": "^2.0.1",

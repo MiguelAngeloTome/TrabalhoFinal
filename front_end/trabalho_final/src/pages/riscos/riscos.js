@@ -272,6 +272,8 @@ class Risco extends React.Component {
             let f = new Date();
             f.setDate(f.getDate() - 7);
             this.setState({ DataInic: f })
+            this.setState({ first: true, checked: true, data: undefined })
+
 
 
         }
@@ -282,6 +284,7 @@ class Risco extends React.Component {
             let f = new Date();
             f.setDate(f.getDate() - 7);
             this.setState({ DataInic: f })
+            this.setState({ first: true, checked: true, data: undefined })
         }
 
         if (newValue === 2) {
@@ -290,6 +293,16 @@ class Risco extends React.Component {
             let f = new Date();
             f.setDate(f.getDate() - 7);
             this.setState({ DataInic: f })
+            this.setState({ first: true, checked: true, data: undefined })
+
+        }
+        if (newValue === 3) {
+            let d = new Date();
+            this.setState({ DataFim: d });
+            let f = new Date();
+            f.setDate(f.getDate() - 7);
+            this.setState({ DataInic: f })
+            this.setState({ first: true, checked: true, data: undefined })
 
         }
     };
