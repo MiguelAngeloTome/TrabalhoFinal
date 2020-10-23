@@ -16,7 +16,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Exa from '../graphs/ex';
-import CompareGrah from '../graphs/CompareGraph';
 import SideNav from '../../components/global/sideNav'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AuthContext from "../../configs/authContext";
@@ -406,13 +405,6 @@ class Dashboard extends React.Component {
                 <Paper className={classes.paper}>
                   {datas !== undefined &&
                     <Exa valor={datas.radiacao} rest={80 - datas.radiacao} title={rad} color={radColor} />
-                  }
-                </Paper>
-              </Grid>
-              <Grid item xs={12}>
-                <Paper className={classes.paper}>
-                  {datas !== undefined &&
-                    <CompareGrah module={selected}/>
                   }
                 </Paper>
               </Grid>

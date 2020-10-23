@@ -189,7 +189,6 @@ class User extends React.Component {
       createData('Sobre-nome', this.state.datas[0].surname),
       createData('E-mail', this.state.datas[0].email),
       createData('Password', "*********"),
-      createData('Tipo', this.state.datas[0].type),
     ];
     return (
       <div className={classes.root}>

@@ -57,7 +57,7 @@ class SideNav extends React.Component{
           <ListItemIcon>
             <WarningIcon />
           </ListItemIcon>
-          <ListItemText primary="Cálculos de Riscos" />
+          <ListItemText primary="Cálculos de Risco" />
         </ListItem>
 
 

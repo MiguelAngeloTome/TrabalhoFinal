@@ -361,7 +361,7 @@ class Alertas extends React.Component {
                                                     <TableCell style={{ "width": "1%" }} colspan="2" >
                                                         <Alert severity="error" style={{ "width": "100%" }} action={<IconButton aria-label="delete" color="primary" onClick={() => { this.submitAlertas(row.id) }}>
                                                             <DeleteIcon />
-                                                        </IconButton>}>{row.msg} no dia {row.dia} as {row.hora} na vinha {row.nome} </Alert>
+                                                        </IconButton>}>{row.msg} no dia {row.dia.split("T")[0]} as {row.hora} na vinha {row.nome} </Alert>
                                                     </TableCell>
                                                 }
                                             </div>
@@ -371,7 +371,7 @@ class Alertas extends React.Component {
                                                     <TableCell style={{ "width": "1%" }} colspan="2">
                                                         <Alert severity="warning" style={{ "width": "100%" }} action={<IconButton aria-label="delete" color="primary" onClick={() => { this.submitAlertas(row.id) }}>
                                                             <DeleteIcon />
-                                                        </IconButton>}>{row.msg} no dia {row.dia} as {row.hora} na vinha {row.nome} </Alert>
+                                                        </IconButton>}>{row.msg} no dia {row.dia.split("T")[0]} as {row.hora} na vinha {row.nome} </Alert>
                                                     </TableCell>
                                                 }
                                             </div>
@@ -381,7 +381,7 @@ class Alertas extends React.Component {
                                                     <TableCell style={{ "width": "1%" }} colspan="2">
                                                         <Alert severity="info" justify="center" style={{ "width": "100%" }} action={<IconButton aria-label="delete" color="primary" onClick={() => { this.submitAlertas(row.id) }}>
                                                             <DeleteIcon />
-                                                        </IconButton>}>{row.msg} no dia {row.dia} as {row.hora} na vinha {row.nome} </Alert>
+                                                        </IconButton>}>{row.msg} no dia {row.dia.split("T")[0]} as {row.hora} na vinha {row.nome} </Alert>
                                                     </TableCell>
                                                 }
                                             </div>
