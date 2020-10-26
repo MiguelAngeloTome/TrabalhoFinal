@@ -205,7 +205,7 @@ class User extends React.Component {
               <MenuIcon />
             </IconButton>
             <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-              User profile
+              Perfil de utilizador
           </Typography>
             <IconButton color="inherit" href="/#/alertas">
                 <Badge badgeContent={this.state.count} color="secondary">

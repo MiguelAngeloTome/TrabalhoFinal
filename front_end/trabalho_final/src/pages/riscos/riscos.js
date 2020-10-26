@@ -419,7 +419,7 @@ class Risco extends React.Component {
                             className={classes.Tabs}
                         >
                             <Tab label="Risco de Geada" />
-                            <Tab label="Risco de Incendio" />
+                            <Tab label="Risco de Incêndio" />
                             <Tab label="Risco de Rajada" />
                             <Tab label="Risco de Enxurrada" />
                         </Tabs>
@@ -433,7 +433,7 @@ class Risco extends React.Component {
                                             {this.state.vinhas !== undefined &&
                                                 <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
                                                     <FormControl className={classes.formControl}>
-                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Modules</InputLabel>
+                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
                                                         <Select className={classes.menu}
                                                             value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
                                                         >
@@ -584,7 +584,7 @@ class Risco extends React.Component {
                                             {this.state.vinhas !== undefined &&
                                                 <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
                                                     <FormControl className={classes.formControl}>
-                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Modules</InputLabel>
+                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
                                                         <Select className={classes.menu}
                                                             value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
                                                         >
@@ -681,7 +681,7 @@ class Risco extends React.Component {
                                                 </Container>
 
                                                 <Container maxWidth="lg" className={classes.container}>
-                                                    <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Risco de Incendio:</h1>
+                                                    <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Risco de Incêndio:</h1>
                                                     <TableContainer className={classes.table} component={Paper}>
                                                         <Table aria-label="simple table" >
                                                             <TableBody>
@@ -689,7 +689,7 @@ class Risco extends React.Component {
                                                                     <TableRow key={row.inic}>
                                                                         <TableCell style={{ fontWeight: "bold" }} component="th" scope="row">Dia: {row.date}
                                                                         </TableCell>
-                                                                        <TableCell style={{ fontWeight: "bold" }} align="center">Nivel de Risco: {row.value}</TableCell>
+                                                                        <TableCell style={{ fontWeight: "bold" }} align="center">Nível de Risco: {row.value}</TableCell>
                                                                     </TableRow>
                                                                 ))}
                                                             </TableBody>
@@ -736,7 +736,7 @@ class Risco extends React.Component {
                                             {this.state.vinhas !== undefined &&
                                                 <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
                                                     <FormControl className={classes.formControl}>
-                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Modules</InputLabel>
+                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
                                                         <Select className={classes.menu}
                                                             value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
                                                         >
@@ -842,7 +842,7 @@ class Risco extends React.Component {
                                                                         <TableCell style={{ fontWeight: "bold" }} component="th" scope="row">Inicio: {row.inic}
                                                                         </TableCell>
                                                                         <TableCell style={{ fontWeight: "bold" }} align="center">Fim: {row.fim}</TableCell>
-                                                                        <TableCell style={{ fontWeight: "bold" }} align="center">Velocidade maxima do vento: {row.max}</TableCell>
+                                                                        <TableCell style={{ fontWeight: "bold" }} align="center">Velocidade máxima do vento: {row.max}</TableCell>
                                                                     </TableRow>
                                                                 ))}
                                                             </TableBody>
@@ -889,7 +889,7 @@ class Risco extends React.Component {
                                             {this.state.vinhas !== undefined &&
                                                 <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
                                                     <FormControl className={classes.formControl}>
-                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Modules</InputLabel>
+                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
                                                         <Select className={classes.menu}
                                                             value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
                                                         >
@@ -994,7 +994,7 @@ class Risco extends React.Component {
                                                                     <TableRow key={row.inic}>
                                                                         <TableCell style={{ fontWeight: "bold" }} component="th" scope="row">Hora: {row.date}
                                                                         </TableCell>
-                                                                        <TableCell style={{ fontWeight: "bold" }} align="center">Precipitacao media: {row.avg}</TableCell>
+                                                                        <TableCell style={{ fontWeight: "bold" }} align="center">Precipitação média: {row.avg}</TableCell>
                                                                     </TableRow>
                                                                 ))}
                                                             </TableBody>

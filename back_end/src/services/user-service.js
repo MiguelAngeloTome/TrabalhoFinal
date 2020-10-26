@@ -53,7 +53,7 @@ exports.authenticate = (username, rawPassword) => {
                 if (err) {
                     reject(err);
                 }
-                if (row.length > 0) {
+                if (row !== undefined && row.length > 0) {
                     const password = cipher.decrypt(row[0].password, row[0].dataIv);
                     if (password == rawPassword) {
                         resolve({ id: row[0].user_id, name: row[0].name, surname: row[0].surname });

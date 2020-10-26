@@ -12,6 +12,24 @@ exports.getDataSingle = (req, res) => {
     .catch(err => res.status(500).json({erro: err.message}));
 };
 
+exports.getMaxDataTimeFrame = (req, res) => {
+    dataService.getMaxDataTimeFrame(req.params.id, req.body)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
+};
+
+exports.getMinDataTimeFrame = (req, res) => {
+    dataService.getMinDataTimeFrame(req.params.id, req.body)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
+};
+
+exports.getAvgDataTimeFrame = (req, res) => {
+    dataService.getAvgDataTimeFrame(req.params.id, req.body)
+    .then(result => res.json(result))
+    .catch(err => res.status(500).json({erro: err.message}));
+};
+
 exports.getDataModule = (req, res) => {
     dataService.getDataModule(req.params.id)
     .then(result => res.json(result))

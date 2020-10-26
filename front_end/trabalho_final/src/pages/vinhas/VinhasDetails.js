@@ -222,7 +222,7 @@ const prefsBtn = {
     position:"relative",
     zIndex:1000,
     top: "4.3%",
-    left: "1%"
+    left: "25%"
 }
 
 const txtField = {
@@ -231,6 +231,10 @@ const txtField = {
     marginRight:"auto",
     marginLeft:"auto",
     padding:"0px 7% 0px 0px",
+}
+
+const headerStyle = {
+    fontWeight: "bold",
 }
 
 class VinhasDetails extends React.Component {
@@ -248,7 +252,7 @@ class VinhasDetails extends React.Component {
             value: 0,
 
             columns1: [
-                { title: 'Localizacao', field: 'localizacao' },
+                { title: 'Localização', field: 'localizacao' },
                 { title: 'Latitude', field: 'lat' },
                 { title: 'Longitude', field: 'lng' },
             ],
@@ -543,7 +547,7 @@ class VinhasDetails extends React.Component {
                             <MenuIcon />
                         </IconButton>
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                            Modulos
+                            Estações
                         </Typography>
                         <IconButton color="inherit" href="/#/alertas">
                             <Badge badgeContent={this.state.count} color="secondary">
@@ -576,18 +580,7 @@ class VinhasDetails extends React.Component {
 
 
                 <main className={classes.content}>
-                    <div className={classes.appBarSpacer} />
-
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        style={prefsBtn}
-                        className={classes.button}
-                        startIcon={<SettingsIcon />}
-                        onClick={() => { this.clickPrefsBtn() }}
-                    >
-                        Preferências de alertas
-                    </Button>
+                    <div className={classes.appBarSpacer} />    
 
                     <Paper className={classes.root}>
                         <Tabs
@@ -598,7 +591,7 @@ class VinhasDetails extends React.Component {
                             centered
                             className={classes.Tabs}
                         >
-                            <Tab label="Modulos" />
+                            <Tab label="Estações" />
                             <Tab label="Utilizadores" />
                             <Tab label="Localização" />
                             <Tab label="Preferências" />
@@ -610,7 +603,7 @@ class VinhasDetails extends React.Component {
 
                             <MaterialTable
                                 icons={tableIcons}
-                                title="Lista de modulos"
+                                title="Lista de Estações"
                                 columns={this.state.columns1}
                                 data={this.state.datas1}
                                 options={{
@@ -700,28 +693,40 @@ class VinhasDetails extends React.Component {
 
                     }
                     {this.state.value === 3 &&
-                        <TableContainer component={Paper} style={tableStyle}>
-                            <Table className={classes.table} aria-label="simple table" >
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell align="center">Nome</TableCell>
-                                        <TableCell align="center">Minimo</TableCell>
-                                        <TableCell align="center">Máximo</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {rows.map((row) => (
-                                        <TableRow key={row.nome}>
-                                            <TableCell component="th" scope="row" align="center">
-                                                {row.nome}
-                                            </TableCell>
-                                            <TableCell align="center">{row.min}</TableCell>
-                                            <TableCell align="center">{row.max}</TableCell>
+                        <container>
+                            <TableContainer component={Paper} style={tableStyle}>
+                                <Table className={classes.table} aria-label="simple table" >
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell style = {headerStyle} align="center">Nome</TableCell>
+                                            <TableCell style = {headerStyle} align="center">Mínimo</TableCell>
+                                            <TableCell style = {headerStyle} align="center">Máximo</TableCell>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                                    </TableHead>
+                                    <TableBody>
+                                        {rows.map((row) => (
+                                            <TableRow key={row.nome}>
+                                                <TableCell component="th" scope="row" align="center">
+                                                    {row.nome}
+                                                </TableCell>
+                                                <TableCell align="center">{row.min}</TableCell>
+                                                <TableCell align="center">{row.max}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                style={prefsBtn}
+                                className={classes.button}
+                                startIcon={<SettingsIcon />}
+                                onClick={() => { this.clickPrefsBtn() }}
+                            >
+                                Preferências de alertas
+                            </Button>
+                        </container>
                     }
                     {this.state.value === 4 &&
                         <Container maxWidth="lg" className={classes.containerMap}>
@@ -734,7 +739,7 @@ class VinhasDetails extends React.Component {
                             </div>
                             <h2 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }} textAlign="center">Localização do modulo</h2>
                             <ClickMap parentCallback={this.callbackFunction} />
-                            <Button variant="contained" color="primary" style={{ position: "absolute", bottom: 3, right: 30 }} onClick={() => this.newModule()}>
+                            <Button variant="contained" color="primary" style={{ left:"2%", top:"1%" }} onClick={() => this.newModule()}>
                                 SEGUINTE
                     </Button>
                         </Container>

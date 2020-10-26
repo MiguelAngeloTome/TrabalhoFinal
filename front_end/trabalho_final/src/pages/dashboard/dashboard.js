@@ -24,16 +24,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import MuiAlert from '@material-ui/lab/Alert';
 import services from "../../services/"
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import ErrorIcon from '@material-ui/icons/Error';
 import { red } from '@material-ui/core/colors';
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 const drawerWidth = 240;
 
@@ -128,33 +123,57 @@ const useStyles = theme => ({
     minWidth: 120,
   },
   menu: {
-    textAlign:'center',alignItems: 'right',
-    fontWeight:'bold',
-    fontSize:'x-large'
+    textAlign: 'center', alignItems: 'right',
+    fontWeight: 'bold',
+    fontSize: 'x-large'
   },
 });
 
 const cardAlert = {
-  textAlign: "center", 
+  textAlign: "center",
   position: "relative",
-  width:"30%",
+  width: "30%",
   top: "10%",
-  marginRight:"auto",
-  marginLeft:"auto"
+  marginRight: "auto",
+  marginLeft: "auto"
 }
 
+const cardHeader = {
+  fontWeight: "bold",
+  fontSize: "25px",
+  textAlign: "center"
+}
+
+const cardTypography = {
+  fontWeight: "bold"
+}
+
+let date = new Date()
+let dateNow = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
+let dateMidnight = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " 0:0:0"
 
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      count:0,
+      count: 0,
       open: true,
       datas: undefined,
       vinhas: [],
       selected: undefined,
       noData: false,
       noVinhas: false,
+      dataMax: "",
+      dataMin: "",
+      dataAvg: "",
+      tendTemp: "",
+      tendAir_hum: "",
+      tendDirVento: "",
+      tendIsWet: "",
+      tendPluviosidade: "",
+      tendRad: "",
+      tendSolo_hum: "",
+      tendVel_vento: "",
     }
   }
 
@@ -165,56 +184,110 @@ class Dashboard extends React.Component {
   componentDidMount() {
     services.avisos.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
     let a;
-    services.vinha.getModulesUser(this.context.user.id).then (data =>{
-      this.setState({ vinhas: data});
-      if(data.length !== 0 && data[0].modules.length > 0){
-        a=data[0].modules[0].module_id;
-        this.setState({ selected:data[0].modules[0].module_id });
-        services.data.getLast(a).then(data =>{
-          if(data.length === 0) this.setState({noData:true})
+    services.vinha.getModulesUser(this.context.user.id).then(data => {
+      this.setState({ vinhas: data });
+      if (data.length !== 0 && data[0].modules.length > 0) {
+        a = data[0].modules[0].module_id;
+        this.setState({ selected: data[0].modules[0].module_id });
+        services.data.getLast(a).then(data => {
+          if (data.length === 0) this.setState({ noData: true })
           else this.setState({ datas: data[0] });
         }).catch();
-      }else{
-        if(data.length === 0){
-          this.setState({noVinhas: true, noData: true});
-        }else if(data[0].modules.length === 0){
-          this.setState({noData: true});
+
+        //Max
+        services.data.getMaxDataTimeFrame(a, { timeInic: dateMidnight, timeFin: dateNow }).then(data => {
+          this.setState({ dataMax: data[0] })
+        }).catch(error => console.log(error))
+
+        //Min
+        services.data.getMinDataTimeFrame(a, { timeInic: dateMidnight, timeFin: dateNow }).then(data => {
+          this.setState({ dataMin: data[0] })
+        }).catch(error => console.log(error))
+
+        //Avg
+        services.data.getAvgDataTimeFrame(a, { timeInic: dateMidnight, timeFin: dateNow }).then(data => {
+          this.setState({ dataAvg: data[0] })
+        }).catch(error => console.log(error))
+
+        ////
+        //Tendencia
+        let dataMinusHour = date
+        dataMinusHour.setHours(dataMinusHour.getHours() - 2);
+        dataMinusHour = dataMinusHour.getFullYear() + "-" + (dataMinusHour.getMonth() + 1) + "-" + dataMinusHour.getDate() + " " + dataMinusHour.getHours() + ":" + dataMinusHour.getMinutes() + ":" + dataMinusHour.getSeconds()
+
+        services.data.getTime(a, { time1: dataMinusHour, time2: dateNow }).then(data => {
+          let temp = 0;
+          let air_hum = 0;
+          let dirVento = 0;
+          let isWet = 0;
+          let pluviosidade = 0;
+          let rad = 0;
+          let solo_hum = 0;
+          let vel_vento = 0;
+          for (let i = 0; i < data.length; i++) {
+            temp += data[i].temp;
+            air_hum += data[i].air_humidity;
+            dirVento += data[i].dir_vento;
+            isWet += data[i].isWet;
+            pluviosidade += data[i].pluviosidade;
+            rad += data[i].radiacao;
+            solo_hum += data[i].solo_humidity;
+            vel_vento += data[i].vel_vento;
+          }
+          temp = temp / data.length
+          air_hum = air_hum / data.length
+          dirVento = dirVento / data.length
+          isWet = isWet / data.length
+          pluviosidade = pluviosidade / data.length
+          rad = rad / data.length
+          solo_hum = solo_hum / data.length
+          vel_vento = vel_vento / data.length
+
+          services.data.getLast(a).then(data => {
+            temp > data[0].temp ? this.setState({ tendTemp: "A descer" }) : temp < data[0].temp ? this.setState({ tendTemp: "A subir" }) : this.setState({ tendTemp: "Constante" });
+            air_hum > data[0].air_humidity ? this.setState({ tendAir_hum: "A descer" }) : air_hum < data[0].air_humidity ? this.setState({ tendAir_hum: "A subir" }) : this.setState({ tendAir_hum: "Constante" });
+            dirVento > data[0].dir_vento ? this.setState({ tendDirVento: "A descer" }) : dirVento < data[0].dir_vento ? this.setState({ tendDirVento: "A subir" }) : this.setState({ tendDirVento: "Constante" });
+            isWet > data[0].isWet ? this.setState({ tendIsWet: "A descer" }) : isWet < data[0].isWet ? this.setState({ tendIsWet: "A subir" }) : this.setState({ tendIsWet: "Constante" });
+            pluviosidade > data[0].pluviosidade ? this.setState({ tendPluviosidade: "A descer" }) : pluviosidade < data[0].pluviosidade ? this.setState({ tendPluviosidade: "A subir" }) : this.setState({ tendPluviosidade: "Constante" });
+            rad > data[0].radiacao ? this.setState({ tendRad: "A descer" }) : rad < data[0].radiacao ? this.setState({ tendRad: "A subir" }) : this.setState({ tendRad: "Constante" });
+            solo_hum > data[0].solo_humidity ? this.setState({ tendSolo_hum: "A descer" }) : solo_hum < data[0].solo_humidity ? this.setState({ tendSolo_hum: "A subir" }) : this.setState({ tendSolo_hum: "Constante" });
+            vel_vento > data[0].vel_vento ? this.setState({ tendVel_vento: "A descer" }) : vel_vento < data[0].vel_vento ? this.setState({ tendVel_vento: "A subir" }) : this.setState({ tendVel_vento: "Constante" });
+          }).catch(error => console.log(error))
+        }).catch(error => console.log(error))
+      } else {
+        if (data.length === 0) {
+          this.setState({ noVinhas: true, noData: true });
+        } else if (data[0].modules.length === 0) {
+          this.setState({ noData: true });
         }
       }
     })
   }
 
-  upd= a =>{
-    this.setState({noData:false})
-    this.setState({selected: a})
-    this.setState({datas: undefined})
+  upd = a => {
+    this.setState({ noData: false })
+    this.setState({ selected: a })
+    this.setState({ datas: undefined })
     services.data.getLast(a).then(data => {
-      if(data.length === 0) this.setState({noData:true})
+      if (data.length === 0) this.setState({ noData: true })
       else this.setState({ datas: data[0] })
     }).catch();
+
+    services.data.getMaxDataTimeFrame(a, { timeInic: dateMidnight, timeFin: dateNow }).then(data => {
+      this.setState({ dataMax: data[0] })
+    }).catch(error => console.log(error))
+
+    services.data.getMinDataTimeFrame(a, { timeInic: dateMidnight, timeFin: dateNow }).then(data => {
+      this.setState({ dataMin: data[0] })
+    }).catch(error => console.log(error))
+
+    services.data.getAvgDataTimeFrame(a, { timeInic: dateMidnight, timeFin: dateNow }).then(data => {
+      this.setState({ dataAvg: data[0] })
+    }).catch(error => console.log(error))
   }
 
   render() {
-
-    const temp = 'Temperatura';
-    const tempColor = 'rgba(255, 0, 0, .85)'
-
-    const hum = 'Humidade do Ar';
-    const humColor = 'rgba(66, 245, 239, .85)'
-
-    const soloHum = 'Hum. do Solo';
-    const soloHumColor = 'rgba(222, 184, 135, .85)'
-
-    const pluv = 'Pluviosidade';
-    const pluvColor = 'rgba(0, 0, 255, .85)'
-
-    const velVento = 'Vel. do Vento';
-    const velColor = 'rgba(230, 230, 250, .85)'
-
-    const rad = 'Radiação Solar';
-    const radColor = 'rgba(255, 255, 0, .85)'
-
-    const { datas, vinhas, selected} = this.state;
+    const { datas, vinhas } = this.state;
     const { logout } = this.context;
     const { classes } = this.props;
     return (
@@ -236,7 +309,7 @@ class Dashboard extends React.Component {
           </Typography>
             <IconButton color="inherit" href="/#/alertas">
               <Badge badgeContent={this.state.count} color="secondary">
-                  <NotificationsIcon />
+                <NotificationsIcon />
               </Badge>
             </IconButton>
             <IconButton color="inherit" onClick={() => logout()}>
@@ -261,31 +334,24 @@ class Dashboard extends React.Component {
           <Divider />
           <SideNav />
         </Drawer>
-
-
-
-
-
-
-        
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           {vinhas !== undefined &&
             <FormControl className={classes.formControl}>
-              <InputLabel className={classes.menu} htmlFor="grouped-native-select">Modules</InputLabel>
+              <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
               <Select className={classes.menu}
-                value={this.state.selected ? this.state.selected : ''} onChange={(evt)=>this.upd(evt.target.value)}
+                value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
               >
                 {this.state.vinhas.map((vinha, index) => {
-                  let a =[];
+                  let a = [];
                   a.push(<ListSubheader>{vinha.nome}</ListSubheader>)
-                    for(let i=0;i<vinha.modules.length;i++){
-                       a.push(<MenuItem className={classes.menu}  value={vinha.modules[i].module_id}>
-                        {vinha.modules[i].localizacao}
-                      </MenuItem>) 
-                      }
-                    return(a)
-                    }
+                  for (let i = 0; i < vinha.modules.length; i++) {
+                    a.push(<MenuItem className={classes.menu} value={vinha.modules[i].module_id}>
+                      {vinha.modules[i].localizacao}
+                    </MenuItem>)
+                  }
+                  return (a)
+                }
 
                 )}
               </Select>
@@ -295,12 +361,12 @@ class Dashboard extends React.Component {
           {this.state.noVinhas &&
             <div style={cardAlert}>
               <Card >
-                  <CardContent>
-                      <Typography variant="h5" component="h2">
-                          Não tem nenhuma vinha criada
+                <CardContent>
+                  <Typography variant="h5" component="h2">
+                    Não tem nenhuma vinha criada
                       </Typography>
-                      <ErrorIcon fontSize="large" style={{ color: red[500] }} />
-                  </CardContent>
+                  <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                </CardContent>
               </Card>
             </div>
           }
@@ -308,22 +374,21 @@ class Dashboard extends React.Component {
           {!this.state.noVinhas && this.state.noData &&
             <div style={cardAlert}>
               <Card >
-                  <CardContent>
-                      <Typography variant="h5" component="h2">
-                          A vinha não tem informação
+                <CardContent>
+                  <Typography variant="h5" component="h2">
+                    A vinha não tem informação
                       </Typography>
-                      <ErrorIcon fontSize="large" style={{ color: red[500] }} />
-                  </CardContent>
+                  <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                </CardContent>
               </Card>
             </div>
           }
 
-          
+
           <Container maxWidth="lg" className={classes.container}>
-          {this.state.noData === false &&
-            <Grid container spacing={3}>
-              {/* Chart */}
-              <Grid item xs={12} md={6} lg={6} >
+            {this.state.noData === false &&
+              <Grid container spacing={1}>
+                {/* <Grid item xs={12} md={6} lg={6} >
                 <Paper className={clsx(classes.paper)}>
                   {datas !== undefined &&
                     <Typography component="h1" variant="h6" noWrap className={classes.titleK}>
@@ -336,79 +401,103 @@ class Dashboard extends React.Component {
                     </Typography>
                   }
                 </Paper>
-              </Grid>
-              <Grid item xs={12} md={6} lg={6} >
-                <Paper className={clsx(classes.paper)}>
-                  {datas !== undefined &&
-                    <Typography component="h1" variant="h6" noWrap className={classes.titleK}>
-                      Direção do Vento: {
-                        datas.dir_vento < 22.5 && datas.dir_vento > 337.5 ?
-                        ("Norte"):
-                        datas.dir_vento < 67.5 && datas.dir_vento > 22.5 ?
-                        ("Nordeste"):
-                        datas.dir_vento < 112.5 && datas.dir_vento > 67.5 ?
-                        ("Este"):
-                        datas.dir_vento < 157.5 && datas.dir_vento > 112.5 ?
-                        ("Sudeste"):
-                        datas.dir_vento < 202.5 && datas.dir_vento > 157.5 ?
-                        ("Sul"):
-                        datas.dir_vento < 247.5 && datas.dir_vento > 202.5 ?
-                        ("Sudoeste"):
-                        datas.dir_vento < 292.5 && datas.dir_vento > 247.5 ?
-                        ("Oeste"):
-                        ("Noroeste")
-                      }
-                    </Typography>
-                    
-                  }
-                </Paper>
-              </Grid>
-              <Grid item xs={12} md={6} lg={4} >
-              
-                <Paper className={clsx(classes.paper)}>
-                {datas !== undefined &&
+              </Grid> */}
+                {/* <Grid item xs={12} md={6} lg={6} >
+              </Grid> */}
+                <Grid item xs={12} md={6} lg={4} >
+                  <Paper className={clsx(classes.paper)}>
+                    <Typography style={cardHeader}>Temperatura</Typography>
+                    <Typography style={cardTypography}>Valor máximo:{this.state.dataMax.temp}</Typography>
+                    <Typography style={cardTypography}>Valor mínimo:{this.state.dataMin.temp}</Typography>
+                    <Typography style={cardTypography}>Valor médio:{this.state.dataAvg.temp}</Typography>
+                    <Typography style={cardTypography}>Tendência:{this.state.tendTemp}</Typography>
+                    {/* {datas !== undefined &&
                     <Exa valor={datas.temp} rest={80 - datas.temp} title={temp} color={tempColor}/>
-                }
-                </Paper>
-              </Grid>
-              {/* Recent Deposits */}
-              <Grid item xs={12} md={6} lg={4}>
-                <Paper className={clsx(classes.paper)}>
-                  {datas !== undefined &&
+                } */}
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} md={6} lg={4}>
+                  <Paper className={clsx(classes.paper)}>
+                    <Typography style={cardHeader}>Humidade do Ar</Typography>
+                    <Typography style={cardTypography}>Valor máximo:{this.state.dataMax.air_humidity}</Typography>
+                    <Typography style={cardTypography}>Valor mínimo:{this.state.dataMin.air_humidity}</Typography>
+                    <Typography style={cardTypography}>Valor médio:{this.state.dataAvg.air_humidity}</Typography>
+                    <Typography style={cardTypography}>Tendência:{this.state.tendAir_hum}</Typography>
+                    {/* {datas !== undefined &&
                     <Exa valor={datas.air_humidity} rest={80 - datas.air_humidity} title={hum} color={humColor} />
-                  }
-                </Paper>
-              </Grid>
-              {/* Recent Orders */}
-              <Grid item xs={12} md={6} lg={4}>
-                <Paper className={classes.paper}>
-                  {datas !== undefined &&
+                  } */}
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} md={6} lg={4}>
+                  <Paper className={classes.paper}>
+                    <Typography style={cardHeader}>Humidade do Solo</Typography>
+                    <Typography style={cardTypography}>Valor máximo:{this.state.dataMax.solo_humidity}</Typography>
+                    <Typography style={cardTypography}>Valor mínimo:{this.state.dataMin.solo_humidity}</Typography>
+                    <Typography style={cardTypography}>Valor médio:{this.state.dataAvg.solo_humidity}</Typography>
+                    <Typography style={cardTypography}>Tendência:{this.state.tendSolo_hum}</Typography>
+                    {/* {datas !== undefined &&
                     <Exa valor={datas.solo_humidity} rest={80 - datas.solo_humidity} title={soloHum} color={soloHumColor} />
-                  }
-                </Paper>
-              </Grid>
-              <Grid item xs={12} md={6} lg={4}>
-                <Paper className={classes.paper}>
-                  {datas !== undefined &&
+                  } */}
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} md={6} lg={4}>
+                  <Paper className={classes.paper}>
+                    <Typography style={cardHeader}>Pluviosidade</Typography>
+                    <Typography style={cardTypography}>Valor máximo:{this.state.dataMax.pluviosidade}</Typography>
+                    <Typography style={cardTypography}>Valor mínimo:{this.state.dataMin.pluviosidade}</Typography>
+                    <Typography style={cardTypography}>Valor médio:{this.state.dataAvg.pluviosidade}</Typography>
+                    <Typography style={cardTypography}>Tendência:{this.state.tendPluviosidade}</Typography>
+                    {/* {datas !== undefined &&
                     <Exa valor={datas.pluviosidade} rest={80 - datas.pluviosidade} title={pluv} color={pluvColor} />
-                  }
-                </Paper>
-              </Grid>
-              <Grid item xs={12} md={6} lg={4}>
-                <Paper className={classes.paper}>
-                  {datas !== undefined &&
+                  } */}
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} md={6} lg={4}>
+                  <Paper className={classes.paper}>
+                    <Typography style={cardHeader}>Vento</Typography>
+                    <Typography style={cardTypography}>Valor máximo:{this.state.dataMax.vel_vento}</Typography>
+                    <Typography style={cardTypography}>Valor mínimo:{this.state.dataMin.vel_vento}</Typography>
+                    <Typography style={cardTypography}>Valor médio:{this.state.dataAvg.vel_vento}</Typography>
+                    <Typography style={cardTypography}>Tendência:{this.state.tendVel_vento}</Typography>
+                    {datas !== undefined &&
+                      <Typography component="h1" variant="h6" noWrap className={classes.titleK}>
+                        Direção do Vento: {
+                          datas.dir_vento < 22.5 && datas.dir_vento > 337.5 ?
+                            ("Norte") :
+                            datas.dir_vento < 67.5 && datas.dir_vento > 22.5 ?
+                              ("Nordeste") :
+                              datas.dir_vento < 112.5 && datas.dir_vento > 67.5 ?
+                                ("Este") :
+                                datas.dir_vento < 157.5 && datas.dir_vento > 112.5 ?
+                                  ("Sudeste") :
+                                  datas.dir_vento < 202.5 && datas.dir_vento > 157.5 ?
+                                    ("Sul") :
+                                    datas.dir_vento < 247.5 && datas.dir_vento > 202.5 ?
+                                      ("Sudoeste") :
+                                      datas.dir_vento < 292.5 && datas.dir_vento > 247.5 ?
+                                        ("Oeste") :
+                                        ("Noroeste")
+                        }
+                      </Typography>
+                    }
+                    {/* {datas !== undefined &&
                     <Exa valor={datas.vel_vento} rest={80 - datas.vel_vento} title={velVento} color={velColor} />
-                  }
-                </Paper>
-              </Grid>
-              <Grid item xs={12} md={6} lg={4}>
-                <Paper className={classes.paper}>
-                  {datas !== undefined &&
+                  } */}
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} md={6} lg={4}>
+                  <Paper className={classes.paper}>
+                    <Typography style={cardHeader}>Radiação solar</Typography>
+                    <Typography style={cardTypography}>Valor máximo:{this.state.dataMax.radiacao}</Typography>
+                    <Typography style={cardTypography}>Valor mínimo:{this.state.dataMin.radiacao}</Typography>
+                    <Typography style={cardTypography}>Valor médio:{this.state.dataAvg.radiacao}</Typography>
+                    <Typography style={cardTypography}>Tendência:{this.state.tendRad}</Typography>
+                    {/* {datas !== undefined &&
                     <Exa valor={datas.radiacao} rest={80 - datas.radiacao} title={rad} color={radColor} />
-                  }
-                </Paper>
-              </Grid>
-            </Grid>}
+                  } */}
+                  </Paper>
+                </Grid>
+              </Grid>}
           </Container>
         </main>
       </div>

@@ -196,7 +196,7 @@ class ListaVinhas extends React.Component {
             datas: [],
             vinhaIdNovo: "",
             columns: [
-                { title: 'Name', field: 'Nome' },
+                { title: 'Nome', field: 'Nome' },
                 { title: 'Localização', field: 'localizacao' },
             ],
             localizacao: "",
@@ -525,7 +525,7 @@ class ListaVinhas extends React.Component {
                                 </Container>
                             }
                             <ClickMap parentCallback={this.callbackFunction} />
-                            <Button variant="contained" color="primary" style={{ position: "absolute", bottom: 3, right: 30 }} onClick={() => this.newModule()}>
+                            <Button variant="contained" color="primary" style={{ left:"2%", top:"1%" }} onClick={() => this.newModule()}>
                                 SEGUINTE
                                 </Button>
                         </Container>

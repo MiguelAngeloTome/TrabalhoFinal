@@ -30,6 +30,69 @@ exports.getDataSingle = id => {
     });
 }
 
+exports.getMaxDataTimeFrame = (id, body) => {
+    return new Promise((resolve, reject) => {
+        db.query(`select max(temp) as temp,
+                max(air_humidity) as air_humidity,
+                max(solo_humidity) as solo_humidity,
+                max(isWet) as isWet,
+                max(pluviosidade) as pluviosidade,
+                max(vel_vento) as vel_vento,
+                max(dir_vento) as dir_vento,
+                max(radiacao) as radiacao
+                from data 
+                where concat(YEAR(date), "-", month(date), "-", day(date), " ", hour(date), ":", minute(date),":", second(date)) > ?
+                and concat(YEAR(date), "-", month(date), "-", day(date), " ", hour(date), ":", minute(date),":", second(date)) < ?
+                and module_id = ?`, [body.timeInic , body.timeFin , id],
+                (err, row) => {
+                if (err) reject(err);
+                resolve(row);
+            });
+    });
+}
+
+exports.getMinDataTimeFrame = (id, body) => {
+    return new Promise((resolve, reject) => {
+        db.query(`select min(temp) as temp,
+                min(air_humidity) as air_humidity,
+                min(solo_humidity) as solo_humidity,
+                min(isWet) as isWet,
+                min(pluviosidade) as pluviosidade,
+                min(vel_vento) as vel_vento,
+                min(dir_vento) as dir_vento,
+                min(radiacao) as radiacao
+                from data 
+                where concat(YEAR(date), "-", month(date), "-", day(date), " ", hour(date), ":", minute(date),":", second(date)) > ?
+                and concat(YEAR(date), "-", month(date), "-", day(date), " ", hour(date), ":", minute(date),":", second(date)) < ?
+                and module_id = ?`, [body.timeInic , body.timeFin , id],
+                (err, row) => {
+                if (err) reject(err);
+                resolve(row);
+            });
+    });
+}
+
+exports.getAvgDataTimeFrame = (id, body) => {
+    return new Promise((resolve, reject) => {
+        db.query(`select CAST(avg(temp) as decimal (10, 1)) as temp,
+                CAST(avg(air_humidity) as decimal (10, 1)) as air_humidity,
+                CAST(avg(solo_humidity) as decimal (10, 1)) as solo_humidity,
+                CAST(avg(isWet) as decimal (10, 1)) as isWet,
+                CAST(avg(pluviosidade) as decimal (10, 1)) as pluviosidade,
+                CAST(avg(vel_vento) as decimal (10, 1)) as vel_vento,
+                CAST(avg(dir_vento) as decimal (10, 1)) as dir_vento,
+                CAST(avg(radiacao) as decimal (10, 1)) as radiacao
+                from data 
+                where concat(YEAR(date), "-", month(date), "-", day(date), " ", hour(date), ":", minute(date),":", second(date)) > ?
+                and concat(YEAR(date), "-", month(date), "-", day(date), " ", hour(date), ":", minute(date),":", second(date)) < ?
+                and module_id = ?`, [body.timeInic , body.timeFin , id],
+                (err, row) => {
+                if (err) reject(err);
+                resolve(row);
+            });
+    });
+}
+
 //Retorna todos os datas de um modulo atraves do seu module id
 exports.getDataModule = id => {
     return new Promise((resolve, reject) => {

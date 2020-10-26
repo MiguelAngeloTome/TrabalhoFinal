@@ -4,6 +4,9 @@ const authorize = require("../configs/authorization");
 
 router.get("", authorize(), dataController.getData);
 router.get("/:id", authorize(), dataController.getDataSingle);
+router.put("/max/:id", authorize(), dataController.getMaxDataTimeFrame);
+router.put("/min/:id", authorize(), dataController.getMinDataTimeFrame);
+router.put("/avg/:id", authorize(), dataController.getAvgDataTimeFrame);
 router.get("/module/:id", authorize(), dataController.getDataModule);
 router.get("/last/:id", authorize(), dataController.getDataModuloLast);
 router.post("", dataController.insertData);

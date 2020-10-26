@@ -515,8 +515,8 @@ class Compare extends React.Component {
                     createData('Coordenadas:', this.state.oldModule.lat + " " + this.state.oldModule.lng),
                     createData('Dia de Início:', this.state.oldInic),
                     createData('Dia de Término:', this.state.oldFim),
-                    createData('ETP maximo registado:', this.state.Max),
-                    createData('ETP minimo registado:', this.state.Min),
+                    createData('ETP máximo registado:', this.state.Max),
+                    createData('ETP mínimo registado:', this.state.Min),
                 ];
             }
             if (this.state.value === 1) {
@@ -527,8 +527,8 @@ class Compare extends React.Component {
                         createData('Coordenadas:', this.state.oldModule.lat + " " + this.state.oldModule.lng),
                         createData('Dia de Início:', this.state.oldInic),
                         createData('Dia de Término:', this.state.oldFim),
-                        createData('Humidade maxima registado:', this.state.Max),
-                        createData('Humidade minima registado:', this.state.Min),
+                        createData('Humidade máxima registado:', this.state.Max),
+                        createData('Humidade mínima registado:', this.state.Min),
                     ];
                 }
                 if (this.state.value1 === 1) {
@@ -538,8 +538,8 @@ class Compare extends React.Component {
                         createData('Coordenadas:', this.state.oldModule.lat + " " + this.state.oldModule.lng),
                         createData('Dia de Início:', this.state.oldInic),
                         createData('Dia de Término:', this.state.oldFim),
-                        createData('Humidade maxima registado:', this.state.Max),
-                        createData('Humidade minima registado:', this.state.Min),
+                        createData('Humidade máxima registado:', this.state.Max),
+                        createData('Humidade mínima registado:', this.state.Min),
                     ];
                 }
                 if (this.state.value1 === 2) {
@@ -561,7 +561,7 @@ class Compare extends React.Component {
                         createData('Dia de Início:', this.state.oldInic),
                         createData('Dia de Término:', this.state.oldFim),
                         createData('Temperatura máxima registada:', this.state.Max),
-                        createData('Temperatura minima registada:', this.state.Min),
+                        createData('Temperatura mínima registada:', this.state.Min),
                     ];
                 }
                 if (this.state.value2 === 1) {
@@ -661,9 +661,9 @@ class Compare extends React.Component {
                                 centered
                                 className={classes.Tabs}
                             >
-                                <Tab label="Periodos de humidade" />
-                                <Tab label="Periodos de Infeção" />
-                                <Tab label="Periodos de Humectaçao" />
+                                <Tab label="Períodos de humidade" />
+                                <Tab label="Períodos de Infeção" />
+                                <Tab label="Períodos de Humectação" />
                             </Tabs>
                         </Paper>
 
@@ -693,7 +693,7 @@ class Compare extends React.Component {
                                 {this.state.vinhas !== undefined &&
                                     <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
                                         <FormControl className={classes.formControl}>
-                                            <InputLabel className={classes.menu} htmlFor="grouped-native-select">Modules</InputLabel>
+                                            <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
                                             <Select className={classes.menu}
                                                 value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
                                             >
@@ -835,7 +835,7 @@ class Compare extends React.Component {
                                             {this.state.vinhas !== undefined &&
                                                 <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
                                                     <FormControl className={classes.formControl}>
-                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Modules</InputLabel>
+                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
                                                         <Select className={classes.menu}
                                                             value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
                                                         >
@@ -953,7 +953,7 @@ class Compare extends React.Component {
                                                             <Card >
                                                                 <CardContent>
                                                                     <Typography variant="h5" component="h2">
-                                                                        Não existem dados suficientes para fazer o cálculo dos periodos de humidade, se este erro persistir por favor entrar em contacto
+                                                                        Não existem dados suficientes para fazer o cálculo dos períodos de humidade, se este erro persistir por favor entrar em contacto
                                                                 </Typography>
                                                                     <ErrorIcon fontSize="large" style={{ color: red[500] }} />
                                                                 </CardContent>
@@ -977,7 +977,7 @@ class Compare extends React.Component {
                                             {this.state.vinhas !== undefined &&
                                                 <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
                                                     <FormControl className={classes.formControl}>
-                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Modules</InputLabel>
+                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
                                                         <Select className={classes.menu}
                                                             value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
                                                         >
@@ -1094,7 +1094,7 @@ class Compare extends React.Component {
                                                             <Card >
                                                                 <CardContent>
                                                                     <Typography variant="h5" component="h2">
-                                                                        Não existem dados suficientes para fazer o cálculo dos periodos de infeção, se este erro persistir por favor entrar em contacto
+                                                                        Não existem dados suficientes para fazer o cálculo dos períodos de infeção, se este erro persistir por favor entrar em contacto
                                                                     </Typography>
                                                                     <ErrorIcon fontSize="large" style={{ color: red[500] }} />
                                                                 </CardContent>
@@ -1117,7 +1117,7 @@ class Compare extends React.Component {
                                             {this.state.vinhas !== undefined &&
                                                 <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
                                                     <FormControl className={classes.formControl}>
-                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Modules</InputLabel>
+                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
                                                         <Select className={classes.menu}
                                                             value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
                                                         >
@@ -1247,7 +1247,7 @@ class Compare extends React.Component {
                                                             <Card >
                                                                 <CardContent>
                                                                     <Typography variant="h5" component="h2">
-                                                                        Não existem dados suficientes para fazer o cálculo dos periodos de humectação, se este erro persistir por favor entrar em contacto
+                                                                        Não existem dados suficientes para fazer o cálculo dos períodos de humectação, se este erro persistir por favor entrar em contacto
                                                                     </Typography>
                                                                     <ErrorIcon fontSize="large" style={{ color: red[500] }} />
                                                                 </CardContent>
@@ -1275,7 +1275,7 @@ class Compare extends React.Component {
                                             {this.state.vinhas !== undefined &&
                                                 <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
                                                     <FormControl className={classes.formControl}>
-                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Modules</InputLabel>
+                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
                                                         <Select className={classes.menu}
                                                             value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
                                                         >
@@ -1416,7 +1416,7 @@ class Compare extends React.Component {
                                             {this.state.vinhas !== undefined &&
                                                 <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
                                                     <FormControl className={classes.formControl}>
-                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Modules</InputLabel>
+                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
                                                         <Select className={classes.menu}
                                                             value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
                                                         >
@@ -1574,7 +1574,7 @@ class Compare extends React.Component {
                                             {this.state.vinhas !== undefined &&
                                                 <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
                                                     <FormControl className={classes.formControl}>
-                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Modules</InputLabel>
+                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
                                                         <Select className={classes.menu}
                                                             value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
                                                         >
