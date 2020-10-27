@@ -59,6 +59,12 @@ class SideNav extends React.Component{
           </ListItemIcon>
           <ListItemText primary="Cálculos de Risco" />
         </ListItem>
+        <ListItem  button component="a" href="/#/duplo">
+          <ListItemIcon>
+            <TrendingUpIcon />
+          </ListItemIcon>
+          <ListItemText primary="Gráficos Duplos" />
+        </ListItem>
 
 
 
