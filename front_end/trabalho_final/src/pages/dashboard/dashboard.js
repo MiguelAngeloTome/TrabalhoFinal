@@ -175,6 +175,7 @@ class Dashboard extends React.Component {
       tendRad: "",
       tendSolo_hum: "",
       tendVel_vento: "",
+      muldatas: [],
     }
   }
 
@@ -204,6 +205,10 @@ class Dashboard extends React.Component {
         //Avg
         services.data.getAvgDataTimeFrame(a, { timeInic: dateMidnight, timeFin: dateNow }).then(data => {
           this.setState({ dataAvg: data[0] })
+        }).catch(error => console.log(error))
+        //dados do dia
+        services.data.getTime(a,{time1:dateMidnight,time2:dateNow}).then(data => {
+          this.setState({ muldatas: data })
         }).catch(error => console.log(error))
 
         ////
@@ -498,10 +503,10 @@ class Dashboard extends React.Component {
                 </Grid>
                 <Grid item xs={12}>
                 <Paper className={classes.paper}>
-                  {this.state.selected !== undefined &&
+                  {this.state.muldatas.length !== 0 &&
                     <div>
                     <Typography style={cardHeader}>Dados do Dia de Hoje:</Typography>
-                    <CompareGrah tipo={1} module={this.state.selected} dateInic={dateMidnight} dateFim={date}/>
+                    <CompareGrah value={1} data={this.state.muldatas} />
                     </div>
                   }
                 </Paper>
