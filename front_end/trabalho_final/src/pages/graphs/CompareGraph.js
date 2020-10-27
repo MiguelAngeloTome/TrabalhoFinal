@@ -29,52 +29,104 @@ export default class CompareGraph extends React.Component{
             a:[],
             b:[],
 
-            densityData : {
+            tempData : {
                 label: 'Temperature',
                 data: [],
-                borderColor: 'rgba(0, 99, 132, 0.6)',
+                borderColor: 'rgba(255, 0, 0, 1)',
                 borderWidth: 0,
                 showLine: true,
                 fill: false,
-                hidden: true,
+                hidden: false,
         },
-        gravityData : {
-            label: 'Humidity',
+        humData : {
+            label: 'Humidade',
             data: [],
-            borderColor: 'rgba(99, 132, 0, 0.6)',
+            borderColor: 'rgba(7, 216, 240, 1)',
             borderWidth: 0,
             fill: false,
             showLine: true,
+            hidden: false,
+          },
+          soloHumData : {
+            label: 'Humidade do Solo',
+            data: [],
+            borderColor: 'rgba(255, 132, 20, 0.6)',
+            borderWidth: 0,
+            fill: false,
+            showLine: true,
+            hidden: true,
+          },
+          pluvData : {
+            label: 'Pluviosidade',
+            data: [],
+            borderColor: 'rgba(0, 0, 255, 0.6)',
+            borderWidth: 0,
+            fill: false,
+            showLine: true,
+            hidden: true,
+          },
+          velData : {
+            label: 'Velocidade do Vento',
+            data: [],
+            borderColor: 'rgba(0, 255, 0, 0.6)',
+            borderWidth: 0,
+            fill: false,
+            showLine: true,
+            hidden: true,
+          },
+          radData : {
+            label: 'Radiação',
+            data: [],
+            borderColor: 'rgba(240, 232, 0, 0.6)',
+            borderWidth: 0,
+            fill: false,
+            showLine: true,
+            hidden: true,
           },
     }
     }
 componentDidMount(){
- 
-    services.data.getTime(this.props.module,{time1:"2020-01-01 10:00:10", time2:"2020-01-01 13:25:10"}).then(data=>this.control(data));
+    if(this.props.value ==1){
+        this.control(this.props.data)
+    }else{
+        services.data.getTime(this.props.module,{time1:this.props.dateInic, time2:this.props.dateFim}).then(data=>this.control(data));
+    }
+
 
 }
 
 control(a){
+    console.log(a)
     let b = [];
     let c = [];
+    let d = [];
+    let e = [];
+    let f = [];
+    let g = [];
 
     for(let i=0;i<a.length;i++){
         b.push({x:new Date(a[i].date),y:a[i].temp})
-    }
-    for(let i=0;i<a.length;i++){
         c.push({x:new Date(a[i].date),y:a[i].air_humidity})
+        d.push({x:new Date(a[i].date),y:a[i].solo_humidity})
+        e.push({x:new Date(a[i].date),y:a[i].pluviosidade})
+        f.push({x:new Date(a[i].date),y:a[i].vel_vento})
+        g.push({x:new Date(a[i].date),y:a[i].radiacao})
     }
-    this.setState({densityData:{ label:this.state.densityData.label,borderColor:this.state.densityData.borderColor,borderWidth:this.state.densityData.borderWidth,showLine:this.state.densityData.showLine,fill:this.state.densityData.fill,hidden:this.state.densityData.hidden,data:b} });
-    this.setState({gravityData:{ label:this.state.gravityData.label,borderColor:this.state.gravityData.borderColor,borderWidth:this.state.gravityData.borderWidth,showLine:this.state.gravityData.showLine,fill:this.state.gravityData.fill,data:c} });
+    this.setState({tempData:{ label:this.state.tempData.label,borderColor:this.state.tempData.borderColor,borderWidth:this.state.tempData.borderWidth,showLine:this.state.tempData.showLine,fill:this.state.tempData.fill,hidden:this.state.tempData.hidden,data:b} });
+    this.setState({humData:{ label:this.state.humData.label,borderColor:this.state.humData.borderColor,borderWidth:this.state.humData.borderWidth,showLine:this.state.humData.showLine,fill:this.state.humData.fill,data:c} });
+    this.setState({soloHumData:{ label:this.state.soloHumData.label,borderColor:this.state.soloHumData.borderColor,borderWidth:this.state.soloHumData.borderWidth,showLine:this.state.soloHumData.showLine,fill:this.state.soloHumData.fill,hidden:this.state.soloHumData.hidden,data:d} });
+    this.setState({pluvData:{ label:this.state.pluvData.label,borderColor:this.state.pluvData.borderColor,borderWidth:this.state.pluvData.borderWidth,showLine:this.state.pluvData.showLine,fill:this.state.pluvData.fill,data:e} });
+    this.setState({velData:{ label:this.state.velData.label,borderColor:this.state.velData.borderColor,borderWidth:this.state.velData.borderWidth,showLine:this.state.velData.showLine,fill:this.state.velData.fill,hidden:this.state.velData.hidden,data:f} });
+    this.setState({radData:{ label:this.state.radData.label,borderColor:this.state.radData.borderColor,borderWidth:this.state.radData.borderWidth,showLine:this.state.radData.showLine,fill:this.state.radData.fill,data:g} });
 
 }
  
     render(){
 
          
-          if(this.state.densityData.data.length!== 0 & this.state.gravityData.data.length!== 0){
+          if(this.state.tempData.data.length!== 0 & this.state.humData.data.length!== 0){
             var planetData = {
-                datasets: [this.state.densityData, this.state.gravityData]
+                datasets: [this.state.tempData, this.state.humData, this.state.soloHumData, this.state.pluvData, this.state.velData, this.state.radData]
               };
             }
           
@@ -111,7 +163,7 @@ control(a){
           };
         return(
             <Container>
-                    {this.state.densityData.data.length!==0 &&
+                    {this.state.tempData.data.length!==0 &&
                     <Scatter style={{align: 'center'}} data={planetData} options={chartOptions} />
                     }
                     

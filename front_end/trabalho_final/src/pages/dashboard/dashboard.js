@@ -15,6 +15,7 @@ import Paper from '@material-ui/core/Paper';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import CompareGrah from '../graphs/CompareGraph';
 import Exa from '../graphs/ex';
 import SideNav from '../../components/global/sideNav'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
@@ -187,13 +188,9 @@ class Dashboard extends React.Component {
     services.vinha.getModulesUser(this.context.user.id).then(data => {
       this.setState({ vinhas: data });
       if (data.length !== 0 && data[0].modules.length > 0) {
+        console.log(data[0].modules[0].module_id)
         a = data[0].modules[0].module_id;
         this.setState({ selected: data[0].modules[0].module_id });
-        services.data.getLast(a).then(data => {
-          if (data.length === 0) this.setState({ noData: true })
-          else this.setState({ datas: data[0] });
-        }).catch();
-
         //Max
         services.data.getMaxDataTimeFrame(a, { timeInic: dateMidnight, timeFin: dateNow }).then(data => {
           this.setState({ dataMax: data[0] })
@@ -253,6 +250,7 @@ class Dashboard extends React.Component {
             solo_hum > data[0].solo_humidity ? this.setState({ tendSolo_hum: "A descer" }) : solo_hum < data[0].solo_humidity ? this.setState({ tendSolo_hum: "A subir" }) : this.setState({ tendSolo_hum: "Constante" });
             vel_vento > data[0].vel_vento ? this.setState({ tendVel_vento: "A descer" }) : vel_vento < data[0].vel_vento ? this.setState({ tendVel_vento: "A subir" }) : this.setState({ tendVel_vento: "Constante" });
           }).catch(error => console.log(error))
+          this.setState({selected:a})
         }).catch(error => console.log(error))
       } else {
         if (data.length === 0) {
@@ -266,6 +264,7 @@ class Dashboard extends React.Component {
 
   upd = a => {
     this.setState({ noData: false })
+    this.setState({ selected: undefined })
     this.setState({ selected: a })
     this.setState({ datas: undefined })
     services.data.getLast(a).then(data => {
@@ -497,6 +496,16 @@ class Dashboard extends React.Component {
                   } */}
                   </Paper>
                 </Grid>
+                <Grid item xs={12}>
+                <Paper className={classes.paper}>
+                  {this.state.selected !== undefined &&
+                    <div>
+                    <Typography style={cardHeader}>Dados do Dia de Hoje:</Typography>
+                    <CompareGrah tipo={1} module={this.state.selected} dateInic={dateMidnight} dateFim={date}/>
+                    </div>
+                  }
+                </Paper>
+              </Grid>
               </Grid>}
           </Container>
         </main>

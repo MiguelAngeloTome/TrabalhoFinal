@@ -11,6 +11,7 @@ import ListaVinhas from "../pages/vinhas/ListVinhas";
 import AuthContext from "../configs/authContext";
 import VinhasDetails from "../pages/vinhas/VinhasDetails";
 import Risco from "../pages/riscos/riscos.js";
+import GraphDuplo from "../pages/graphDuplo/GraphDuplo.js";
 import Compare from "../pages/compare/compare.js";
 import User from "../pages/user/user";
 import Alertas from "../pages/Alertas/Alertas";
@@ -34,6 +35,7 @@ export default class RouterComponent extends React.Component {
              <PrivateRoute exact path="/vinhas/details/:id" component={VinhasDetails} />
              <PrivateRoute path="/user/" component={User} />
              <PrivateRoute path="/risco/" component={Risco} />
+             <PrivateRoute path="/duplo/" component={GraphDuplo} />
              <PrivateRoute path="/compare/" component={Compare} />
              <PrivateRoute exact path="/alertas/" component={Alertas} />
             <Route path="*" component={Home} />
