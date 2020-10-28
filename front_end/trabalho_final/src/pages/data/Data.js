@@ -38,6 +38,25 @@ import services from "../../services";
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import {
+    MuiPickersUtilsProvider,
+    KeyboardTimePicker,
+    KeyboardDatePicker,
+  } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -199,6 +218,11 @@ class DataListPage extends React.Component {
                 { title: 'Data que foi inserido', field: 'dataInserido' }
             ],
             value: 0,
+            sensOpen:false,
+            sensName: "",
+            sensType: "0",
+            sensDate:Date(),
+            noSensName:false,
         }
     }
 
@@ -215,6 +239,35 @@ class DataListPage extends React.Component {
         services.sensores.getSensoresModulo(window.location.hash.split("/")[2]).then(data => {
             for(let i = 0; i < data.length; i++){
                 data[i].dataInserido = data[i].dataInserido.split("T")[0]
+                switch(data[i].tipo) {
+                    case 0:
+                        data[i].tipo = "Sensor de temperatura"
+                        break;
+                    case 1:
+                        data[i].tipo = "Sensor de humidade do ar"
+                        break;
+                    case 2:
+                        data[i].tipo = "Sensor de humidade do solo"
+                        break;
+                    case 3:
+                        data[i].tipo = "Sensor de folha molhada"
+                        break;
+                    case 4:
+                        data[i].tipo = "Sensor de pluviosidade"
+                        break;
+                    case 5:
+                        data[i].tipo = "Sensor de velocidade do vento"
+                        break;
+                    case 6:
+                        data[i].tipo = "Sensor de direção do vento"
+                        break;
+                    case 7:
+                        data[i].tipo = "Sensor de radiação"
+                        break;
+                    default:
+                        data[i].tipo = "Sensor não reconhecido"
+                        break;
+                }
             }
             this.setState({datas2: data})
         }).catch();
@@ -225,7 +278,67 @@ class DataListPage extends React.Component {
     };
 
     addSensor = () =>{
+        this.setState({sensOpen:true})
+    }
 
+    closeSens = () =>{
+        this.setState({sensOpen:false})
+    }
+
+    submitSens = () =>{
+        let date = new Date(this.state.sensDate)
+        date = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
+
+        if(this.state.sensName.length === 0){
+            this.setState({noSensName:true})
+        }else{
+            services.sensores.insertSensor({module_id:window.location.hash.split("/")[2], nome:this.state.sensName, tipo:this.state.sensType, dataInserido:date}).then(data =>{
+                services.sensores.getSensoresModulo(window.location.hash.split("/")[2]).then(data => {
+                    for(let i = 0; i < data.length; i++){
+                        data[i].dataInserido = data[i].dataInserido.split("T")[0]
+                        switch(data[i].tipo) {
+                            case 0:
+                                data[i].tipo = "Sensor de temperatura"
+                                break;
+                            case 1:
+                                data[i].tipo = "Sensor de humidade do ar"
+                                break;
+                            case 2:
+                                data[i].tipo = "Sensor de humidade do solo"
+                                break;
+                            case 3:
+                                data[i].tipo = "Sensor de folha molhada"
+                                break;
+                            case 4:
+                                data[i].tipo = "Sensor de pluviosidade"
+                                break;
+                            case 5:
+                                data[i].tipo = "Sensor de velocidade do vento"
+                                break;
+                            case 6:
+                                data[i].tipo = "Sensor de direção do vento"
+                                break;
+                            case 7:
+                                data[i].tipo = "Sensor de radiação"
+                                break;
+                            default:
+                                data[i].tipo = "Sensor não reconhecido"
+                                break;
+                        }
+                    }
+                    this.setState({datas2: data})
+                }).catch();
+                this.setState({sensOpen:false});
+            })
+        }
+    }
+
+    changeSensName = (evt) =>{
+        this.setState({noSensName:false})
+        if (evt.target.value.length === 0){
+            this.setState({noSensName:true})
+        }
+        this.setState({ sensName: evt.target.value })
     }
 
     render() {
@@ -276,8 +389,6 @@ class DataListPage extends React.Component {
                     <Divider />
                     <SideNav />
                 </Drawer>
-
-
 
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />
@@ -332,6 +443,35 @@ class DataListPage extends React.Component {
                                                         services.sensores.getSensoresModulo(window.location.hash.split("/")[2]).then(data => {
                                                             for(let i = 0; i < data.length; i++){
                                                                 data[i].dataInserido = data[i].dataInserido.split("T")[0]
+                                                                switch(data[i].tipo) {
+                                                                    case 0:
+                                                                        data[i].tipo = "Sensor de temperatura"
+                                                                        break;
+                                                                    case 1:
+                                                                        data[i].tipo = "Sensor de humidade do ar"
+                                                                        break;
+                                                                    case 2:
+                                                                        data[i].tipo = "Sensor de humidade do solo"
+                                                                        break;
+                                                                    case 3:
+                                                                        data[i].tipo = "Sensor de folha molhada"
+                                                                        break;
+                                                                    case 4:
+                                                                        data[i].tipo = "Sensor de pluviosidade"
+                                                                        break;
+                                                                    case 5:
+                                                                        data[i].tipo = "Sensor de velocidade do vento"
+                                                                        break;
+                                                                    case 6:
+                                                                        data[i].tipo = "Sensor de direção do vento"
+                                                                        break;
+                                                                    case 7:
+                                                                        data[i].tipo = "Sensor de radiação"
+                                                                        break;
+                                                                    default:
+                                                                        data[i].tipo = "Sensor não reconhecido"
+                                                                        break;
+                                                                }
                                                             }
                                                             this.setState({datas2: data})
                                                         }).catch();
@@ -340,6 +480,59 @@ class DataListPage extends React.Component {
                                             }),
                                     }}
                                 />
+                                <Dialog  open={this.state.sensOpen} onClose={() => this.closeSens()} aria-labelledby="form-dialog-title">     
+                                    <DialogContent style = {{width:"40em"}}>
+                                        <h3>Adicionar sensor</h3>
+                                        <h5>Nome do sensor</h5>
+                                        <TextField
+                                            variant="outlined"
+                                            margin="normal"
+                                            fullWidth
+                                            id="sensNome"
+                                            label="Nome do sensor"
+                                            name="sensName"
+                                            autoComplete="Nome do sensor"
+                                            value={this.state.sensName} onChange={(evt) => this.changeSensName(evt)}
+                                        />
+                                        {this.state.noSensName === true &&
+                                            <FormHelperText error fullWidth id="nomeSens-error-text">O nome do sensor não pode estar vazio</FormHelperText>
+                                        }
+                                        <h5>Tipo de sensor</h5>
+                                        <FormControl component="fieldset">
+                                            <RadioGroup name="sensType" value={this.state.sensType} onChange={(evt) => this.setState({sensType:evt.target.value})}>
+                                                <FormControlLabel value="0" control={<Radio />} label="Temperatura" />
+                                                <FormControlLabel value="1" control={<Radio />} label="Humidade do ar" />
+                                                <FormControlLabel value="2" control={<Radio />} label="Humidade do solo" />
+                                                <FormControlLabel value="3" control={<Radio />} label="Folha molhada" />
+                                                <FormControlLabel value="4" control={<Radio />} label="Pluviosidade" />
+                                                <FormControlLabel value="5" control={<Radio />} label="Velocidade do vento" />
+                                                <FormControlLabel value="6" control={<Radio />} label="Direção do vento" />
+                                                <FormControlLabel value="7" control={<Radio />} label="Radiação" />
+                                            </RadioGroup>
+                                        </FormControl>
+                                        <h5>Data de inserção do sensor</h5>
+                                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                            <KeyboardDatePicker
+                                                disableToolbar
+                                                variant="inline"
+                                                format="MM/dd/yyyy"
+                                                margin="normal"
+                                                id="date-picker-inline"
+                                                label="Data de inserção do sensor"
+                                                value={this.state.sensDate}
+                                                onChange={(evt) => this.setState({sensDate:evt})}
+                                                KeyboardButtonProps={{
+                                                    'aria-label': 'change date',
+                                                }}
+                                            />
+                                        </MuiPickersUtilsProvider>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={() => this.submitSens()} color="primary">
+                                            Adicionar
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
                             </Container>
                         }
                 </main>

@@ -339,14 +339,16 @@ class VinhasDetails extends React.Component {
         if (user_id === this.context.user.id) {
             this.setState({ sameUserError: true });
         } else {
-            services.vinha.deleteUser_vinha({ vinha_id: vinha_id, user_id: user_id });
-            services.vinha.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data })).catch();
+            services.vinha.deleteUser_vinha({ vinha_id: vinha_id, user_id: user_id }).then(data =>{
+                services.vinha.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data })).catch();
+            });
         }
     }
 
     submitModules(module_id) {
-        services.vinha.deleteModule_vinha(module_id);
-        services.vinha.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
+        services.vinha.deleteModule_vinha(module_id).then(data =>{
+            services.vinha.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
+        });
     }
 
     handleFormClickUser() {
@@ -411,9 +413,10 @@ class VinhasDetails extends React.Component {
                 }
             }
             if (dup !== true) {
-                services.vinha.addUser({ vinha_id: this.props.match.params.id, user_id: this.state.newUser });
-                services.vinha.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data, value: 1 })).catch();
-                services.vinha.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
+                services.vinha.addUser({ vinha_id: this.props.match.params.id, user_id: this.state.newUser }).then(data =>{
+                    services.vinha.getUsersVinha(this.props.match.params.id).then(data => this.setState({ datas2: data, value: 1 })).catch();
+                    services.vinha.getModulesVinha(this.props.match.params.id).then(data => this.setState({ datas1: data })).catch();
+                });
                 services.avisos.insertUserPrefs({
                     vinha_id: window.location.hash.split("/")[3],
                     user_id: this.state.newUser,

@@ -268,8 +268,9 @@ class ListaVinhas extends React.Component {
                     services.module.remove(data[i].module_id);
                 }
                 services.user.deleteUserVinha({ vinha_id: id, user_id: this.context.user.id }).then(data => {
-                    services.vinha.delete(data.vinha_id);
-                    services.vinha.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch()
+                    services.vinha.delete(data.vinha_id).then(data =>{
+                        services.vinha.getAllUser(this.context.user.id).then(data => this.setState({ datas: data })).catch()
+                    }); 
                 });
             });
         }

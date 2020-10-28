@@ -1,4 +1,4 @@
-const serverURL = "http://193.137.5.79:1023";
+const serverURL = "http://localhost:5000";
 
 export const apiRequest = (method, route, body) => {
   let currentUser = sessionStorage.getItem("user");
