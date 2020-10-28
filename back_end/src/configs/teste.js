@@ -13,9 +13,9 @@ var db = mysql.createConnection({
 
   
 
-var networkInterfaces = os.networkInterfaces( );
+/* var networkInterfaces = os.networkInterfaces( );
 
-console.log( networkInterfaces );
+console.log( networkInterfaces ); */
   
   db.connect(function(err) {
     if (err) throw err;
@@ -110,6 +110,15 @@ db.query(`create table if not exists userPrefs(
     foreign key (user_id) REFERENCES user(user_id),
     foreign key (vinha_id) REFERENCES vinha(vinha_id),
     primary key(vinha_id, user_id))`
+);
+
+db.query(`create table if not exists sensores(
+          sensor_id varchar(36) primary key,
+          module_id varchar(36),
+          nome varchar(36),
+          tipo int,
+          dataInserido date,
+          foreign key (module_id) REFERENCES module(module_id))`
 );
 
 module.exports = db;

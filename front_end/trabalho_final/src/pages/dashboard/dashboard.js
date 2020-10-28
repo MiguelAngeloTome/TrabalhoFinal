@@ -189,7 +189,6 @@ class Dashboard extends React.Component {
     services.vinha.getModulesUser(this.context.user.id).then(data => {
       this.setState({ vinhas: data });
       if (data.length !== 0 && data[0].modules.length > 0) {
-        console.log(data[0].modules[0].module_id)
         a = data[0].modules[0].module_id;
         this.setState({ selected: data[0].modules[0].module_id });
         //Max

@@ -7,6 +7,7 @@ import moduleService from "./module.js";
 import userService from "./userService.js";
 import vinhaService from "./vinha.js";
 import riscoService from "./riscosService.js";
+import sensorService from "./sensores";
 
 export default {
   auth: authService,
@@ -17,5 +18,6 @@ export default {
   module: moduleService,
   user: userService,
   vinha: vinhaService,
-  risco: riscoService
+  risco: riscoService,
+  sensores: sensorService
 };

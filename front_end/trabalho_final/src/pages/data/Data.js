@@ -35,6 +35,9 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import services from "../../services";
+import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -178,7 +181,6 @@ class DataListPage extends React.Component {
             openDialogUser: false,
             openDialogModule: false,
             datas: [],
-
             columns: [
                 { title: 'Data', field: 'date' },
                 { title: 'Temperatura', field: 'temp' },
@@ -190,6 +192,13 @@ class DataListPage extends React.Component {
                 { title: 'Direcao do vento', field: 'dir_vento' },
                 { title: 'Radiacao', field: 'radiacao' },
             ],
+            datas2: [],
+            columns2: [
+                { title: 'Nome ', field: 'nome' },
+                { title: 'Tipo', field: 'tipo' },
+                { title: 'Data que foi inserido', field: 'dataInserido' }
+            ],
+            value: 0,
         }
     }
 
@@ -197,7 +206,26 @@ class DataListPage extends React.Component {
 
     componentDidMount() {
         services.avisos.CountUserAvisos(this.context.user.id).then(data => this.setState({ count: data })).catch();
-        services.data.getAllModule(window.location.hash.split("/")[2]).then(data => this.setState({datas: data})).catch();
+        services.data.getAllModule(window.location.hash.split("/")[2]).then(data => {
+            for(let i = 0; i < data.length; i++){
+                data[i].date = data[i].date.split("T")[0] + " " + data[i].date.split("T")[1].split(".")[0]
+            }
+            this.setState({datas: data})
+        }).catch();
+        services.sensores.getSensoresModulo(window.location.hash.split("/")[2]).then(data => {
+            for(let i = 0; i < data.length; i++){
+                data[i].dataInserido = data[i].dataInserido.split("T")[0]
+            }
+            this.setState({datas2: data})
+        }).catch();
+    }
+
+    handleChange = (event, newValue) => {
+        this.setState({ value: newValue });
+    };
+
+    addSensor = () =>{
+
     }
 
     render() {
@@ -219,7 +247,7 @@ class DataListPage extends React.Component {
                             <MenuIcon />
                         </IconButton>
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                            Datas
+                            Valores
                         </Typography>
                         <IconButton color="inherit" href="/#/alertas">
                             <Badge badgeContent={this.state.count} color="secondary">
@@ -253,18 +281,67 @@ class DataListPage extends React.Component {
 
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />
-
-                    
-                        <Container maxWidth="lg" className={classes.container}>
-
-                            <MaterialTable
-                                icons={tableIcons}
-                                title="Lista de datas"
-                                columns={this.state.columns}
-                                data={this.state.datas}
-                                onRowClick={(event, rowData) => this.props.history.push(`/data/details/${rowData.data_id}`)}
-                            />
-                        </Container>
+                        <Paper className={classes.root}>
+                            <Tabs
+                                value={this.state.value}
+                                onChange={this.handleChange}
+                                indicatorColor="primary"
+                                textColor="primary"
+                                centered
+                                className={classes.Tabs}
+                            >
+                                <Tab label="Valores" />
+                                <Tab label="Sensores" />
+                            </Tabs>
+                        </Paper>
+                        {this.state.value === 0 && 
+                            <Container maxWidth="lg" className={classes.container}>
+                                <MaterialTable
+                                    icons={tableIcons}
+                                    title="Lista de valores"
+                                    columns={this.state.columns}
+                                    data={this.state.datas}
+                                    onRowClick={(event, rowData) => this.props.history.push(`/data/details/${rowData.data_id}`)}
+                                />
+                            </Container>
+                        }
+                        {this.state.value === 1 && 
+                            <Container maxWidth="lg" className={classes.container}>
+                                <MaterialTable
+                                    icons={tableIcons}
+                                    title="Lista de sensores"
+                                    columns={this.state.columns2}
+                                    data={this.state.datas2}
+                                    options={{
+                                        actionsColumnIndex: -1,
+                                    }}
+                                    actions={[
+                                        {
+                                            icon: AddBox,
+                                            tooltip: 'Adicionar sensor',
+                                            isFreeAction: true,
+                                            onClick: () => this.addSensor()
+                                        }
+                                    ]}
+                                    editable={{
+                                        onRowDelete: (oldData) =>
+                                            new Promise((resolve) => {
+                                                setTimeout(() => {
+                                                    resolve();
+                                                    services.sensores.removeSensor(oldData.sensor_id).then(data =>{
+                                                        services.sensores.getSensoresModulo(window.location.hash.split("/")[2]).then(data => {
+                                                            for(let i = 0; i < data.length; i++){
+                                                                data[i].dataInserido = data[i].dataInserido.split("T")[0]
+                                                            }
+                                                            this.setState({datas2: data})
+                                                        }).catch();
+                                                    });
+                                                }, 600);
+                                            }),
+                                    }}
+                                />
+                            </Container>
+                        }
                 </main>
             </div >
         )

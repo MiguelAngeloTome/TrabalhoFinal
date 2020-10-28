@@ -10,6 +10,7 @@ const calcRoute = require("./routes/Calc-route.js")
 const excelRoute = require("./routes/excel-route.js")
 const avisosRoute = require("./routes/avisos-route")
 const riscosRoute = require("./routes/riscos-route")
+const sensoresRoute = require("./routes/sensores-route")
 const app = express();
 
 app.use(bodyParser.json());
@@ -24,6 +25,7 @@ app.use('/vinhauser', vinhaUserRoute);
 app.use('/calc', calcRoute);
 app.use('/excel', excelRoute);
 app.use('/risco', riscosRoute);
+app.use('/sensores', sensoresRoute);
 
 const port = process.env.port || 5000;
 app.listen(port, ()=>{
