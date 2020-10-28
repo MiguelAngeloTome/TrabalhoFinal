@@ -263,7 +263,9 @@ exports.ETPOverDays= async (dataInicio, dataFim, module) => {
     for(data; data<=DataF;data.setDate(data.getDate()+1)){
         d = await this.getFormatedDate(data);
         etp = await this.ETPvalues(module, d);
+        
         if(etp != null){
+            etp = await this.ETPxCoeficiente(0.7,etp)
             send.push({date: d,value:etp});
         }
         

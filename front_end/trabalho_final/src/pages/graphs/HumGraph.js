@@ -108,10 +108,12 @@ control1(a){
             scales: {
                 xAxes: [{
                     type: 'time',
-                    time: {
-                        displayFormats: {
-                            hour: 'MMMM Do YYYY, h:mm:ss a'
-                        }
+                    ticks: {
+                        major: {
+                           enabled: true, // <-- This is the key line
+                           fontStyle: 'bold', //You can also style these values differently
+                           fontSize: 14 //You can also style these values differently
+                        },
                     }
                 }],
                 yAxes:[{

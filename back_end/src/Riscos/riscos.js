@@ -61,6 +61,7 @@ exports.RRajada = async (dayInic, dayFim, module_id, corte) =>{
     let send = [];
     let flagIntervalo = false;
     let inic;
+    let fim;
     let maxVel;
     let ventValues = await this.getVent(dayInic, dayFim, module_id);
     /*let ventValues = [{ date: '2009-06-29 11:08:59', vel_vento: 20 },
@@ -81,7 +82,7 @@ exports.RRajada = async (dayInic, dayFim, module_id, corte) =>{
     if(ventValues.length >0){
         
         if(ventValues[0].vel_vento >= corte){
-            inic = ventValues[0].date;
+            inic = ventValues[0].date.getFullYear() + "-" + (ventValues[0].date.getMonth() + 1) + "-" + ventValues[0].date.getDate() + " " + ventValues[0].date.getHours() + ":" + ventValues[0].date.getMinutes() + ":" + ventValues[0].date.getSeconds();
             maxVel = ventValues[0].vel_vento
             flagIntervalo = true;
         }
@@ -89,13 +90,14 @@ exports.RRajada = async (dayInic, dayFim, module_id, corte) =>{
         for(i=1; i< ventValues.length; i++){
 
             if(ventValues[i].vel_vento >= corte && !flagIntervalo){
-                inic = ventValues[i].date;
+                inic = ventValues[i].date.getFullYear() + "-" + (ventValues[i].date.getMonth() + 1) + "-" + ventValues[i].date.getDate() + " " + ventValues[i].date.getHours() + ":" + ventValues[i].date.getMinutes() + ":" + ventValues[i].date.getSeconds()
                 maxVel = ventValues[i].vel_vento
                 flagIntervalo = true;
             }
             else{
                 if(ventValues[i].vel_vento< corte && flagIntervalo){
-                    send.push({inic:inic , fim:ventValues[i-1].date,max: maxVel});
+                    fim = ventValues[i-1].date.getFullYear() + "-" + (ventValues[i-1].date.getMonth() + 1) + "-" + ventValues[i-1].date.getDate() + " " + ventValues[i-1].date.getHours() + ":" + ventValues[i-1].date.getMinutes() + ":" + ventValues[i-1].date.getSeconds()
+                    send.push({inic:inic , fim:fim,max: maxVel});
                     flagIntervalo = false;
                 }else{
                     if(ventValues[i].vel_vento> maxVel){
@@ -107,7 +109,8 @@ exports.RRajada = async (dayInic, dayFim, module_id, corte) =>{
                 if(ventValues[i].vel_vento> maxVel){
                     maxVel = ventValues[i].vel_vento;
                 }
-                    send.push({inic:inic , fim:ventValues[i].date,max: maxVel});
+                    fim = ventValues[i].date.getFullYear() + "-" + (ventValues[i].date.getMonth() + 1) + "-" + ventValues[i].date.getDate() + " " + ventValues[i].date.getHours() + ":" + ventValues[i].date.getMinutes() + ":" + ventValues[i].date.getSeconds()
+                    send.push({inic:inic , fim:fim,max: maxVel});
                     flagIntervalo = false;
             }
         }
@@ -181,6 +184,7 @@ exports.RGeada = async (dayInic, dayFim, module_id) =>{
     let send = [];
     let flagIntervalo = false;
     let inic;
+    let fim;
     let maxVel;
     let tempValues = await this.getTemp(dayInic, dayFim, module_id);
     let humValues = await this.getHum(dayInic,dayFim,module_id)
@@ -220,25 +224,26 @@ exports.RGeada = async (dayInic, dayFim, module_id) =>{
     if(tempValues.length >0 && humValues.length >0){
         
         if(await this.PontoOrvalho(tempValues[0].temp,humValues[0].air_humidity)){
-            inic = tempValues[0].date;
+            inic = tempValues[0].date.getFullYear() + "-" + (tempValues[0].date.getMonth() + 1) + "-" + tempValues[0].date.getDate() + " " + tempValues[0].date.getHours() + ":" + tempValues[0].date.getMinutes() + ":" + tempValues[0].date.getSeconds();
             flagIntervalo = true;
         }
 
         for(i=1; i< tempValues.length; i++){
-            console.log(tempValues[i].temp)
 
             if(await this.PontoOrvalho(tempValues[i].temp,humValues[i].air_humidity) && !flagIntervalo){
-                inic = tempValues[i].date;
+                inic = tempValues[i].date.getFullYear() + "-" + (tempValues[i].date.getMonth() + 1) + "-" + tempValues[i].date.getDate() + " " + tempValues[i].date.getHours() + ":" + tempValues[i].date.getMinutes() + ":" + tempValues[i].date.getSeconds();
                 flagIntervalo = true;
             }
             else{
                 if(await this.PontoOrvalho(tempValues[i].temp,humValues[i].air_humidity) == false && flagIntervalo){
-                    send.push({inic:inic , fim:tempValues[i-1].date});
+                    fim = tempValues[i-1].date.getFullYear() + "-" + (tempValues[i-1].date.getMonth() + 1) + "-" + tempValues[i-1].date.getDate() + " " + tempValues[i-1].date.getHours() + ":" + tempValues[i-1].date.getMinutes() + ":" + tempValues[i-1].date.getSeconds()
+                    send.push({inic:inic , fim:fim});
                     flagIntervalo = false;
                 }
             }
             if(flagIntervalo && (i + 1) == tempValues.length){
-                    send.push({inic:inic , fim:tempValues[i].date});
+                    fim = tempValues[i].date.getFullYear() + "-" + (tempValues[i].date.getMonth() + 1) + "-" + tempValues[i].date.getDate() + " " + tempValues[i].date.getHours() + ":" + tempValues[i].date.getMinutes() + ":" + tempValues[i].date.getSeconds();
+                    send.push({inic:inic , fim:fim});
                     flagIntervalo = false;
             }
         }

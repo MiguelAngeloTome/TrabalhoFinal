@@ -264,9 +264,8 @@ class GraphDuplo extends React.Component {
 
         let dataIni = services.calc.formatedDate(dIn);
         let dF = services.calc.formatedDate(dFim);
-        let dfi =new Date();
-        dfi.setDate(dfi.getDate() + 1)
-        dfi = services.calc.formatedDate(dfi);
+        let dfi = dFim.getFullYear() + "-" + (dFim.getMonth() + 1) + "-" + (dFim.getDate()+1) + " 0:0:0"
+        //dfi = services.calc.formatedDate(dfi);
         let dataFim = services.calc.formatedDate(dFim);
         services.data.getTime(m_id,{ time1: dataIni, time2: dfi }).then(
             data => { {console.log(data)}if (data.length !== 0) { this.setState({ key: this.state.key + 1,DataInic:dIn, DataFim:dFim, oldInic: dataIni, oldFim: dF, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch();

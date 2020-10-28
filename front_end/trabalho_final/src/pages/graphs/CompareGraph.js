@@ -134,6 +134,13 @@ control(a){
             scales: {
                 xAxes: [{
                     type: 'time',
+                    ticks: {
+                        major: {
+                           enabled: true, // <-- This is the key line
+                           fontStyle: 'bold', //You can also style these values differently
+                           fontSize: 14 //You can also style these values differently
+                        },
+                    }
                 }],
             },
             text:"",
