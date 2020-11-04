@@ -53,6 +53,8 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import ErrorIcon from '@material-ui/icons/Error';
 import { red } from '@material-ui/core/colors';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import { green } from '@material-ui/core/colors';
 
 
 
@@ -493,7 +495,11 @@ class Compare extends React.Component {
     }
 
     ExcelClick = (tipo) => {
-        services.excel.Excel(this.context.user.id, this.state.data, this.state.module.vinha_id, this.state.module.localizacao, tipo);
+        let send = [];
+        for(let i = 0; i < this.state.data.length; i++){
+            send[i] = {Data:this.state.data[i].date, Valor:this.state.data[i].value}
+        }
+        services.excel.Excel(this.context.user.id, send, this.state.module.vinha_id, this.state.module.localizacao, tipo);
         this.setState({ emailDialogOpen: true });
     }
 
@@ -1729,13 +1735,13 @@ class Compare extends React.Component {
                         aria-describedby="alert-dialog-description"
                     >
                         <DialogTitle id="alert-dialog-title">{"Email enviado com sucesso"}</DialogTitle>
+                        <div style={{textAlign:"center"}}><CheckCircleIcon fontSize="large" style={{ color: green[500] }} /></div>
                         <DialogActions>
                             <Button onClick={this.handleEmailDialogClose} color="primary">
                                 OK
                     </Button>
                         </DialogActions>
                     </Dialog>
-
                 </main>
             </div >
         )

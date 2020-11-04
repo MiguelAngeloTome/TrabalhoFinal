@@ -521,8 +521,8 @@ class ListaVinhas extends React.Component {
                             }
                             {this.state.isCoordsVinha === false &&
                                 <Container>
-                                    <h2 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }} textAlign="center">Localização do modulo</h2>
-                                    <h6 style={{ "padding": "5px" }} textAlign="center">Por favor selecione no mapa a localização do seu módulo</h6>
+                                    <h2 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }} textAlign="center">Localização da estaçao</h2>
+                                    <h6 style={{ "padding": "5px" }} textAlign="center">Por favor selecione no mapa a localização da sua estação</h6>
                                 </Container>
                             }
                             <ClickMap parentCallback={this.callbackFunction} />
@@ -561,15 +561,15 @@ class ListaVinhas extends React.Component {
 
 
                         <Dialog open={this.state.openDialogModule} onClose={() => this.closeModulo()} aria-labelledby="form-dialog-title">
-                            <DialogTitle id="form-dialog-title">CRIAR UM MODULO</DialogTitle>
+                            <DialogTitle id="form-dialog-title">Criar uma estação</DialogTitle>
                             <DialogContent>
                                 <DialogContentText>
                                 </DialogContentText>
                                 <DialogContentText>
-                                    Para criar um módulo terá de introduzir o número de série da sua estação.
+                                    Para criar uma estação, terá de introduzir o número de série da mesma.
                                 </DialogContentText>
                                 <DialogContentText>
-                                    Insira também um nome para lhe ser mais fácil de identificar os módulos.
+                                    Insira também um nome para lhe ser mais fácil de identificar as estações.
                                 </DialogContentText>
                                 <DialogContentText>
                                     Terá também de escolher no mapa a sua Localização. Isto ajudará nos cálculos para os tornar mais precisos.
@@ -584,7 +584,7 @@ class ListaVinhas extends React.Component {
                         </Dialog>
 
                         <Dialog fullWidth minWidth="500px" open={this.state.openDialogModule2} onClose={() => this.closeModulo2()} aria-labelledby="form-dialog-title">
-                            <DialogTitle id="form-dialog-title">CRIAR UM MODULO</DialogTitle>
+                            <DialogTitle id="form-dialog-title">Criar uma estação</DialogTitle>
                             <DialogContent fullWidth>
                                 <FormControl error fullWidth>
                                     <TextField

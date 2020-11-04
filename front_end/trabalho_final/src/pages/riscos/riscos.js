@@ -53,6 +53,8 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import ErrorIcon from '@material-ui/icons/Error';
 import { red } from '@material-ui/core/colors';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import { green } from '@material-ui/core/colors';
 
 
 function createData(name, value) {
@@ -239,9 +241,10 @@ class Risco extends React.Component {
                     console.log(data)
                     a = data[0].modules[0].module_id;
                     this.setState({ selected: data[0].modules[0].module_id });
-                    services.vinha.getModule(a).then(data =>{ this.setState({ module: data[0] });
-                    services.vinha.getOne(data[0].vinha_id).then(data =>{ this.setState({ vinhaNome: data[0].Nome })})         
-                                                        });
+                    services.vinha.getModule(a).then(data => {
+                        this.setState({ module: data[0] });
+                        services.vinha.getOne(data[0].vinha_id).then(data => { this.setState({ vinhaNome: data[0].Nome }) })
+                    });
                 }
             })
 
@@ -257,9 +260,10 @@ class Risco extends React.Component {
 
     upd = a => {
         this.setState({ selected: a });
-        services.vinha.getModule(a).then(data =>{ this.setState({ module: data[0] });
-                                                services.vinha.getOne(data[0].vinha_id).then(data =>{ this.setState({ vinhaNome: data[0].Nome })})         
-                                                                                    });
+        services.vinha.getModule(a).then(data => {
+            this.setState({ module: data[0] });
+            services.vinha.getOne(data[0].vinha_id).then(data => { this.setState({ vinhaNome: data[0].Nome }) })
+        });
 
     };
 
@@ -311,32 +315,36 @@ class Risco extends React.Component {
         let dataIni = services.calc.formatedDate(dIn);
         let dataFim = services.calc.formatedDate(dFim);
         services.risco.Rgeada({ dataInic: dataIni, dataFim: dataFim, module_id: m_id }).then(
-            data => { if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldInic: dataIni, oldFim: dataFim, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch();
+            data => { if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldInic: dataIni, oldFim: dataFim, oldModule: this.state.module, oldVinhaNome: this.state.vinhaNome, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch();
     };
 
     calcIncendio = (dIn, dFim, m_id) => {
         let dataIni = services.calc.formatedDate(dIn);
         let dataFim = services.calc.formatedDate(dFim);
         services.risco.Rincendio({ dataInic: dataIni, dataFim: dataFim, module_id: m_id }).then(
-            data => { if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldInic: dataIni, oldFim: dataFim, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch();
+            data => { if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldInic: dataIni, oldFim: dataFim, oldModule: this.state.module, oldVinhaNome: this.state.vinhaNome, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch();
     };
 
     calcRajada = (dIn, dFim, m_id) => {
         let dataIni = services.calc.formatedDate(dIn);
         let dataFim = services.calc.formatedDate(dFim);
         services.risco.RRajada({ dataInic: dataIni, dataFim: dataFim, module_id: m_id }).then(
-            data => { if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldInic: dataIni, oldFim: dataFim, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch();
+            data => { if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldInic: dataIni, oldFim: dataFim, oldModule: this.state.module, oldVinhaNome: this.state.vinhaNome, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch();
     };
 
     calcEnxurrada = (dIn, dFim, m_id) => {
         let dataIni = services.calc.formatedDate(dIn);
         let dataFim = services.calc.formatedDate(dFim);
         services.risco.Renxurrada({ dataInic: dataIni, dataFim: dataFim, module_id: m_id }).then(
-            data => { if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldInic: dataIni, oldFim: dataFim, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch();
+            data => { if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldInic: dataIni, oldFim: dataFim, oldModule: this.state.module, oldVinhaNome: this.state.vinhaNome, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch();
     };
 
     ExcelClick = (tipo) => {
-        services.excel.Excel(this.context.user.id, this.state.data, this.state.module.vinha_id, this.state.module.localizacao, tipo);
+        let send = [];
+        for(let i = 0; i < this.state.data.length; i++){
+            send[i] = {Inicio:this.state.data[i].inic, Fim:this.state.data[i].fim}
+        }
+        services.excel.Excel(this.context.user.id, send, this.state.module.vinha_id, this.state.module.localizacao, tipo);
         this.setState({ emailDialogOpen: true });
     }
 
@@ -351,13 +359,13 @@ class Risco extends React.Component {
         const { classes } = this.props;
         if (this.state.data !== undefined && this.state.oldModule !== undefined) {
 
-                rows = [
-                    createData('Nome da Estação:', this.state.oldModule.localizacao),
-                    createData('Nome da Vinha:', this.state.oldVinhaNome),
-                    createData('Coordenadas:', this.state.oldModule.lat + " " + this.state.oldModule.lng),
-                    createData('Dia de Início:', this.state.oldInic),
-                    createData('Dia de Término:', this.state.oldFim),
-                ];
+            rows = [
+                createData('Nome da Estação:', this.state.oldModule.localizacao),
+                createData('Nome da Vinha:', this.state.oldVinhaNome),
+                createData('Coordenadas:', this.state.oldModule.lat + " " + this.state.oldModule.lng),
+                createData('Dia de Início:', this.state.oldInic),
+                createData('Dia de Término:', this.state.oldFim),
+            ];
         }
         return (
             <div className={classes.root}>
@@ -426,616 +434,629 @@ class Risco extends React.Component {
                     </Paper>
 
                     {this.state.value === 0 &&
-                                    <Container maxWidth="lg" className={classes.container}>
+                        <Container maxWidth="lg" className={classes.container}>
 
-                                        <Collapse in={this.state.checked} style={{ backgroundColor: "#f3f3f3" }}>
+                            <Collapse in={this.state.checked} style={{ backgroundColor: "#f3f3f3" }}>
 
-                                            {this.state.vinhas !== undefined &&
-                                                <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
-                                                    <FormControl className={classes.formControl}>
-                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
-                                                        <Select className={classes.menu}
-                                                            value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
-                                                        >
-                                                            {this.state.vinhas.map((vinha, index) => {
-                                                                let a = [];
-                                                                a.push(<ListSubheader>{vinha.nome}</ListSubheader>)
-                                                                for (let i = 0; i < vinha.modules.length; i++) {
-                                                                    a.push(<MenuItem className={classes.menu} value={vinha.modules[i].module_id}>
-                                                                        {vinha.modules[i].localizacao}
-                                                                    </MenuItem>)
-                                                                }
-                                                                return (a)
-                                                            }
-
-                                                            )}
-                                                        </Select>
-                                                    </FormControl>
-                                                </div>
-                                            }
-
-                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                                <Grid container justify="space-around" style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
-                                                    <KeyboardDatePicker
-                                                        disableToolbar
-                                                        variant="inline"
-                                                        format="dd/MM/yyyy"
-                                                        margin="normal"
-                                                        id="date-picker-inline2"
-                                                        label="Data de Início"
-                                                        value={this.state.DataInic}
-                                                        onChange={(evt) => this.handleDateChange(evt)}
-                                                        KeyboardButtonProps={{
-                                                            'aria-label': 'change date',
-                                                        }}
-                                                    />
-                                                    <KeyboardDatePicker
-                                                        disableToolbar
-                                                        variant="inline"
-                                                        format="dd/MM/yyyy"
-                                                        margin="normal"
-                                                        id="date-picker-inline3"
-                                                        label="Data de Termino"
-                                                        value={this.state.DataFim}
-                                                        onChange={(evt) => this.handleDateChange1(evt)}
-                                                        KeyboardButtonProps={{
-                                                            'aria-label': 'change date',
-                                                        }}
-                                                    />
-                                                </Grid>
-                                            </MuiPickersUtilsProvider>
-                                            <div className={classes.colapseButton} >
-                                                <IconButton onClick={() => this.calcGeada(this.state.DataInic, this.state.DataFim, this.state.selected)}>
-                                                    <DoubleArrowIcon />
-                                                </IconButton>
-                                            </div>
-                                        </Collapse>
-
-                                        {this.state.checked === true ? (
-                                            <div className={classes.colapseButton}>
-                                                <IconButton onClick={() => this.setState({ checked: false })}>
-                                                    <ExpandLessIcon />
-                                                </IconButton>
-                                            </div>
-
-                                        ) : (
-                                                <div className={classes.colapseButton}>
-                                                    <IconButton onClick={() => this.setState({ checked: true })}>
-                                                        <ExpandMoreIcon />
-                                                    </IconButton>
-                                                </div>
-                                            )}
-                                        {this.state.first === true &&
-                                            <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos de Riscos, Por favor insira a data de inicio e Fim e o modulo.</h3>
-                                        }
-                                        {this.state.data !== undefined ? (
-                                            <div>
-                                                <Container maxWidth="lg" className={classes.container} style={{ "width": "75%" }}>
-                                                    <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Vinha:</h1>
-                                                    <TableContainer className={classes.table} component={Paper}>
-                                                        <Table aria-label="simple table" >
-                                                            <TableBody>
-                                                                {rows.map((row) => (
-                                                                    <TableRow key={row.name}>
-                                                                        <TableCell style={{ fontWeight: "bold" }} component="th" scope="row"> {row.name}
-                                                                        </TableCell>
-                                                                        <TableCell align="center">{row.value}</TableCell>
-                                                                    </TableRow>
-                                                                ))}
-                                                            </TableBody>
-                                                        </Table>
-                                                    </TableContainer>
-
-
-                                                </Container>
-
-                                                <Container maxWidth="lg" className={classes.container}>
-                                                    <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Risco de Geada:</h1>
-                                                    <TableContainer className={classes.table} component={Paper}>
-                                                        <Table aria-label="simple table" >
-                                                            <TableBody>
-                                                                {this.state.data.map((row) => (
-                                                                    <TableRow key={row.inic}>
-                                                                        <TableCell style={{ fontWeight: "bold" }} component="th" scope="row">Início: {row.inic}
-                                                                        </TableCell>
-                                                                        <TableCell style={{ fontWeight: "bold" }} align="center">Fim: {row.fim}</TableCell>
-                                                                    </TableRow>
-                                                                ))}
-                                                            </TableBody>
-                                                        </Table>
-                                                    </TableContainer>
-                                                </Container>
-                                                <Button
-                                                    variant="contained"
-                                                    color="primary"
-                                                    className={classes.button}
-                                                    endIcon={<EmailIcon />}
-                                                    onClick={() => { this.ExcelClick("Períodos de Humectacção") }}
-                                                >
-                                                    Enviar para email em formato excel
-                        </Button>
-                                            </div>
-                                        ) : (
-
-                                                <div>
-                                                    {this.state.first !== true &&
-                                                        <div style={cardAlert}>
-                                                            <Card >
-                                                                <CardContent>
-                                                                    <Typography variant="h5" component="h2">
-                                                                        Não existem dados suficientes para fazer o cálculo dos Riscos de Geada , se este erro persistir por favor entrar em contacto
-                                                                    </Typography>
-                                                                    <ErrorIcon fontSize="large" style={{ color: red[500] }} />
-                                                                </CardContent>
-                                                            </Card>
-                                                        </div>
+                                {this.state.vinhas !== undefined &&
+                                    <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
+                                        <FormControl className={classes.formControl}>
+                                            <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
+                                            <Select className={classes.menu}
+                                                value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
+                                            >
+                                                {this.state.vinhas.map((vinha, index) => {
+                                                    let a = [];
+                                                    a.push(<ListSubheader>{vinha.nome}</ListSubheader>)
+                                                    for (let i = 0; i < vinha.modules.length; i++) {
+                                                        a.push(<MenuItem className={classes.menu} value={vinha.modules[i].module_id}>
+                                                            {vinha.modules[i].localizacao}
+                                                        </MenuItem>)
                                                     }
-                                                </div>
+                                                    return (a)
+                                                }
 
-                                            )}
-
-                                    </Container>
-                                }
-                            {this.state.value === 1 &&
-                                    <Container maxWidth="lg" className={classes.container}>
-
-                                        <Collapse in={this.state.checked} style={{ backgroundColor: "#f3f3f3" }}>
-
-                                            {this.state.vinhas !== undefined &&
-                                                <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
-                                                    <FormControl className={classes.formControl}>
-                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
-                                                        <Select className={classes.menu}
-                                                            value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
-                                                        >
-                                                            {this.state.vinhas.map((vinha, index) => {
-                                                                let a = [];
-                                                                a.push(<ListSubheader>{vinha.nome}</ListSubheader>)
-                                                                for (let i = 0; i < vinha.modules.length; i++) {
-                                                                    a.push(<MenuItem className={classes.menu} value={vinha.modules[i].module_id}>
-                                                                        {vinha.modules[i].localizacao}
-                                                                    </MenuItem>)
-                                                                }
-                                                                return (a)
-                                                            }
-
-                                                            )}
-                                                        </Select>
-                                                    </FormControl>
-                                                </div>
-                                            }
-
-                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                                <Grid container justify="space-around" style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
-                                                    <KeyboardDatePicker
-                                                        disableToolbar
-                                                        variant="inline"
-                                                        format="dd/MM/yyyy"
-                                                        margin="normal"
-                                                        id="date-picker-inline2"
-                                                        label="Data de Início"
-                                                        value={this.state.DataInic}
-                                                        onChange={(evt) => this.handleDateChange(evt)}
-                                                        KeyboardButtonProps={{
-                                                            'aria-label': 'change date',
-                                                        }}
-                                                    />
-                                                    <KeyboardDatePicker
-                                                        disableToolbar
-                                                        variant="inline"
-                                                        format="dd/MM/yyyy"
-                                                        margin="normal"
-                                                        id="date-picker-inline3"
-                                                        label="Data de Termino"
-                                                        value={this.state.DataFim}
-                                                        onChange={(evt) => this.handleDateChange1(evt)}
-                                                        KeyboardButtonProps={{
-                                                            'aria-label': 'change date',
-                                                        }}
-                                                    />
-                                                </Grid>
-                                            </MuiPickersUtilsProvider>
-                                            <div className={classes.colapseButton} >
-                                                <IconButton onClick={() => this.calcIncendio(this.state.DataInic, this.state.DataFim, this.state.selected)}>
-                                                    <DoubleArrowIcon />
-                                                </IconButton>
-                                            </div>
-                                        </Collapse>
-
-                                        {this.state.checked === true ? (
-                                            <div className={classes.colapseButton}>
-                                                <IconButton onClick={() => this.setState({ checked: false })}>
-                                                    <ExpandLessIcon />
-                                                </IconButton>
-                                            </div>
-
-                                        ) : (
-                                                <div className={classes.colapseButton}>
-                                                    <IconButton onClick={() => this.setState({ checked: true })}>
-                                                        <ExpandMoreIcon />
-                                                    </IconButton>
-                                                </div>
-                                            )}
-                                        {this.state.first === true &&
-                                            <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos de Riscos, Por favor insira a data de inicio e Fim e o modulo.</h3>
-                                        }
-                                        {this.state.data !== undefined ? (
-                                            <div>
-                                                <Container maxWidth="lg" className={classes.container} style={{ "width": "75%" }}>
-                                                    <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Vinha:</h1>
-                                                    <TableContainer className={classes.table} component={Paper}>
-                                                        <Table aria-label="simple table" >
-                                                            <TableBody>
-                                                                {rows.map((row) => (
-                                                                    <TableRow key={row.name}>
-                                                                        <TableCell style={{ fontWeight: "bold" }} component="th" scope="row"> {row.name}
-                                                                        </TableCell>
-                                                                        <TableCell align="center">{row.value}</TableCell>
-                                                                    </TableRow>
-                                                                ))}
-                                                            </TableBody>
-                                                        </Table>
-                                                    </TableContainer>
-
-
-                                                </Container>
-
-                                                <Container maxWidth="lg" className={classes.container}>
-                                                    <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Risco de Incêndio:</h1>
-                                                    <TableContainer className={classes.table} component={Paper}>
-                                                        <Table aria-label="simple table" >
-                                                            <TableBody>
-                                                                {this.state.data.map((row) => (
-                                                                    <TableRow key={row.inic}>
-                                                                        <TableCell style={{ fontWeight: "bold" }} component="th" scope="row">Dia: {row.date}
-                                                                        </TableCell>
-                                                                        <TableCell style={{ fontWeight: "bold" }} align="center">Nível de Risco: {row.value}</TableCell>
-                                                                    </TableRow>
-                                                                ))}
-                                                            </TableBody>
-                                                        </Table>
-                                                    </TableContainer>
-                                                </Container>
-                                                <Button
-                                                    variant="contained"
-                                                    color="primary"
-                                                    className={classes.button}
-                                                    endIcon={<EmailIcon />}
-                                                    onClick={() => { this.ExcelClick("Períodos de Humectacção") }}
-                                                >
-                                                    Enviar para email em formato excel
-                        </Button>
-                                            </div>
-                                        ) : (
-
-                                                <div>
-                                                    {this.state.first !== true &&
-                                                        <div style={cardAlert}>
-                                                            <Card >
-                                                                <CardContent>
-                                                                    <Typography variant="h5" component="h2">
-                                                                        Não existem dados suficientes para fazer o cálculo dos Riscos de Geada , se este erro persistir por favor entrar em contacto
-                                                                    </Typography>
-                                                                    <ErrorIcon fontSize="large" style={{ color: red[500] }} />
-                                                                </CardContent>
-                                                            </Card>
-                                                        </div>
-                                                    }
-                                                </div>
-
-                                            )}
-
-                                    </Container>
+                                                )}
+                                            </Select>
+                                        </FormControl>
+                                    </div>
                                 }
 
-                                {this.state.value === 2 &&
-                                    <Container maxWidth="lg" className={classes.container}>
+                                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                    <Grid container justify="space-around" style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
+                                        <KeyboardDatePicker
+                                            disableToolbar
+                                            variant="inline"
+                                            format="dd/MM/yyyy"
+                                            margin="normal"
+                                            id="date-picker-inline2"
+                                            label="Data de Início"
+                                            value={this.state.DataInic}
+                                            onChange={(evt) => this.handleDateChange(evt)}
+                                            KeyboardButtonProps={{
+                                                'aria-label': 'change date',
+                                            }}
+                                        />
+                                        <KeyboardDatePicker
+                                            disableToolbar
+                                            variant="inline"
+                                            format="dd/MM/yyyy"
+                                            margin="normal"
+                                            id="date-picker-inline3"
+                                            label="Data de Termino"
+                                            value={this.state.DataFim}
+                                            onChange={(evt) => this.handleDateChange1(evt)}
+                                            KeyboardButtonProps={{
+                                                'aria-label': 'change date',
+                                            }}
+                                        />
+                                    </Grid>
+                                </MuiPickersUtilsProvider>
+                                <div className={classes.colapseButton} >
+                                    <IconButton onClick={() => this.calcGeada(this.state.DataInic, this.state.DataFim, this.state.selected)}>
+                                        <DoubleArrowIcon />
+                                    </IconButton>
+                                </div>
+                            </Collapse>
 
-                                        <Collapse in={this.state.checked} style={{ backgroundColor: "#f3f3f3" }}>
+                            {this.state.checked === true ? (
+                                <div className={classes.colapseButton}>
+                                    <IconButton onClick={() => this.setState({ checked: false })}>
+                                        <ExpandLessIcon />
+                                    </IconButton>
+                                </div>
 
-                                            {this.state.vinhas !== undefined &&
-                                                <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
-                                                    <FormControl className={classes.formControl}>
-                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
-                                                        <Select className={classes.menu}
-                                                            value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
-                                                        >
-                                                            {this.state.vinhas.map((vinha, index) => {
-                                                                let a = [];
-                                                                a.push(<ListSubheader>{vinha.nome}</ListSubheader>)
-                                                                for (let i = 0; i < vinha.modules.length; i++) {
-                                                                    a.push(<MenuItem className={classes.menu} value={vinha.modules[i].module_id}>
-                                                                        {vinha.modules[i].localizacao}
-                                                                    </MenuItem>)
-                                                                }
-                                                                return (a)
-                                                            }
+                            ) : (
+                                    <div className={classes.colapseButton}>
+                                        <IconButton onClick={() => this.setState({ checked: true })}>
+                                            <ExpandMoreIcon />
+                                        </IconButton>
+                                    </div>
+                                )}
+                            {this.state.first === true &&
+                                <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos de Riscos, Por favor insira a data de inicio e Fim e o modulo.</h3>
+                            }
+                            {this.state.data !== undefined ? (
+                                <div>
+                                    <Container maxWidth="lg" className={classes.container} style={{ "width": "75%" }}>
+                                        <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Vinha:</h1>
+                                        <TableContainer className={classes.table} component={Paper}>
+                                            <Table aria-label="simple table" >
+                                                <TableBody>
+                                                    {rows.map((row) => (
+                                                        <TableRow key={row.name}>
+                                                            <TableCell style={{ fontWeight: "bold" }} component="th" scope="row"> {row.name}
+                                                            </TableCell>
+                                                            <TableCell align="center">{row.value}</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
 
-                                                            )}
-                                                        </Select>
-                                                    </FormControl>
-                                                </div>
-                                            }
-
-                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                                <Grid container justify="space-around" style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
-                                                    <KeyboardDatePicker
-                                                        disableToolbar
-                                                        variant="inline"
-                                                        format="dd/MM/yyyy"
-                                                        margin="normal"
-                                                        id="date-picker-inline2"
-                                                        label="Data de Início"
-                                                        value={this.state.DataInic}
-                                                        onChange={(evt) => this.handleDateChange(evt)}
-                                                        KeyboardButtonProps={{
-                                                            'aria-label': 'change date',
-                                                        }}
-                                                    />
-                                                    <KeyboardDatePicker
-                                                        disableToolbar
-                                                        variant="inline"
-                                                        format="dd/MM/yyyy"
-                                                        margin="normal"
-                                                        id="date-picker-inline3"
-                                                        label="Data de Termino"
-                                                        value={this.state.DataFim}
-                                                        onChange={(evt) => this.handleDateChange1(evt)}
-                                                        KeyboardButtonProps={{
-                                                            'aria-label': 'change date',
-                                                        }}
-                                                    />
-                                                </Grid>
-                                            </MuiPickersUtilsProvider>
-                                            <div className={classes.colapseButton} >
-                                                <IconButton onClick={() => this.calcRajada(this.state.DataInic, this.state.DataFim, this.state.selected)}>
-                                                    <DoubleArrowIcon />
-                                                </IconButton>
-                                            </div>
-                                        </Collapse>
-
-                                        {this.state.checked === true ? (
-                                            <div className={classes.colapseButton}>
-                                                <IconButton onClick={() => this.setState({ checked: false })}>
-                                                    <ExpandLessIcon />
-                                                </IconButton>
-                                            </div>
-
-                                        ) : (
-                                                <div className={classes.colapseButton}>
-                                                    <IconButton onClick={() => this.setState({ checked: true })}>
-                                                        <ExpandMoreIcon />
-                                                    </IconButton>
-                                                </div>
-                                            )}
-                                        {this.state.first === true &&
-                                            <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos de Riscos, Por favor insira a data de inicio e Fim e o modulo.</h3>
-                                        }
-                                        {this.state.data !== undefined ? (
-                                            <div>
-                                                <Container maxWidth="lg" className={classes.container} style={{ "width": "75%" }}>
-                                                    <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Vinha:</h1>
-                                                    <TableContainer className={classes.table} component={Paper}>
-                                                        <Table aria-label="simple table" >
-                                                            <TableBody>
-                                                                {rows.map((row) => (
-                                                                    <TableRow key={row.name}>
-                                                                        <TableCell style={{ fontWeight: "bold" }} component="th" scope="row"> {row.name}
-                                                                        </TableCell>
-                                                                        <TableCell align="center">{row.value}</TableCell>
-                                                                    </TableRow>
-                                                                ))}
-                                                            </TableBody>
-                                                        </Table>
-                                                    </TableContainer>
-
-
-                                                </Container>
-
-                                                <Container maxWidth="lg" className={classes.container}>
-                                                    <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Risco de Rajada:</h1>
-                                                    <TableContainer className={classes.table} component={Paper}>
-                                                        <Table aria-label="simple table" >
-                                                            <TableBody>
-                                                                {this.state.data.map((row) => (
-                                                                    <TableRow key={row.inic}>
-                                                                        <TableCell style={{ fontWeight: "bold" }} component="th" scope="row">Inicio: {row.inic}
-                                                                        </TableCell>
-                                                                        <TableCell style={{ fontWeight: "bold" }} align="center">Fim: {row.fim}</TableCell>
-                                                                        <TableCell style={{ fontWeight: "bold" }} align="center">Velocidade máxima do vento: {row.max}</TableCell>
-                                                                    </TableRow>
-                                                                ))}
-                                                            </TableBody>
-                                                        </Table>
-                                                    </TableContainer>
-                                                </Container>
-                                                <Button
-                                                    variant="contained"
-                                                    color="primary"
-                                                    className={classes.button}
-                                                    endIcon={<EmailIcon />}
-                                                    onClick={() => { this.ExcelClick("Períodos de Humectacção") }}
-                                                >
-                                                    Enviar para email em formato excel
-                        </Button>
-                                            </div>
-                                        ) : (
-
-                                                <div>
-                                                    {this.state.first !== true &&
-                                                        <div style={cardAlert}>
-                                                            <Card >
-                                                                <CardContent>
-                                                                    <Typography variant="h5" component="h2">
-                                                                        Não existem dados suficientes para fazer o cálculo dos Riscos de Rajada , se este erro persistir por favor entrar em contacto
-                                                                    </Typography>
-                                                                    <ErrorIcon fontSize="large" style={{ color: red[500] }} />
-                                                                </CardContent>
-                                                            </Card>
-                                                        </div>
-                                                    }
-                                                </div>
-
-                                            )}
 
                                     </Container>
+
+                                    <Container maxWidth="lg" className={classes.container}>
+                                        <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Risco de Geada:</h1>
+                                        <TableContainer className={classes.table} component={Paper}>
+                                            <Table aria-label="simple table" >
+                                                <TableBody>
+                                                    {this.state.data.map((row) => (
+                                                        <TableRow key={row.inic}>
+                                                            <TableCell style={{ fontWeight: "bold" }} component="th" scope="row">Início: {row.inic}
+                                                            </TableCell>
+                                                            <TableCell style={{ fontWeight: "bold" }} align="center">Fim: {row.fim}</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </Container>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        className={classes.button}
+                                        endIcon={<EmailIcon />}
+                                        onClick={() => { this.ExcelClick("Períodos de Humectacção") }}
+                                    >
+                                        Enviar para email em formato excel
+                        </Button>
+                                </div>
+                            ) : (
+
+                                    <div>
+                                        {this.state.first !== true &&
+                                            <div style={cardAlert}>
+                                                <Card >
+                                                    <CardContent>
+                                                        <Typography variant="h5" component="h2">
+                                                            Não existem dados suficientes para fazer o cálculo dos Riscos de Geada , se este erro persistir por favor entrar em contacto
+                                                                    </Typography>
+                                                        <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                                                    </CardContent>
+                                                </Card>
+                                            </div>
+                                        }
+                                    </div>
+
+                                )}
+
+                        </Container>
+                    }
+                    {this.state.value === 1 &&
+                        <Container maxWidth="lg" className={classes.container}>
+
+                            <Collapse in={this.state.checked} style={{ backgroundColor: "#f3f3f3" }}>
+
+                                {this.state.vinhas !== undefined &&
+                                    <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
+                                        <FormControl className={classes.formControl}>
+                                            <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
+                                            <Select className={classes.menu}
+                                                value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
+                                            >
+                                                {this.state.vinhas.map((vinha, index) => {
+                                                    let a = [];
+                                                    a.push(<ListSubheader>{vinha.nome}</ListSubheader>)
+                                                    for (let i = 0; i < vinha.modules.length; i++) {
+                                                        a.push(<MenuItem className={classes.menu} value={vinha.modules[i].module_id}>
+                                                            {vinha.modules[i].localizacao}
+                                                        </MenuItem>)
+                                                    }
+                                                    return (a)
+                                                }
+
+                                                )}
+                                            </Select>
+                                        </FormControl>
+                                    </div>
                                 }
 
-                                {this.state.value === 3 &&
-                                    <Container maxWidth="lg" className={classes.container}>
+                                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                    <Grid container justify="space-around" style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
+                                        <KeyboardDatePicker
+                                            disableToolbar
+                                            variant="inline"
+                                            format="dd/MM/yyyy"
+                                            margin="normal"
+                                            id="date-picker-inline2"
+                                            label="Data de Início"
+                                            value={this.state.DataInic}
+                                            onChange={(evt) => this.handleDateChange(evt)}
+                                            KeyboardButtonProps={{
+                                                'aria-label': 'change date',
+                                            }}
+                                        />
+                                        <KeyboardDatePicker
+                                            disableToolbar
+                                            variant="inline"
+                                            format="dd/MM/yyyy"
+                                            margin="normal"
+                                            id="date-picker-inline3"
+                                            label="Data de Termino"
+                                            value={this.state.DataFim}
+                                            onChange={(evt) => this.handleDateChange1(evt)}
+                                            KeyboardButtonProps={{
+                                                'aria-label': 'change date',
+                                            }}
+                                        />
+                                    </Grid>
+                                </MuiPickersUtilsProvider>
+                                <div className={classes.colapseButton} >
+                                    <IconButton onClick={() => this.calcIncendio(this.state.DataInic, this.state.DataFim, this.state.selected)}>
+                                        <DoubleArrowIcon />
+                                    </IconButton>
+                                </div>
+                            </Collapse>
 
-                                        <Collapse in={this.state.checked} style={{ backgroundColor: "#f3f3f3" }}>
+                            {this.state.checked === true ? (
+                                <div className={classes.colapseButton}>
+                                    <IconButton onClick={() => this.setState({ checked: false })}>
+                                        <ExpandLessIcon />
+                                    </IconButton>
+                                </div>
 
-                                            {this.state.vinhas !== undefined &&
-                                                <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
-                                                    <FormControl className={classes.formControl}>
-                                                        <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
-                                                        <Select className={classes.menu}
-                                                            value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
-                                                        >
-                                                            {this.state.vinhas.map((vinha, index) => {
-                                                                let a = [];
-                                                                a.push(<ListSubheader>{vinha.nome}</ListSubheader>)
-                                                                for (let i = 0; i < vinha.modules.length; i++) {
-                                                                    a.push(<MenuItem className={classes.menu} value={vinha.modules[i].module_id}>
-                                                                        {vinha.modules[i].localizacao}
-                                                                    </MenuItem>)
-                                                                }
-                                                                return (a)
-                                                            }
+                            ) : (
+                                    <div className={classes.colapseButton}>
+                                        <IconButton onClick={() => this.setState({ checked: true })}>
+                                            <ExpandMoreIcon />
+                                        </IconButton>
+                                    </div>
+                                )}
+                            {this.state.first === true &&
+                                <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos de Riscos, Por favor insira a data de inicio e Fim e o modulo.</h3>
+                            }
+                            {this.state.data !== undefined ? (
+                                <div>
+                                    <Container maxWidth="lg" className={classes.container} style={{ "width": "75%" }}>
+                                        <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Vinha:</h1>
+                                        <TableContainer className={classes.table} component={Paper}>
+                                            <Table aria-label="simple table" >
+                                                <TableBody>
+                                                    {rows.map((row) => (
+                                                        <TableRow key={row.name}>
+                                                            <TableCell style={{ fontWeight: "bold" }} component="th" scope="row"> {row.name}
+                                                            </TableCell>
+                                                            <TableCell align="center">{row.value}</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
 
-                                                            )}
-                                                        </Select>
-                                                    </FormControl>
-                                                </div>
-                                            }
-
-                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                                <Grid container justify="space-around" style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
-                                                    <KeyboardDatePicker
-                                                        disableToolbar
-                                                        variant="inline"
-                                                        format="dd/MM/yyyy"
-                                                        margin="normal"
-                                                        id="date-picker-inline2"
-                                                        label="Data de Início"
-                                                        value={this.state.DataInic}
-                                                        onChange={(evt) => this.handleDateChange(evt)}
-                                                        KeyboardButtonProps={{
-                                                            'aria-label': 'change date',
-                                                        }}
-                                                    />
-                                                    <KeyboardDatePicker
-                                                        disableToolbar
-                                                        variant="inline"
-                                                        format="dd/MM/yyyy"
-                                                        margin="normal"
-                                                        id="date-picker-inline3"
-                                                        label="Data de Termino"
-                                                        value={this.state.DataFim}
-                                                        onChange={(evt) => this.handleDateChange1(evt)}
-                                                        KeyboardButtonProps={{
-                                                            'aria-label': 'change date',
-                                                        }}
-                                                    />
-                                                </Grid>
-                                            </MuiPickersUtilsProvider>
-                                            <div className={classes.colapseButton} >
-                                                <IconButton onClick={() => this.calcEnxurrada(this.state.DataInic, this.state.DataFim, this.state.selected)}>
-                                                    <DoubleArrowIcon />
-                                                </IconButton>
-                                            </div>
-                                        </Collapse>
-
-                                        {this.state.checked === true ? (
-                                            <div className={classes.colapseButton}>
-                                                <IconButton onClick={() => this.setState({ checked: false })}>
-                                                    <ExpandLessIcon />
-                                                </IconButton>
-                                            </div>
-
-                                        ) : (
-                                                <div className={classes.colapseButton}>
-                                                    <IconButton onClick={() => this.setState({ checked: true })}>
-                                                        <ExpandMoreIcon />
-                                                    </IconButton>
-                                                </div>
-                                            )}
-                                        {this.state.first === true &&
-                                            <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos de Riscos, Por favor insira a data de inicio e Fim e o modulo.</h3>
-                                        }
-                                        {this.state.data !== undefined ? (
-                                            <div>
-                                                <Container maxWidth="lg" className={classes.container} style={{ "width": "75%" }}>
-                                                    <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Vinha:</h1>
-                                                    <TableContainer className={classes.table} component={Paper}>
-                                                        <Table aria-label="simple table" >
-                                                            <TableBody>
-                                                                {rows.map((row) => (
-                                                                    <TableRow key={row.name}>
-                                                                        <TableCell style={{ fontWeight: "bold" }} component="th" scope="row"> {row.name}
-                                                                        </TableCell>
-                                                                        <TableCell align="center">{row.value}</TableCell>
-                                                                    </TableRow>
-                                                                ))}
-                                                            </TableBody>
-                                                        </Table>
-                                                    </TableContainer>
-
-
-                                                </Container>
-
-                                                <Container maxWidth="lg" className={classes.container}>
-                                                    <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Risco de Enxurrada:</h1>
-                                                    <TableContainer className={classes.table} component={Paper}>
-                                                        <Table aria-label="simple table" >
-                                                            <TableBody>
-                                                                {this.state.data.map((row) => (
-                                                                    <TableRow key={row.inic}>
-                                                                        <TableCell style={{ fontWeight: "bold" }} component="th" scope="row">Hora: {row.date}
-                                                                        </TableCell>
-                                                                        <TableCell style={{ fontWeight: "bold" }} align="center">Precipitação média: {row.avg}</TableCell>
-                                                                    </TableRow>
-                                                                ))}
-                                                            </TableBody>
-                                                        </Table>
-                                                    </TableContainer>
-                                                </Container>
-                                                <Button
-                                                    variant="contained"
-                                                    color="primary"
-                                                    className={classes.button}
-                                                    endIcon={<EmailIcon />}
-                                                    onClick={() => { this.ExcelClick("Períodos de Humectacção") }}
-                                                >
-                                                    Enviar para email em formato excel
-                        </Button>
-                                            </div>
-                                        ) : (
-
-                                                <div>
-                                                    {this.state.first !== true &&
-                                                        <div style={cardAlert}>
-                                                            <Card >
-                                                                <CardContent>
-                                                                    <Typography variant="h5" component="h2">
-                                                                        Não existem dados suficientes para fazer o cálculo dos Riscos de Rajada , se este erro persistir por favor entrar em contacto
-                                                                    </Typography>
-                                                                    <ErrorIcon fontSize="large" style={{ color: red[500] }} />
-                                                                </CardContent>
-                                                            </Card>
-                                                        </div>
-                                                    }
-                                                </div>
-
-                                            )}
 
                                     </Container>
+
+                                    <Container maxWidth="lg" className={classes.container}>
+                                        <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Risco de Incêndio:</h1>
+                                        <TableContainer className={classes.table} component={Paper}>
+                                            <Table aria-label="simple table" >
+                                                <TableBody>
+                                                    {this.state.data.map((row) => (
+                                                        <TableRow key={row.inic}>
+                                                            <TableCell style={{ fontWeight: "bold" }} component="th" scope="row">Dia: {row.date}
+                                                            </TableCell>
+                                                            <TableCell style={{ fontWeight: "bold" }} align="center">Nível de Risco: {row.value}</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </Container>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        className={classes.button}
+                                        endIcon={<EmailIcon />}
+                                        onClick={() => { this.ExcelClick("Períodos de Humectacção") }}
+                                    >
+                                        Enviar para email em formato excel
+                        </Button>
+                                </div>
+                            ) : (
+
+                                    <div>
+                                        {this.state.first !== true &&
+                                            <div style={cardAlert}>
+                                                <Card >
+                                                    <CardContent>
+                                                        <Typography variant="h5" component="h2">
+                                                            Não existem dados suficientes para fazer o cálculo dos Riscos de Geada , se este erro persistir por favor entrar em contacto
+                                                                    </Typography>
+                                                        <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                                                    </CardContent>
+                                                </Card>
+                                            </div>
+                                        }
+                                    </div>
+
+                                )}
+
+                        </Container>
+                    }
+
+                    {this.state.value === 2 &&
+                        <Container maxWidth="lg" className={classes.container}>
+
+                            <Collapse in={this.state.checked} style={{ backgroundColor: "#f3f3f3" }}>
+
+                                {this.state.vinhas !== undefined &&
+                                    <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
+                                        <FormControl className={classes.formControl}>
+                                            <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
+                                            <Select className={classes.menu}
+                                                value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
+                                            >
+                                                {this.state.vinhas.map((vinha, index) => {
+                                                    let a = [];
+                                                    a.push(<ListSubheader>{vinha.nome}</ListSubheader>)
+                                                    for (let i = 0; i < vinha.modules.length; i++) {
+                                                        a.push(<MenuItem className={classes.menu} value={vinha.modules[i].module_id}>
+                                                            {vinha.modules[i].localizacao}
+                                                        </MenuItem>)
+                                                    }
+                                                    return (a)
+                                                }
+
+                                                )}
+                                            </Select>
+                                        </FormControl>
+                                    </div>
                                 }
-        </main>
-        </div>
+
+                                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                    <Grid container justify="space-around" style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
+                                        <KeyboardDatePicker
+                                            disableToolbar
+                                            variant="inline"
+                                            format="dd/MM/yyyy"
+                                            margin="normal"
+                                            id="date-picker-inline2"
+                                            label="Data de Início"
+                                            value={this.state.DataInic}
+                                            onChange={(evt) => this.handleDateChange(evt)}
+                                            KeyboardButtonProps={{
+                                                'aria-label': 'change date',
+                                            }}
+                                        />
+                                        <KeyboardDatePicker
+                                            disableToolbar
+                                            variant="inline"
+                                            format="dd/MM/yyyy"
+                                            margin="normal"
+                                            id="date-picker-inline3"
+                                            label="Data de Termino"
+                                            value={this.state.DataFim}
+                                            onChange={(evt) => this.handleDateChange1(evt)}
+                                            KeyboardButtonProps={{
+                                                'aria-label': 'change date',
+                                            }}
+                                        />
+                                    </Grid>
+                                </MuiPickersUtilsProvider>
+                                <div className={classes.colapseButton} >
+                                    <IconButton onClick={() => this.calcRajada(this.state.DataInic, this.state.DataFim, this.state.selected)}>
+                                        <DoubleArrowIcon />
+                                    </IconButton>
+                                </div>
+                            </Collapse>
+
+                            {this.state.checked === true ? (
+                                <div className={classes.colapseButton}>
+                                    <IconButton onClick={() => this.setState({ checked: false })}>
+                                        <ExpandLessIcon />
+                                    </IconButton>
+                                </div>
+
+                            ) : (
+                                    <div className={classes.colapseButton}>
+                                        <IconButton onClick={() => this.setState({ checked: true })}>
+                                            <ExpandMoreIcon />
+                                        </IconButton>
+                                    </div>
+                                )}
+                            {this.state.first === true &&
+                                <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos de Riscos, Por favor insira a data de inicio e Fim e o modulo.</h3>
+                            }
+                            {this.state.data !== undefined ? (
+                                <div>
+                                    <Container maxWidth="lg" className={classes.container} style={{ "width": "75%" }}>
+                                        <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Vinha:</h1>
+                                        <TableContainer className={classes.table} component={Paper}>
+                                            <Table aria-label="simple table" >
+                                                <TableBody>
+                                                    {rows.map((row) => (
+                                                        <TableRow key={row.name}>
+                                                            <TableCell style={{ fontWeight: "bold" }} component="th" scope="row"> {row.name}
+                                                            </TableCell>
+                                                            <TableCell align="center">{row.value}</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+
+
+                                    </Container>
+
+                                    <Container maxWidth="lg" className={classes.container}>
+                                        <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Risco de Rajada:</h1>
+                                        <TableContainer className={classes.table} component={Paper}>
+                                            <Table aria-label="simple table" >
+                                                <TableBody>
+                                                    {this.state.data.map((row) => (
+                                                        <TableRow key={row.inic}>
+                                                            <TableCell style={{ fontWeight: "bold" }} component="th" scope="row">Inicio: {row.inic}
+                                                            </TableCell>
+                                                            <TableCell style={{ fontWeight: "bold" }} align="center">Fim: {row.fim}</TableCell>
+                                                            <TableCell style={{ fontWeight: "bold" }} align="center">Velocidade máxima do vento: {row.max}</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </Container>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        className={classes.button}
+                                        endIcon={<EmailIcon />}
+                                        onClick={() => { this.ExcelClick("Períodos de Humectacção") }}
+                                    >
+                                        Enviar para email em formato excel
+                        </Button>
+                                </div>
+                            ) : (
+
+                                    <div>
+                                        {this.state.first !== true &&
+                                            <div style={cardAlert}>
+                                                <Card >
+                                                    <CardContent>
+                                                        <Typography variant="h5" component="h2">
+                                                            Não existem dados suficientes para fazer o cálculo dos Riscos de Rajada , se este erro persistir por favor entrar em contacto
+                                                                    </Typography>
+                                                        <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                                                    </CardContent>
+                                                </Card>
+                                            </div>
+                                        }
+                                    </div>
+
+                                )}
+
+                        </Container>
+                    }
+
+                    {this.state.value === 3 &&
+                        <Container maxWidth="lg" className={classes.container}>
+
+                            <Collapse in={this.state.checked} style={{ backgroundColor: "#f3f3f3" }}>
+
+                                {this.state.vinhas !== undefined &&
+                                    <div style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
+                                        <FormControl className={classes.formControl}>
+                                            <InputLabel className={classes.menu} htmlFor="grouped-native-select">Estações</InputLabel>
+                                            <Select className={classes.menu}
+                                                value={this.state.selected ? this.state.selected : ''} onChange={(evt) => this.upd(evt.target.value)}
+                                            >
+                                                {this.state.vinhas.map((vinha, index) => {
+                                                    let a = [];
+                                                    a.push(<ListSubheader>{vinha.nome}</ListSubheader>)
+                                                    for (let i = 0; i < vinha.modules.length; i++) {
+                                                        a.push(<MenuItem className={classes.menu} value={vinha.modules[i].module_id}>
+                                                            {vinha.modules[i].localizacao}
+                                                        </MenuItem>)
+                                                    }
+                                                    return (a)
+                                                }
+
+                                                )}
+                                            </Select>
+                                        </FormControl>
+                                    </div>
+                                }
+
+                                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                    <Grid container justify="space-around" style={{ "width": "65%", "flex": "1", "margin": "auto" }}>
+                                        <KeyboardDatePicker
+                                            disableToolbar
+                                            variant="inline"
+                                            format="dd/MM/yyyy"
+                                            margin="normal"
+                                            id="date-picker-inline2"
+                                            label="Data de Início"
+                                            value={this.state.DataInic}
+                                            onChange={(evt) => this.handleDateChange(evt)}
+                                            KeyboardButtonProps={{
+                                                'aria-label': 'change date',
+                                            }}
+                                        />
+                                        <KeyboardDatePicker
+                                            disableToolbar
+                                            variant="inline"
+                                            format="dd/MM/yyyy"
+                                            margin="normal"
+                                            id="date-picker-inline3"
+                                            label="Data de Termino"
+                                            value={this.state.DataFim}
+                                            onChange={(evt) => this.handleDateChange1(evt)}
+                                            KeyboardButtonProps={{
+                                                'aria-label': 'change date',
+                                            }}
+                                        />
+                                    </Grid>
+                                </MuiPickersUtilsProvider>
+                                <div className={classes.colapseButton} >
+                                    <IconButton onClick={() => this.calcEnxurrada(this.state.DataInic, this.state.DataFim, this.state.selected)}>
+                                        <DoubleArrowIcon />
+                                    </IconButton>
+                                </div>
+                            </Collapse>
+
+                            {this.state.checked === true ? (
+                                <div className={classes.colapseButton}>
+                                    <IconButton onClick={() => this.setState({ checked: false })}>
+                                        <ExpandLessIcon />
+                                    </IconButton>
+                                </div>
+
+                            ) : (
+                                    <div className={classes.colapseButton}>
+                                        <IconButton onClick={() => this.setState({ checked: true })}>
+                                            <ExpandMoreIcon />
+                                        </IconButton>
+                                    </div>
+                                )}
+                            {this.state.first === true &&
+                                <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos de Riscos, Por favor insira a data de inicio e Fim e o modulo.</h3>
+                            }
+                            {this.state.data !== undefined ? (
+                                <div>
+                                    <Container maxWidth="lg" className={classes.container} style={{ "width": "75%" }}>
+                                        <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Vinha:</h1>
+                                        <TableContainer className={classes.table} component={Paper}>
+                                            <Table aria-label="simple table" >
+                                                <TableBody>
+                                                    {rows.map((row) => (
+                                                        <TableRow key={row.name}>
+                                                            <TableCell style={{ fontWeight: "bold" }} component="th" scope="row"> {row.name}
+                                                            </TableCell>
+                                                            <TableCell align="center">{row.value}</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+
+
+                                    </Container>
+
+                                    <Container maxWidth="lg" className={classes.container}>
+                                        <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Risco de Enxurrada:</h1>
+                                        <TableContainer className={classes.table} component={Paper}>
+                                            <Table aria-label="simple table" >
+                                                <TableBody>
+                                                    {this.state.data.map((row) => (
+                                                        <TableRow key={row.inic}>
+                                                            <TableCell style={{ fontWeight: "bold" }} component="th" scope="row">Hora: {row.date}
+                                                            </TableCell>
+                                                            <TableCell style={{ fontWeight: "bold" }} align="center">Precipitação média: {row.avg}</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </Container>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        className={classes.button}
+                                        endIcon={<EmailIcon />}
+                                        onClick={() => { this.ExcelClick("Períodos de Humectacção") }}
+                                    >
+                                        Enviar para email em formato excel
+                        </Button>
+                                </div>
+                            ) : (
+
+                                    <div>
+                                        {this.state.first !== true &&
+                                            <div style={cardAlert}>
+                                                <Card >
+                                                    <CardContent>
+                                                        <Typography variant="h5" component="h2">
+                                                            Não existem dados suficientes para fazer o cálculo dos Riscos de Rajada , se este erro persistir por favor entrar em contacto
+                                                                    </Typography>
+                                                        <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                                                    </CardContent>
+                                                </Card>
+                                            </div>
+                                        }
+                                    </div>
+
+                                )}
+                        </Container>
+                    }
+                    <Dialog
+                        open={this.state.emailDialogOpen}
+                        onClose={this.handleEmailDialogClose}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title">{"Email enviado com sucesso"}</DialogTitle>
+                        <div style={{textAlign:"center"}}><CheckCircleIcon fontSize="large" style={{ color: green[500] }} /></div>
+                        <DialogActions>
+                            <Button onClick={this.handleEmailDialogClose} color="primary">
+                                OK
+                    </Button>
+                        </DialogActions>
+                    </Dialog>
+                </main>
+            </div>
         )
-}
+    }
 }
 
 export default withStyles(useStyles)(Risco)

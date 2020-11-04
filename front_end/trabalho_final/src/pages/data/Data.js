@@ -483,21 +483,7 @@ class DataListPage extends React.Component {
                                 <Dialog  open={this.state.sensOpen} onClose={() => this.closeSens()} aria-labelledby="form-dialog-title">     
                                     <DialogContent style = {{width:"40em"}}>
                                         <h3>Adicionar sensor</h3>
-                                        <h5>Nome do sensor</h5>
-                                        <TextField
-                                            variant="outlined"
-                                            margin="normal"
-                                            fullWidth
-                                            id="sensNome"
-                                            label="Nome do sensor"
-                                            name="sensName"
-                                            autoComplete="Nome do sensor"
-                                            value={this.state.sensName} onChange={(evt) => this.changeSensName(evt)}
-                                        />
-                                        {this.state.noSensName === true &&
-                                            <FormHelperText error fullWidth id="nomeSens-error-text">O nome do sensor não pode estar vazio</FormHelperText>
-                                        }
-                                        <h5>Tipo de sensor</h5>
+                                        <h5 style={{textDecoration:"underline"}}>Tipo de sensor</h5>
                                         <FormControl component="fieldset">
                                             <RadioGroup name="sensType" value={this.state.sensType} onChange={(evt) => this.setState({sensType:evt.target.value})}>
                                                 <FormControlLabel value="0" control={<Radio />} label="Temperatura" />
@@ -510,7 +496,7 @@ class DataListPage extends React.Component {
                                                 <FormControlLabel value="7" control={<Radio />} label="Radiação" />
                                             </RadioGroup>
                                         </FormControl>
-                                        <h5>Data de inserção do sensor</h5>
+                                        <h5 style={{textDecoration:"underline"}}>Data de inserção do sensor</h5>
                                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                             <KeyboardDatePicker
                                                 disableToolbar
@@ -526,6 +512,20 @@ class DataListPage extends React.Component {
                                                 }}
                                             />
                                         </MuiPickersUtilsProvider>
+                                        <h5 style={{textDecoration:"underline"}}>Descrição do sensor</h5>
+                                        <TextField
+                                            variant="outlined"
+                                            margin="normal"
+                                            fullWidth
+                                            id="sensNome"
+                                            label="Descrição do sensor"
+                                            name="sensName"
+                                            autoComplete="Nome do sensor"
+                                            value={this.state.sensName} onChange={(evt) => this.changeSensName(evt)}
+                                        />
+                                        {this.state.noSensName === true &&
+                                            <FormHelperText error fullWidth id="nomeSens-error-text">O nome do sensor não pode estar vazio</FormHelperText>
+                                        }
                                     </DialogContent>
                                     <DialogActions>
                                         <Button onClick={() => this.submitSens()} color="primary">

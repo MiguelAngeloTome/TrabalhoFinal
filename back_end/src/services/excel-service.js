@@ -12,7 +12,7 @@ exports.excel = async (body, user_id, vinha_id, module_name, tipo) => {
     let vinhaNome = await vinhaService.getVinhaName(vinha_id);
     
     return new Promise((resolve, reject) => {
-        vinhaNome = vinhaNome[0].Nome;
+        vinhaNome = vinhaNome[0].nome;
         email = email[0].email;
         const wb = new xl.Workbook();
         const ws = wb.addWorksheet('Informacao');
@@ -20,9 +20,9 @@ exports.excel = async (body, user_id, vinha_id, module_name, tipo) => {
         
 
         for (let i = 0; i < body.length; i++) {
-            body[i].vinha = vinhaNome;
-            body[i].modulo = module_name;
-            body[i].tipo = tipo;
+            body[i].Vinha = vinhaNome;
+            body[i].Estação = module_name;
+            body[i].Tipo = tipo;
         }
         let keys = Object.keys(body[0]);
 

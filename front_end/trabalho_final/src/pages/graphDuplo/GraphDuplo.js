@@ -53,6 +53,8 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import ErrorIcon from '@material-ui/icons/Error';
 import { red } from '@material-ui/core/colors';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import { green } from '@material-ui/core/colors';
 
 function createData(name, value) {
     return { name, value };
@@ -272,6 +274,19 @@ class GraphDuplo extends React.Component {
             this.setState({DataFim:dFim});
     };
 
+    ExcelClick = (tipo) => {
+        let send = [];
+        for(let i = 0; i < this.state.data.length; i++){
+            send[i] = {Data:this.state.data[i].date.split("T")[0] + " " + this.state.data[i].date.split("T")[1].split(".")[0], Têmperatura:this.state.data[i].temp, Humidade_do_ar:this.state.data[i].air_humidity, Humidade_do_solo:this.state.data[i].solo_humidity, Folha_molhada:this.state.data[i].isWet, Pluviosidade:this.state.data[i].pluviosidade, Velocidade_do_vento:this.state.data[i].vel_vento, Direção_do_vento:this.state.data[i].dir_vento, Radiação:this.state.data[i].radiacao}
+        }
+        services.excel.Excel(this.context.user.id, send, this.state.module.vinha_id, this.state.module.localizacao, tipo);
+        this.setState({ emailDialogOpen: true });
+    }
+
+    handleEmailDialogClose = () => {
+        this.setState({ emailDialogOpen: false });
+    }
+
     render() {
         var rows = [{ name: "yes", value: "no" }]
         const { logout } = this.context;
@@ -441,6 +456,15 @@ class GraphDuplo extends React.Component {
                                                 <Container maxWidth="lg" className={classes.container}>
                                                     <CompareGraph value={1} key={this.state.key} data= {this.state.data}/>
                                                 </Container>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    className={classes.button}
+                                                    endIcon={<EmailIcon />}
+                                                    onClick={() => { this.ExcelClick("Gráfico duplo") }}
+                                                >
+                                                    Enviar para email em formato excel
+                                                </Button>
                                                 
                                             </div>
                                         ) : (
@@ -463,7 +487,20 @@ class GraphDuplo extends React.Component {
                                             )}
 
                                     </Container>
-                                
+                                    <Dialog
+                                        open={this.state.emailDialogOpen}
+                                        onClose={this.handleEmailDialogClose}
+                                        aria-labelledby="alert-dialog-title"
+                                        aria-describedby="alert-dialog-description"
+                                    >
+                                        <DialogTitle id="alert-dialog-title">{"Email enviado com sucesso"}</DialogTitle>
+                                        <div style={{textAlign:"center"}}><CheckCircleIcon fontSize="large" style={{ color: green[500] }} /></div>
+                                        <DialogActions>
+                                            <Button onClick={this.handleEmailDialogClose} color="primary">
+                                                OK
+                                    </Button>
+                                        </DialogActions>
+                                    </Dialog>
                                 </main>
                                 </div>
         )

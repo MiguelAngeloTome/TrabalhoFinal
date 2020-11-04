@@ -70,12 +70,13 @@ const useStyles = theme => ({
   },
   title: {
     flexGrow: 1,
-
+    fontWeight: 'bold',
+    fontSize: "1rem"
   },
   titleK: {
     flexGrow: 1,
     textAlign: 'center',
-    color: '#2196f3',
+    color: '#2196f3',  
   },
   drawerPaper: {
     position: 'relative',
@@ -141,7 +142,7 @@ const cardAlert = {
 
 const cardHeader = {
   fontWeight: "bold",
-  fontSize: "25px",
+  fontSize: "35px",
   textAlign: "center"
 }
 
@@ -152,6 +153,10 @@ const cardTypography = {
 let date = new Date()
 let dateNow = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
 let dateMidnight = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " 0:0:0"
+
+let dataMinusHour = date
+dataMinusHour.setHours(dataMinusHour.getHours() - 2);
+dataMinusHour = dataMinusHour.getFullYear() + "-" + (dataMinusHour.getMonth() + 1) + "-" + dataMinusHour.getDate() + " " + dataMinusHour.getHours() + ":" + dataMinusHour.getMinutes() + ":" + dataMinusHour.getSeconds()
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -176,6 +181,10 @@ class Dashboard extends React.Component {
       tendSolo_hum: "",
       tendVel_vento: "",
       muldatas: [],
+      dirVento:0,
+      noDayData:false,
+      noHourData:false,
+      key:0
     }
   }
 
@@ -207,53 +216,63 @@ class Dashboard extends React.Component {
         }).catch(error => console.log(error))
         //dados do dia
         services.data.getTime(a,{time1:dateMidnight,time2:dateNow}).then(data => {
-          this.setState({ muldatas: data })
+          if(data.length !== 0){
+            this.setState({ muldatas: data })
+          }else{
+            this.setState({noDayData: true})
+          }
+          
         }).catch(error => console.log(error))
 
         ////
         //Tendencia
-        let dataMinusHour = date
-        dataMinusHour.setHours(dataMinusHour.getHours() - 2);
-        dataMinusHour = dataMinusHour.getFullYear() + "-" + (dataMinusHour.getMonth() + 1) + "-" + dataMinusHour.getDate() + " " + dataMinusHour.getHours() + ":" + dataMinusHour.getMinutes() + ":" + dataMinusHour.getSeconds()
-
         services.data.getTime(a, { time1: dataMinusHour, time2: dateNow }).then(data => {
-          let temp = 0;
-          let air_hum = 0;
-          let dirVento = 0;
-          let isWet = 0;
-          let pluviosidade = 0;
-          let rad = 0;
-          let solo_hum = 0;
-          let vel_vento = 0;
-          for (let i = 0; i < data.length; i++) {
-            temp += data[i].temp;
-            air_hum += data[i].air_humidity;
-            dirVento += data[i].dir_vento;
-            isWet += data[i].isWet;
-            pluviosidade += data[i].pluviosidade;
-            rad += data[i].radiacao;
-            solo_hum += data[i].solo_humidity;
-            vel_vento += data[i].vel_vento;
-          }
-          temp = temp / data.length
-          air_hum = air_hum / data.length
-          dirVento = dirVento / data.length
-          isWet = isWet / data.length
-          pluviosidade = pluviosidade / data.length
-          rad = rad / data.length
-          solo_hum = solo_hum / data.length
-          vel_vento = vel_vento / data.length
+          if(data.length > 0){
+            let temp = 0;
+            let air_hum = 0;
+            let dirVento = 0;
+            let isWet = 0;
+            let pluviosidade = 0;
+            let rad = 0;
+            let solo_hum = 0;
+            let vel_vento = 0;
+            
+            for (let i = 0; i < data.length; i++) {
+              
+              temp += data[i].temp;
+              air_hum += data[i].air_humidity;
+              dirVento += data[i].dir_vento;
+              isWet += data[i].isWet;
+              pluviosidade += data[i].pluviosidade;
+              rad += data[i].radiacao;
+              solo_hum += data[i].solo_humidity;
+              vel_vento += data[i].vel_vento;
+            }
+            temp = temp / data.length
+            air_hum = air_hum / data.length
+            dirVento = dirVento / data.length
+            isWet = isWet / data.length
+            pluviosidade = pluviosidade / data.length
+            rad = rad / data.length
+            solo_hum = solo_hum / data.length
+            vel_vento = vel_vento / data.length
 
-          services.data.getLast(a).then(data => {
-            temp > data[0].temp ? this.setState({ tendTemp: "A descer" }) : temp < data[0].temp ? this.setState({ tendTemp: "A subir" }) : this.setState({ tendTemp: "Constante" });
-            air_hum > data[0].air_humidity ? this.setState({ tendAir_hum: "A descer" }) : air_hum < data[0].air_humidity ? this.setState({ tendAir_hum: "A subir" }) : this.setState({ tendAir_hum: "Constante" });
-            dirVento > data[0].dir_vento ? this.setState({ tendDirVento: "A descer" }) : dirVento < data[0].dir_vento ? this.setState({ tendDirVento: "A subir" }) : this.setState({ tendDirVento: "Constante" });
-            isWet > data[0].isWet ? this.setState({ tendIsWet: "A descer" }) : isWet < data[0].isWet ? this.setState({ tendIsWet: "A subir" }) : this.setState({ tendIsWet: "Constante" });
-            pluviosidade > data[0].pluviosidade ? this.setState({ tendPluviosidade: "A descer" }) : pluviosidade < data[0].pluviosidade ? this.setState({ tendPluviosidade: "A subir" }) : this.setState({ tendPluviosidade: "Constante" });
-            rad > data[0].radiacao ? this.setState({ tendRad: "A descer" }) : rad < data[0].radiacao ? this.setState({ tendRad: "A subir" }) : this.setState({ tendRad: "Constante" });
-            solo_hum > data[0].solo_humidity ? this.setState({ tendSolo_hum: "A descer" }) : solo_hum < data[0].solo_humidity ? this.setState({ tendSolo_hum: "A subir" }) : this.setState({ tendSolo_hum: "Constante" });
-            vel_vento > data[0].vel_vento ? this.setState({ tendVel_vento: "A descer" }) : vel_vento < data[0].vel_vento ? this.setState({ tendVel_vento: "A subir" }) : this.setState({ tendVel_vento: "Constante" });
-          }).catch(error => console.log(error))
+            
+
+            services.data.getLast(a).then(data => {
+              this.setState({dir_vento : data[0].dir_vento})
+              temp > data[0].temp ? this.setState({ tendTemp: "A descer" }) : temp < data[0].temp ? this.setState({ tendTemp: "A subir" }) : this.setState({ tendTemp: "Constante" });
+              air_hum > data[0].air_humidity ? this.setState({ tendAir_hum: "A descer" }) : air_hum < data[0].air_humidity ? this.setState({ tendAir_hum: "A subir" }) : this.setState({ tendAir_hum: "Constante" });
+              dirVento > data[0].dir_vento ? this.setState({ tendDirVento: "A descer" }) : dirVento < data[0].dir_vento ? this.setState({ tendDirVento: "A subir" }) : this.setState({ tendDirVento: "Constante" });
+              isWet > data[0].isWet ? this.setState({ tendIsWet: "A descer" }) : isWet < data[0].isWet ? this.setState({ tendIsWet: "A subir" }) : this.setState({ tendIsWet: "Constante" });
+              pluviosidade > data[0].pluviosidade ? this.setState({ tendPluviosidade: "A descer" }) : pluviosidade < data[0].pluviosidade ? this.setState({ tendPluviosidade: "A subir" }) : this.setState({ tendPluviosidade: "Constante" });
+              rad > data[0].radiacao ? this.setState({ tendRad: "A descer" }) : rad < data[0].radiacao ? this.setState({ tendRad: "A subir" }) : this.setState({ tendRad: "Constante" });
+              solo_hum > data[0].solo_humidity ? this.setState({ tendSolo_hum: "A descer" }) : solo_hum < data[0].solo_humidity ? this.setState({ tendSolo_hum: "A subir" }) : this.setState({ tendSolo_hum: "Constante" });
+              vel_vento > data[0].vel_vento ? this.setState({ tendVel_vento: "A descer" }) : vel_vento < data[0].vel_vento ? this.setState({ tendVel_vento: "A subir" }) : this.setState({ tendVel_vento: "Constante" });
+            }).catch(error => console.log(error))   
+          }else{
+            this.setState({noHourData:true})
+          }
           this.setState({selected:a})
         }).catch(error => console.log(error))
       } else {
@@ -267,10 +286,15 @@ class Dashboard extends React.Component {
   }
 
   upd = a => {
+    
     this.setState({ noData: false })
+    this.setState({ noDayData: false })
+    this.setState({ noHourData: false })
+    this.setState({ noVinhas: false })
     this.setState({ selected: undefined })
     this.setState({ selected: a })
     this.setState({ datas: undefined })
+    this.setState({ dataMax: "", dataMin: "", dataAvg: "", tendTemp: "", tendAir_hum: "", tendDirVento: "", tendIsWet: "", tendPluviosidade: "", tendRad: "", tendSolo_hum: "", tendVel_vento: "",})
     services.data.getLast(a).then(data => {
       if (data.length === 0) this.setState({ noData: true })
       else this.setState({ datas: data[0] })
@@ -287,6 +311,69 @@ class Dashboard extends React.Component {
     services.data.getAvgDataTimeFrame(a, { timeInic: dateMidnight, timeFin: dateNow }).then(data => {
       this.setState({ dataAvg: data[0] })
     }).catch(error => console.log(error))
+
+    //dados do dia
+    services.data.getTime(a,{time1:dateMidnight,time2:dateNow}).then(data => {
+      if(data.length !== 0){
+        this.setState({ muldatas: data })
+        this.setState({ key : this.state.key + 1})
+      }else{
+        this.setState({noDayData: true})
+      }
+    }).catch(error => console.log(error))
+
+            ////
+        //Tendencia
+        services.data.getTime(a, { time1: dataMinusHour, time2: dateNow }).then(data => {
+          if(data.length > 0){
+            let temp = 0;
+            let air_hum = 0;
+            let dirVento = 0;
+            let isWet = 0;
+            let pluviosidade = 0;
+            let rad = 0;
+            let solo_hum = 0;
+            let vel_vento = 0;
+            
+            for (let i = 0; i < data.length; i++) {
+              
+              temp += data[i].temp;
+              air_hum += data[i].air_humidity;
+              dirVento += data[i].dir_vento;
+              isWet += data[i].isWet;
+              pluviosidade += data[i].pluviosidade;
+              rad += data[i].radiacao;
+              solo_hum += data[i].solo_humidity;
+              vel_vento += data[i].vel_vento;
+            }
+            temp = temp / data.length
+            air_hum = air_hum / data.length
+            dirVento = dirVento / data.length
+            isWet = isWet / data.length
+            pluviosidade = pluviosidade / data.length
+            rad = rad / data.length
+            solo_hum = solo_hum / data.length
+            vel_vento = vel_vento / data.length
+
+            
+
+            services.data.getLast(a).then(data => {
+              this.setState({dir_vento : data[0].dir_vento})
+              temp > data[0].temp ? this.setState({ tendTemp: "A descer" }) : temp < data[0].temp ? this.setState({ tendTemp: "A subir" }) : this.setState({ tendTemp: "Constante" });
+              air_hum > data[0].air_humidity ? this.setState({ tendAir_hum: "A descer" }) : air_hum < data[0].air_humidity ? this.setState({ tendAir_hum: "A subir" }) : this.setState({ tendAir_hum: "Constante" });
+              dirVento > data[0].dir_vento ? this.setState({ tendDirVento: "A descer" }) : dirVento < data[0].dir_vento ? this.setState({ tendDirVento: "A subir" }) : this.setState({ tendDirVento: "Constante" });
+              isWet > data[0].isWet ? this.setState({ tendIsWet: "A descer" }) : isWet < data[0].isWet ? this.setState({ tendIsWet: "A subir" }) : this.setState({ tendIsWet: "Constante" });
+              pluviosidade > data[0].pluviosidade ? this.setState({ tendPluviosidade: "A descer" }) : pluviosidade < data[0].pluviosidade ? this.setState({ tendPluviosidade: "A subir" }) : this.setState({ tendPluviosidade: "Constante" });
+              rad > data[0].radiacao ? this.setState({ tendRad: "A descer" }) : rad < data[0].radiacao ? this.setState({ tendRad: "A subir" }) : this.setState({ tendRad: "Constante" });
+              solo_hum > data[0].solo_humidity ? this.setState({ tendSolo_hum: "A descer" }) : solo_hum < data[0].solo_humidity ? this.setState({ tendSolo_hum: "A subir" }) : this.setState({ tendSolo_hum: "Constante" });
+              vel_vento > data[0].vel_vento ? this.setState({ tendVel_vento: "A descer" }) : vel_vento < data[0].vel_vento ? this.setState({ tendVel_vento: "A subir" }) : this.setState({ tendVel_vento: "Constante" });
+            }).catch(error => console.log(error))   
+          }else{
+            this.setState({noHourData:true})
+          }
+          this.setState({selected:a})
+        }).catch(error => console.log(error))
+  
   }
 
   render() {
@@ -387,9 +474,35 @@ class Dashboard extends React.Component {
             </div>
           }
 
+          {!this.state.noData && this.state.noDayData &&
+            <div style={cardAlert}>
+              <Card >
+                <CardContent>
+                  <Typography variant="h5" component="h2">
+                    Não existe informação suficiente do dia de hoje para representar
+                  </Typography>
+                  <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                </CardContent>
+              </Card>
+            </div>
+          }
+
+          {!this.state.noData && this.state.noHourData && !this.state.noDayData &&
+            <div style={cardAlert,{ marginBottom : "1vem"}}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h5" component="h2">
+                    Não existe informação suficiente para calcular as tendências
+                  </Typography>
+                  <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                </CardContent>
+              </Card>
+            </div>
+          }
 
           <Container maxWidth="lg" className={classes.container}>
-            {this.state.noData === false &&
+            {!this.state.noDayData && !this.state.noHourData && !this.state.noVinhas && !this.state.noData &&
+            <Typography style={cardHeader}>Dados do Dia de Hoje:</Typography>}
               <Grid container spacing={1}>
                 {/* <Grid item xs={12} md={6} lg={6} >
                 <Paper className={clsx(classes.paper)}>
@@ -407,111 +520,115 @@ class Dashboard extends React.Component {
               </Grid> */}
                 {/* <Grid item xs={12} md={6} lg={6} >
               </Grid> */}
-                <Grid item xs={12} md={6} lg={4} >
-                  <Paper className={clsx(classes.paper)}>
-                    <Typography style={cardHeader}>Temperatura</Typography>
-                    <Typography style={cardTypography}>Valor máximo:{this.state.dataMax.temp}</Typography>
-                    <Typography style={cardTypography}>Valor mínimo:{this.state.dataMin.temp}</Typography>
-                    <Typography style={cardTypography}>Valor médio:{this.state.dataAvg.temp}</Typography>
-                    <Typography style={cardTypography}>Tendência:{this.state.tendTemp}</Typography>
-                    {/* {datas !== undefined &&
-                    <Exa valor={datas.temp} rest={80 - datas.temp} title={temp} color={tempColor}/>
-                } */}
-                  </Paper>
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <Paper className={clsx(classes.paper)}>
-                    <Typography style={cardHeader}>Humidade do Ar</Typography>
-                    <Typography style={cardTypography}>Valor máximo:{this.state.dataMax.air_humidity}</Typography>
-                    <Typography style={cardTypography}>Valor mínimo:{this.state.dataMin.air_humidity}</Typography>
-                    <Typography style={cardTypography}>Valor médio:{this.state.dataAvg.air_humidity}</Typography>
-                    <Typography style={cardTypography}>Tendência:{this.state.tendAir_hum}</Typography>
-                    {/* {datas !== undefined &&
-                    <Exa valor={datas.air_humidity} rest={80 - datas.air_humidity} title={hum} color={humColor} />
-                  } */}
-                  </Paper>
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <Paper className={classes.paper}>
-                    <Typography style={cardHeader}>Humidade do Solo</Typography>
-                    <Typography style={cardTypography}>Valor máximo:{this.state.dataMax.solo_humidity}</Typography>
-                    <Typography style={cardTypography}>Valor mínimo:{this.state.dataMin.solo_humidity}</Typography>
-                    <Typography style={cardTypography}>Valor médio:{this.state.dataAvg.solo_humidity}</Typography>
-                    <Typography style={cardTypography}>Tendência:{this.state.tendSolo_hum}</Typography>
-                    {/* {datas !== undefined &&
-                    <Exa valor={datas.solo_humidity} rest={80 - datas.solo_humidity} title={soloHum} color={soloHumColor} />
-                  } */}
-                  </Paper>
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <Paper className={classes.paper}>
-                    <Typography style={cardHeader}>Pluviosidade</Typography>
-                    <Typography style={cardTypography}>Valor máximo:{this.state.dataMax.pluviosidade}</Typography>
-                    <Typography style={cardTypography}>Valor mínimo:{this.state.dataMin.pluviosidade}</Typography>
-                    <Typography style={cardTypography}>Valor médio:{this.state.dataAvg.pluviosidade}</Typography>
-                    <Typography style={cardTypography}>Tendência:{this.state.tendPluviosidade}</Typography>
-                    {/* {datas !== undefined &&
-                    <Exa valor={datas.pluviosidade} rest={80 - datas.pluviosidade} title={pluv} color={pluvColor} />
-                  } */}
-                  </Paper>
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <Paper className={classes.paper}>
-                    <Typography style={cardHeader}>Vento</Typography>
-                    <Typography style={cardTypography}>Valor máximo:{this.state.dataMax.vel_vento}</Typography>
-                    <Typography style={cardTypography}>Valor mínimo:{this.state.dataMin.vel_vento}</Typography>
-                    <Typography style={cardTypography}>Valor médio:{this.state.dataAvg.vel_vento}</Typography>
-                    <Typography style={cardTypography}>Tendência:{this.state.tendVel_vento}</Typography>
-                    {datas !== undefined &&
-                      <Typography component="h1" variant="h6" noWrap className={classes.titleK}>
-                        Direção do Vento: {
-                          datas.dir_vento < 22.5 && datas.dir_vento > 337.5 ?
-                            ("Norte") :
-                            datas.dir_vento < 67.5 && datas.dir_vento > 22.5 ?
-                              ("Nordeste") :
-                              datas.dir_vento < 112.5 && datas.dir_vento > 67.5 ?
-                                ("Este") :
-                                datas.dir_vento < 157.5 && datas.dir_vento > 112.5 ?
-                                  ("Sudeste") :
-                                  datas.dir_vento < 202.5 && datas.dir_vento > 157.5 ?
-                                    ("Sul") :
-                                    datas.dir_vento < 247.5 && datas.dir_vento > 202.5 ?
-                                      ("Sudoeste") :
-                                      datas.dir_vento < 292.5 && datas.dir_vento > 247.5 ?
-                                        ("Oeste") :
-                                        ("Noroeste")
-                        }
+                {!this.state.noHourData && !this.state.noData && !this.state.noDayData && !this.state.noVinhas &&
+                <Container>
+                  <Grid container spacing={1}>
+                    <Grid item xs={12} md={6} lg={4} >
+                      <Paper className={clsx(classes.paper)}>
+                        <Typography style={cardHeader}>Temperatura</Typography>
+                        <Typography style={cardTypography}>Valor máximo:{this.state.dataMax.temp}</Typography>
+                        <Typography style={cardTypography}>Valor mínimo:{this.state.dataMin.temp}</Typography>
+                        <Typography style={cardTypography}>Valor médio:{this.state.dataAvg.temp}</Typography>
+                        <Typography style={cardTypography}>Tendência:{this.state.tendTemp}</Typography>
+                        {/* {datas !== undefined &&
+                        <Exa valor={datas.temp} rest={80 - datas.temp} title={temp} color={tempColor}/>
+                    } */}
+                      </Paper>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={4}>
+                      <Paper className={clsx(classes.paper)}>
+                        <Typography style={cardHeader}>Humidade do Ar</Typography>
+                        <Typography style={cardTypography}>Valor máximo:{this.state.dataMax.air_humidity}</Typography>
+                        <Typography style={cardTypography}>Valor mínimo:{this.state.dataMin.air_humidity}</Typography>
+                        <Typography style={cardTypography}>Valor médio:{this.state.dataAvg.air_humidity}</Typography>
+                        <Typography style={cardTypography}>Tendência:{this.state.tendAir_hum}</Typography>
+                        {/* {datas !== undefined &&
+                        <Exa valor={datas.air_humidity} rest={80 - datas.air_humidity} title={hum} color={humColor} />
+                      } */}
+                      </Paper>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={4}>
+                      <Paper className={classes.paper}>
+                        <Typography style={cardHeader}>Humidade do Solo</Typography>
+                        <Typography style={cardTypography}>Valor máximo:{this.state.dataMax.solo_humidity}</Typography>
+                        <Typography style={cardTypography}>Valor mínimo:{this.state.dataMin.solo_humidity}</Typography>
+                        <Typography style={cardTypography}>Valor médio:{this.state.dataAvg.solo_humidity}</Typography>
+                        <Typography style={cardTypography}>Tendência:{this.state.tendSolo_hum}</Typography>
+                        {/* {datas !== undefined &&
+                        <Exa valor={datas.solo_humidity} rest={80 - datas.solo_humidity} title={soloHum} color={soloHumColor} />
+                      } */}
+                      </Paper>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={4}>
+                      <Paper className={classes.paper}>
+                        <Typography style={cardHeader}>Pluviosidade</Typography>
+                        <Typography style={cardTypography}>Valor máximo:{this.state.dataMax.pluviosidade}</Typography>
+                        <Typography style={cardTypography}>Valor mínimo:{this.state.dataMin.pluviosidade}</Typography>
+                        <Typography style={cardTypography}>Valor médio:{this.state.dataAvg.pluviosidade}</Typography>
+                        <Typography style={cardTypography}>Tendência:{this.state.tendPluviosidade}</Typography>
+                        {/* {datas !== undefined &&
+                        <Exa valor={datas.pluviosidade} rest={80 - datas.pluviosidade} title={pluv} color={pluvColor} />
+                      } */}
+                      </Paper>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={4}>
+                      <Paper className={classes.paper}>
+                        <Typography style={cardHeader}>Vento</Typography>
+                        <Typography component="h1" variant="h6" noWrap className={classes.title}>
+                            Última direção do Vento: {
+                              this.state.dir_vento < 22.5 && this.state.dir_vento > 337.5 ?
+                                ("Norte") :
+                                this.state.dir_vento < 67.5 && this.state.dir_vento > 22.5 ?
+                                  ("Nordeste") :
+                                  this.state.dir_vento < 112.5 && this.state.dir_vento > 67.5 ?
+                                    ("Este") :
+                                    this.state.dir_vento < 157.5 && this.state.dir_vento > 112.5 ?
+                                      ("Sudeste") :
+                                      this.state.dir_vento < 202.5 && this.state.dir_vento > 157.5 ?
+                                        ("Sul") :
+                                        this.state.dir_vento < 247.5 && this.state.dir_vento > 202.5 ?
+                                          ("Sudoeste") :
+                                          this.state.dir_vento < 292.5 && this.state.dir_vento > 247.5 ?
+                                            ("Oeste") :
+                                            ("Noroeste")
+                            }
                       </Typography>
-                    }
-                    {/* {datas !== undefined &&
-                    <Exa valor={datas.vel_vento} rest={80 - datas.vel_vento} title={velVento} color={velColor} />
-                  } */}
-                  </Paper>
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <Paper className={classes.paper}>
-                    <Typography style={cardHeader}>Radiação solar</Typography>
-                    <Typography style={cardTypography}>Valor máximo:{this.state.dataMax.radiacao}</Typography>
-                    <Typography style={cardTypography}>Valor mínimo:{this.state.dataMin.radiacao}</Typography>
-                    <Typography style={cardTypography}>Valor médio:{this.state.dataAvg.radiacao}</Typography>
-                    <Typography style={cardTypography}>Tendência:{this.state.tendRad}</Typography>
-                    {/* {datas !== undefined &&
-                    <Exa valor={datas.radiacao} rest={80 - datas.radiacao} title={rad} color={radColor} />
-                  } */}
-                  </Paper>
-                </Grid>
+                        <Typography style={cardTypography}>Valor máximo:{this.state.dataMax.vel_vento}</Typography>
+                        <Typography style={cardTypography}>Valor mínimo:{this.state.dataMin.vel_vento}</Typography>
+                        <Typography style={cardTypography}>Valor médio:{this.state.dataAvg.vel_vento}</Typography>
+                        <Typography style={cardTypography}>Tendência:{this.state.tendVel_vento}</Typography>
+                        {/* {datas !== undefined &&
+                        <Exa valor={datas.vel_vento} rest={80 - datas.vel_vento} title={velVento} color={velColor} />
+                      } */}
+                      </Paper>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={4}>
+                      <Paper className={classes.paper}>
+                        <Typography style={cardHeader}>Radiação solar</Typography>
+                        <Typography style={cardTypography}>Valor máximo:{this.state.dataMax.radiacao}</Typography>
+                        <Typography style={cardTypography}>Valor mínimo:{this.state.dataMin.radiacao}</Typography>
+                        <Typography style={cardTypography}>Valor médio:{this.state.dataAvg.radiacao}</Typography>
+                        <Typography style={cardTypography}>Tendência:{this.state.tendRad}</Typography>
+                        {/* {datas !== undefined &&
+                        <Exa valor={datas.radiacao} rest={80 - datas.radiacao} title={rad} color={radColor} />
+                      } */}
+                      </Paper>
+                    </Grid>
+                  </Grid>
+                  </Container>
+                }
                 <Grid item xs={12}>
-                <Paper className={classes.paper}>
-                  {this.state.muldatas.length !== 0 &&
+                {this.state.muldatas.length !== 0 && !this.state.noDayData &&
+                  <Paper className={classes.paper} style={{}}>
                     <div>
-                    <Typography style={cardHeader}>Dados do Dia de Hoje:</Typography>
-                    <CompareGrah value={1} data={this.state.muldatas} />
+                      <CompareGrah key={this.state.key} value={1} data={this.state.muldatas} />
                     </div>
-                  }
-                </Paper>
+                  </Paper>
+                }
               </Grid>
-              </Grid>}
+              </Grid> 
           </Container>
+          
         </main>
       </div>
     );

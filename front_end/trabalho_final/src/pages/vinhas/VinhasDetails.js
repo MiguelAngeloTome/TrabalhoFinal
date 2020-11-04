@@ -740,7 +740,7 @@ class VinhasDetails extends React.Component {
                             </Alert>
                                 </Snackbar>
                             </div>
-                            <h2 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }} textAlign="center">Localização do modulo</h2>
+                            <h2 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }} textAlign="center">Localização da estação</h2>
                             <ClickMap parentCallback={this.callbackFunction} />
                             <Button variant="contained" color="primary" style={{ left:"2%", top:"1%" }} onClick={() => this.newModule()}>
                                 SEGUINTE
@@ -817,13 +817,13 @@ class VinhasDetails extends React.Component {
                         </Dialog>
 
                         <Dialog open={this.state.openDialogModule} onClose={() => this.setState({ openDialogModule: false })} aria-labelledby="form-dialog-title">
-                            <DialogTitle id="form-dialog-title">CRIAR UM MODULO</DialogTitle>
+                            <DialogTitle id="form-dialog-title">Criar uma estação</DialogTitle>
                             <DialogContent>
                                 <DialogContentText>
-                                    Para criar um módulo terá de introduzir o número de série da sua estação.
+                                    Para criar uma estação, terá de introduzir o número de série da mesma.
                              </DialogContentText>
                                 <DialogContentText>
-                                    Insira também um nome para lhe ser mais fácil de identificar os módulos.
+                                    Insira também um nome para lhe ser mais fácil de identificar as estações.
                              </DialogContentText>
                                 <DialogContentText>
                                     Terá também de escolher no mapa a sua Localização. Isto ajudará nos cálculos para os tornar mais precisos.
@@ -838,7 +838,7 @@ class VinhasDetails extends React.Component {
                         </Dialog>
 
                         <Dialog fullWidth minWidth="500px" open={this.state.openDialogModule2} onClose={() => this.setState({ openDialogModule2: false })} aria-labelledby="form-dialog-title">
-                            <DialogTitle id="form-dialog-title">CRIAR UM MODULO</DialogTitle>
+                            <DialogTitle id="form-dialog-title">Criar uma estação</DialogTitle>
                             <DialogContent fullWidth>
                                 <FormControl error fullWidth>
                                     <TextField
