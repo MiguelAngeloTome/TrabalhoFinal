@@ -430,7 +430,7 @@ class GraphDuplo extends React.Component {
                                                 </div>
                                             )}
                                         {this.state.first === true &&
-                                            <h3 style={{ textAlign: "center" }}>Está na Página dos Gráficos Duplos, Por favor insira a data de inicio e Fim e o modulo.</h3>
+                                            <h3 style={{ textAlign: "center" }}>Está na página dos gráficos duplos, por favor insira a data de início e fim e a estação.</h3>
                                         }
                                         {this.state.data !== undefined ? (
                                             <div>

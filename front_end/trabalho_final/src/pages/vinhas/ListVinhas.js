@@ -545,7 +545,7 @@ class ListaVinhas extends React.Component {
                                     {this.state.nomeVinhaError === true &&
                                         <FormHelperText fullWidth id="nomeVinha-error-text">O nome da vinha nao pode estar vazio</FormHelperText>
                                     }
-                                    <TextField autoFocus margin="dense" value={this.state.local} onChange={(evt) => this.localChange(evt.target.value)} label="Localizacao" aria-describedby="local-error-text" fullWidth />
+                                    <TextField autoFocus margin="dense" value={this.state.local} onChange={(evt) => this.localChange(evt.target.value)} label="Localização" aria-describedby="local-error-text" fullWidth />
                                     {this.state.localError === true &&
                                         <FormHelperText fullWidth id="local-error-text">A localização da vinha nao pode estar vazia</FormHelperText>
                                     }

@@ -208,8 +208,8 @@ class DataListPage extends React.Component {
                 { title: 'Folha molhada', field: 'isWet' },
                 { title: 'Pluviosidade', field: 'pluviosidade' },
                 { title: 'Velocidade do vento', field: 'vel_vento' },
-                { title: 'Direcao do vento', field: 'dir_vento' },
-                { title: 'Radiacao', field: 'radiacao' },
+                { title: 'Direção do vento', field: 'dir_vento' },
+                { title: 'Radiação', field: 'radiacao' },
             ],
             datas2: [],
             columns2: [
