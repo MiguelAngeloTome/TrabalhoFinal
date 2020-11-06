@@ -1524,7 +1524,7 @@ class Compare extends React.Component {
                                                 </Container>
 
                                                 <Container maxWidth="lg" className={classes.container}>
-                                                    <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Risco de Enxurrada:</h1>
+                                                    <h1 style={{ "font-size": "medium", "padding": "5px", fontWeight: "bold" }}>Horas de Frio:</h1>
                                                     <TableContainer className={classes.table} component={Paper}>
                                                         <Table aria-label="simple table" >
                                                             <TableBody>

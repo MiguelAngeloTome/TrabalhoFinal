@@ -226,6 +226,8 @@ class Risco extends React.Component {
             oldInic: undefined,
             oldFim: undefined,
             key: 0,
+            corte:15,
+            corte2:30,
             emailDialogOpen: false,
         }
     };
@@ -256,6 +258,18 @@ class Risco extends React.Component {
     handleDateChange1 = (date) => {
         this.setState({ DataFim: date })
     };
+
+    corteupd = (a) => {
+    
+            this.setState({ corte: a });
+
+    }
+
+    corteupd2 = (a) => {
+    
+        this.setState({ corte2: a });
+
+}
 
 
     upd = a => {
@@ -328,14 +342,14 @@ class Risco extends React.Component {
     calcRajada = (dIn, dFim, m_id) => {
         let dataIni = services.calc.formatedDate(dIn);
         let dataFim = services.calc.formatedDate(dFim);
-        services.risco.RRajada({ dataInic: dataIni, dataFim: dataFim, module_id: m_id }).then(
+        services.risco.RRajada({ dataInic: dataIni, dataFim: dataFim, module_id: m_id, corte: this.state.corte2 }).then(
             data => { if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldInic: dataIni, oldFim: dataFim, oldModule: this.state.module, oldVinhaNome: this.state.vinhaNome, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch();
     };
 
     calcEnxurrada = (dIn, dFim, m_id) => {
         let dataIni = services.calc.formatedDate(dIn);
         let dataFim = services.calc.formatedDate(dFim);
-        services.risco.Renxurrada({ dataInic: dataIni, dataFim: dataFim, module_id: m_id }).then(
+        services.risco.Renxurrada({ dataInic: dataIni, dataFim: dataFim, module_id: m_id, corte: this.state.corte }).then(
             data => { if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldInic: dataIni, oldFim: dataFim, oldModule: this.state.module, oldVinhaNome: this.state.vinhaNome, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch();
     };
 
@@ -793,6 +807,7 @@ class Risco extends React.Component {
                                                 'aria-label': 'change date',
                                             }}
                                         />
+                                        <TextField style={corteStyle} inputProps={{ step: "1" }} type="number" id="outlined-basic" label="Corte" variant="outlined" value={this.state.corte2} onChange={(val) => this.corteupd2(val.target.value)} />
                                     </Grid>
                                 </MuiPickersUtilsProvider>
                                 <div className={classes.colapseButton} >
@@ -946,6 +961,7 @@ class Risco extends React.Component {
                                                 'aria-label': 'change date',
                                             }}
                                         />
+                                        <TextField style={corteStyle} inputProps={{ step: "1" }} type="number" id="outlined-basic" label="Corte" variant="outlined" value={this.state.corte} onChange={(val) => this.corteupd(val.target.value)} />
                                     </Grid>
                                 </MuiPickersUtilsProvider>
                                 <div className={classes.colapseButton} >

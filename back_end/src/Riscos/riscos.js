@@ -124,7 +124,7 @@ exports.RRajada = async (dayInic, dayFim, module_id, corte) =>{
 
 
 exports.RajadaSend= async (body) => {
-    let send = await this.RRajada(body.dataInic, body.dataFim, body.module_id, 10);
+    let send = await this.RRajada(body.dataInic, body.dataFim, body.module_id, body.corte);
     return new Promise((resolve,reject)=>{
         resolve(send);
     });
@@ -306,7 +306,7 @@ exports.REnxurrada = async (dayInic, dayFim, module_id, corte) =>{
 
 
 exports.EnxurradaSend= async (body) => {
-    let send = await this.REnxurrada(body.dataInic, body.dataFim, body.module_id, 10);
+    let send = await this.REnxurrada(body.dataInic, body.dataFim, body.module_id, body.corte);
     return new Promise((resolve,reject)=>{
         resolve(send);
     });
