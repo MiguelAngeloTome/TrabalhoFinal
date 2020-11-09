@@ -24,7 +24,10 @@ exports.getHum = async(dayInic, dayFim, module_id) =>{
     return new Promise((resolve,reject)=>{
         db.query(`select date, air_humidity from data where date BETWEEN ? and ? and module_id =? order by date asc`,[dayInic, df, module_id],(err,row)=>{
             if(err) reject (err);
-            resolve(row);
+            if (row.length > 0){
+                resolve(row);
+            }
+            resolve(null);
         });
     });
 };
@@ -36,7 +39,10 @@ exports.getTemp = async(dayInic, dayFim, module_id) =>{
     return new Promise((resolve,reject)=>{
         db.query(`select date, temp from data where date BETWEEN ? and ? and module_id =? order by date asc`,[dayInic, df, module_id],(err,row)=>{
             if(err) reject (err);
-            resolve(row);
+            if (row.length > 0){
+                resolve(row);
+            }
+            resolve(null);
         });
     });
 };
@@ -49,7 +55,10 @@ exports.getPrece = async(dayInic, dayFim, module_id) =>{
     return new Promise((resolve,reject)=>{
         db.query(`select date, pluviosidade from data where date BETWEEN ? and ? and module_id =? order by date asc`,[dayInic, df, module_id],(err,row)=>{
             if(err) reject (err);
-            resolve(row);
+            if (row.length > 0){
+                resolve(row);
+            }
+            resolve(null);
         });
     });
 };
@@ -78,7 +87,7 @@ exports.RRajada = async (dayInic, dayFim, module_id, corte) =>{
     { date: '2009-06-29 21:08:59', vel_vento: 7},
     { date: '2009-06-29 21:22:59', vel_vento: 10 }
     ]*/
-    if(ventValues === null) return send;
+    if(ventValues === null) return null;
     if(ventValues.length >0){
         
         if(ventValues[0].vel_vento >= corte){
@@ -126,7 +135,11 @@ exports.RRajada = async (dayInic, dayFim, module_id, corte) =>{
 exports.RajadaSend= async (body) => {
     let send = await this.RRajada(body.dataInic, body.dataFim, body.module_id, body.corte);
     return new Promise((resolve,reject)=>{
-        resolve(send);
+        if(send!=null){
+            resolve(send);
+        }else{
+            reject("empty")
+        }
     });
 }
 
@@ -219,7 +232,7 @@ exports.RGeada = async (dayInic, dayFim, module_id) =>{
     { date: '2009-06-29 21:22:59', air_humidity: 10 }
     ]*/
 
-    if(tempValues === null ||humValues === null) return send;
+    if(tempValues === null ||humValues === null) return null;
 
     if(tempValues.length >0 && humValues.length >0){
         
@@ -259,7 +272,11 @@ exports.RGeada = async (dayInic, dayFim, module_id) =>{
 exports.GeadaSend= async (body) => {
     let send = await this.RGeada(body.dataInic, body.dataFim, body.module_id);
     return new Promise((resolve,reject)=>{
-        resolve(send);
+        if(send!=null){
+            resolve(send);
+        }else{
+            reject("empty")
+        }
     });
 }
 
@@ -288,7 +305,7 @@ exports.PontoOrvalho = async (temp, hum) => {
 exports.REnxurrada = async (dayInic, dayFim, module_id, corte) =>{
     let send = [];
     let preceValues = await this.averagePrece(dayInic, dayFim, module_id);
-    if(preceValues === null) return send;
+    if(preceValues === null) return null;
     if(preceValues.length >0){
 
         for(i=0; i< preceValues.length; i++){
@@ -308,7 +325,11 @@ exports.REnxurrada = async (dayInic, dayFim, module_id, corte) =>{
 exports.EnxurradaSend= async (body) => {
     let send = await this.REnxurrada(body.dataInic, body.dataFim, body.module_id, body.corte);
     return new Promise((resolve,reject)=>{
-        resolve(send);
+        if(send!=null){
+            resolve(send);
+        }else{
+            reject("empty")
+        }
     });
 }
 

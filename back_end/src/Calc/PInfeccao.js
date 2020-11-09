@@ -14,6 +14,18 @@ exports.getHum = async(dayInic, dayFim, module_id) =>{
     });
 };
 
+exports.getHumect = async(dayInic, dayFim, module_id) =>{
+    let df = new Date(dayFim);
+    df.setDate(df.getDate()+1);
+    df = await calc.getFormatedDate(df);
+    return new Promise((resolve,reject)=>{
+        db.query(`select date, isWet from data where date BETWEEN ? and ? and module_id =? order by date asc`,[dayInic, df, module_id],(err,row)=>{
+            if(err) reject (err);
+            resolve(row);
+        });
+    });
+};
+
 exports.PInfeccao = async (dayInic, dayFim, module_id) =>{
     let send = [];
     let flagIntervalo = false;
@@ -65,7 +77,7 @@ exports.PInfeccao = async (dayInic, dayFim, module_id) =>{
 
     }else{
 
-
+        return null;
     }
 
 
@@ -106,7 +118,7 @@ exports.PHumidade = async (dayInic, dayFim, module_id, corte) =>{
         }
 
     }else{
-
+        return null;
 
     }
     return send
@@ -116,7 +128,7 @@ exports.Phumectacao = async (dayInic, dayFim, module_id,) => {
     let send = [];
     let flagIntervalo = false;
     let inic;
-    let isWetValues = await this.getHum(dayInic, dayFim, module_id);
+    let isWetValues = await this.getHumect(dayInic, dayFim, module_id);
     
     if(isWetValues.length >0){
         
@@ -145,7 +157,7 @@ exports.Phumectacao = async (dayInic, dayFim, module_id,) => {
 
     }else{
 
-
+        return null;
     }
     return send
 }
@@ -154,20 +166,33 @@ exports.Phumectacao = async (dayInic, dayFim, module_id,) => {
 exports.InfeccSend= async (body) => {
     let send = await this.PInfeccao(body.dataInic, body.dataFim, body.module_id);
     return new Promise((resolve,reject)=>{
-        resolve(send);
+        if(send!=null){
+            resolve(send);
+        }else{
+            reject("empty")
+        }
+        
     });
 }
 
 exports.HumSend= async (body) => {
     let send = await this.PHumidade(body.dataInic, body.dataFim, body.module_id, body.corte);
     return new Promise((resolve,reject)=>{
-        resolve(send);
+        if(send!=null){
+            resolve(send);
+        }else{
+            reject("empty")
+        }
     });
 }
 
 exports.HumectacaoSend= async (body) => {
     let send = await this.Phumectacao(body.dataInic, body.dataFim, body.module_id);
     return new Promise((resolve,reject)=>{
-        resolve(send);
+        if(send!=null){
+            resolve(send);
+        }else{
+            reject("empty")
+        }
     });
 }

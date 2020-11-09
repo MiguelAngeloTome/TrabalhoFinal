@@ -229,6 +229,7 @@ class Risco extends React.Component {
             corte:15,
             corte2:30,
             emailDialogOpen: false,
+            empty:false,
         }
     };
     static contextType = AuthContext;
@@ -329,7 +330,7 @@ class Risco extends React.Component {
         let dataIni = services.calc.formatedDate(dIn);
         let dataFim = services.calc.formatedDate(dFim);
         services.risco.Rgeada({ dataInic: dataIni, dataFim: dataFim, module_id: m_id }).then(
-            data => { if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldInic: dataIni, oldFim: dataFim, oldModule: this.state.module, oldVinhaNome: this.state.vinhaNome, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch();
+            data => {console.log(data);if (data.length === undefined){this.setState({ first: false, checked: true, data: undefined,empty:false })}else{ if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldInic: dataIni, oldFim: dataFim, oldModule: this.state.module, oldVinhaNome: this.state.vinhaNome, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined,empty:true }) } }}).catch();
     };
 
     calcIncendio = (dIn, dFim, m_id) => {
@@ -343,14 +344,14 @@ class Risco extends React.Component {
         let dataIni = services.calc.formatedDate(dIn);
         let dataFim = services.calc.formatedDate(dFim);
         services.risco.RRajada({ dataInic: dataIni, dataFim: dataFim, module_id: m_id, corte: this.state.corte2 }).then(
-            data => { if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldInic: dataIni, oldFim: dataFim, oldModule: this.state.module, oldVinhaNome: this.state.vinhaNome, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch();
+            data => {if (data.length === undefined){this.setState({ first: false, checked: true, data: undefined,empty:false })}else{ if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldInic: dataIni, oldFim: dataFim, oldModule: this.state.module, oldVinhaNome: this.state.vinhaNome, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined,empty:true }) } }}).catch();
     };
 
     calcEnxurrada = (dIn, dFim, m_id) => {
         let dataIni = services.calc.formatedDate(dIn);
         let dataFim = services.calc.formatedDate(dFim);
         services.risco.Renxurrada({ dataInic: dataIni, dataFim: dataFim, module_id: m_id, corte: this.state.corte }).then(
-            data => { if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldInic: dataIni, oldFim: dataFim, oldModule: this.state.module, oldVinhaNome: this.state.vinhaNome, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch();
+            data => {if (data.length === undefined){this.setState({ first: false, checked: true, data: undefined,empty:false })}else{ if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldInic: dataIni, oldFim: dataFim, oldModule: this.state.module, oldVinhaNome: this.state.vinhaNome, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined,empty:true }) } }}).catch();
     };
 
     ExcelClick = (tipo) => {
@@ -396,7 +397,7 @@ class Risco extends React.Component {
                             <MenuIcon />
                         </IconButton>
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                            Modulos
+                            Cálculos de Risco
                         </Typography>
                         <IconButton color="inherit" href="/#/alertas">
                             <Badge badgeContent={this.state.count} color="secondary">
@@ -528,7 +529,7 @@ class Risco extends React.Component {
                                     </div>
                                 )}
                             {this.state.first === true &&
-                                <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos de Riscos, Por favor insira a data de inicio e Fim e o modulo.</h3>
+                                <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos de Riscos, Por favor insira a data de Início e de Fim e a Estação.</h3>
                             }
                             {this.state.data !== undefined ? (
                                 <div>
@@ -581,17 +582,33 @@ class Risco extends React.Component {
 
                                     <div>
                                         {this.state.first !== true &&
-                                            <div style={cardAlert}>
-                                                <Card >
-                                                    <CardContent>
-                                                        <Typography variant="h5" component="h2">
-                                                            Não existem dados suficientes para fazer o cálculo dos Riscos de Geada , se este erro persistir por favor entrar em contacto
+                                                    <div>
+                                                        {this.state.empty !== true ?(
+                                                        <div style={cardAlert}>
+                                                            <Card >
+                                                                <CardContent>
+                                                                    <Typography variant="h5" component="h2">
+                                                                        Não existem dados suficientes para fazer o cálculo dos períodos Risco de Geada, se este erro persistir por favor entrar em contacto
                                                                     </Typography>
-                                                        <ErrorIcon fontSize="large" style={{ color: red[500] }} />
-                                                    </CardContent>
-                                                </Card>
-                                            </div>
-                                        }
+                                                                    <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                                                                </CardContent>
+                                                            </Card>
+                                                        </div>
+                                                        ):(
+                                                            <div style={cardAlert}>
+                                                            <Card >
+                                                                <CardContent>
+                                                                    <Typography variant="h5" component="h2">
+                                                                        Não existem períodos com Risco de Geada.
+                                                                    </Typography>
+                                                                    <CheckCircleIcon fontSize="large" style={{ color: green[500] }} />
+                                                                </CardContent>
+                                                            </Card>
+                                                            </div> 
+                                                        )
+                                                        }
+                                                        </div>
+                                                    }
                                     </div>
 
                                 )}
@@ -679,7 +696,7 @@ class Risco extends React.Component {
                                     </div>
                                 )}
                             {this.state.first === true &&
-                                <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos de Riscos, Por favor insira a data de inicio e Fim e o modulo.</h3>
+                                <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos de Riscos, Por favor insira a data de Início e de Fim e a Estação.</h3>
                             }
                             {this.state.data !== undefined ? (
                                 <div>
@@ -736,7 +753,7 @@ class Risco extends React.Component {
                                                 <Card >
                                                     <CardContent>
                                                         <Typography variant="h5" component="h2">
-                                                            Não existem dados suficientes para fazer o cálculo dos Riscos de Geada , se este erro persistir por favor entrar em contacto
+                                                            Não existem dados suficientes para fazer o cálculo dos Riscos de Incêndio , se este erro persistir por favor entrar em contacto
                                                                     </Typography>
                                                         <ErrorIcon fontSize="large" style={{ color: red[500] }} />
                                                     </CardContent>
@@ -832,7 +849,7 @@ class Risco extends React.Component {
                                     </div>
                                 )}
                             {this.state.first === true &&
-                                <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos de Riscos, Por favor insira a data de inicio e Fim e o modulo.</h3>
+                                <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos de Riscos, Por favor insira a data de Início e de Fim e a Estação.</h3>
                             }
                             {this.state.data !== undefined ? (
                                 <div>
@@ -885,18 +902,36 @@ class Risco extends React.Component {
                             ) : (
 
                                     <div>
-                                        {this.state.first !== true &&
-                                            <div style={cardAlert}>
-                                                <Card >
-                                                    <CardContent>
-                                                        <Typography variant="h5" component="h2">
-                                                            Não existem dados suficientes para fazer o cálculo dos Riscos de Rajada , se este erro persistir por favor entrar em contacto
+                                        <div>
+                                                    {this.state.first !== true &&
+                                                    <div>
+                                                        {this.state.empty !== true ?(
+                                                        <div style={cardAlert}>
+                                                            <Card >
+                                                                <CardContent>
+                                                                    <Typography variant="h5" component="h2">
+                                                                        Não existem dados suficientes para fazer o cálculo dos períodos Risco de Rajada, se este erro persistir por favor entrar em contacto
                                                                     </Typography>
-                                                        <ErrorIcon fontSize="large" style={{ color: red[500] }} />
-                                                    </CardContent>
-                                                </Card>
-                                            </div>
-                                        }
+                                                                    <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                                                                </CardContent>
+                                                            </Card>
+                                                        </div>
+                                                        ):(
+                                                            <div style={cardAlert}>
+                                                            <Card >
+                                                                <CardContent>
+                                                                    <Typography variant="h5" component="h2">
+                                                                        Não existem períodos com Risco de Rajada
+                                                                    </Typography>
+                                                                    <CheckCircleIcon fontSize="large" style={{ color: green[500] }} />
+                                                                </CardContent>
+                                                            </Card>
+                                                            </div> 
+                                                        )
+                                                        }
+                                                        </div>
+                                                    }
+                                                </div>
                                     </div>
 
                                 )}
@@ -986,7 +1021,7 @@ class Risco extends React.Component {
                                     </div>
                                 )}
                             {this.state.first === true &&
-                                <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos de Riscos, Por favor insira a data de inicio e Fim e o modulo.</h3>
+                                <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos de Riscos, Por favor insira a data de Início e de Fim e a Estação.</h3>
                             }
                             {this.state.data !== undefined ? (
                                 <div>
@@ -1039,17 +1074,33 @@ class Risco extends React.Component {
 
                                     <div>
                                         {this.state.first !== true &&
-                                            <div style={cardAlert}>
-                                                <Card >
-                                                    <CardContent>
-                                                        <Typography variant="h5" component="h2">
-                                                            Não existem dados suficientes para fazer o cálculo dos Riscos de Rajada , se este erro persistir por favor entrar em contacto
+                                                    <div>
+                                                        {this.state.empty !== true ?(
+                                                        <div style={cardAlert}>
+                                                            <Card >
+                                                                <CardContent>
+                                                                    <Typography variant="h5" component="h2">
+                                                                        Não existem dados suficientes para fazer o cálculo dos períodos Risco de Enxurrada, se este erro persistir por favor entrar em contacto
                                                                     </Typography>
-                                                        <ErrorIcon fontSize="large" style={{ color: red[500] }} />
-                                                    </CardContent>
-                                                </Card>
-                                            </div>
-                                        }
+                                                                    <ErrorIcon fontSize="large" style={{ color: red[500] }} />
+                                                                </CardContent>
+                                                            </Card>
+                                                        </div>
+                                                        ):(
+                                                            <div style={cardAlert}>
+                                                            <Card >
+                                                                <CardContent>
+                                                                    <Typography variant="h5" component="h2">
+                                                                        Não existem períodos com Risco de Enxurrada.
+                                                                    </Typography>
+                                                                    <CheckCircleIcon fontSize="large" style={{ color: green[500] }} />
+                                                                </CardContent>
+                                                            </Card>
+                                                            </div> 
+                                                        )
+                                                        }
+                                                        </div>
+                                                    }
                                     </div>
 
                                 )}

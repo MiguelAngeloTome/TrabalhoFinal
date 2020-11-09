@@ -316,7 +316,7 @@ class GraphDuplo extends React.Component {
                             <MenuIcon />
                         </IconButton>
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                            Modulos
+                            Gráficos Duplos
                         </Typography>
                         <IconButton color="inherit" href="/#/alertas">
                             <Badge badgeContent={this.state.count} color="secondary">
@@ -475,7 +475,7 @@ class GraphDuplo extends React.Component {
                                                             <Card >
                                                                 <CardContent>
                                                                     <Typography variant="h5" component="h2">
-                                                                        Não existem dados suficientes para fazer o cálculo dos Riscos de Geada , se este erro persistir por favor entrar em contacto
+                                                                        Não existem dados suficientes para fazer o Gráfico , se este erro persistir por favor entrar em contacto
                                                                     </Typography>
                                                                     <ErrorIcon fontSize="large" style={{ color: red[500] }} />
                                                                 </CardContent>

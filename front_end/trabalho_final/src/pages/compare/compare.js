@@ -230,6 +230,7 @@ class Compare extends React.Component {
             oldFim: undefined,
             key: 0,
             emailDialogOpen: false,
+            empty:false,
         }
     };
     static contextType = AuthContext;
@@ -284,21 +285,21 @@ class Compare extends React.Component {
         let dataIni = services.calc.formatedDate(dIn);
         let dataFim = services.calc.formatedDate(dFim);
         services.calc.pHum({ dataInic: dataIni, dataFim: dataFim, module_id: m_id, corte: this.state.corte }).then(
-            data => { if (data.length !== 0) { let M = services.calc.MaxMinPhum(data); if (M != null) { this.setState({ key: this.state.key + 1, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, oldInic: dataIni, oldFim: dataFim, data: data, Max: M[0], Min: M[1], first: false, checked: false }) } } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch();
+            data => {console.log(data); if (data.length === undefined){this.setState({ first: false, checked: true, data: undefined,empty:false })}else{ if (data.length !== 0) { let M = services.calc.MaxMinPhum(data); if (M != null) { this.setState({ key: this.state.key + 1, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, oldInic: dataIni, oldFim: dataFim, data: data, Max: M[0], Min: M[1], first: false, checked: false }) } } else { this.setState({ first: false, checked: true, data: undefined,empty:true }) } }}).catch();
     };
 
     calcPinf = (dIn, dFim, m_id) => {
         let dataIni = services.calc.formatedDate(dIn);
         let dataFim = services.calc.formatedDate(dFim);
         services.calc.pInf({ dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected }).then(
-            data => { if (data.length !== 0) { let M = services.calc.MaxMinPhum(data); if (M != null) { this.setState({ key: this.state.key + 1, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, oldInic: dataIni, oldFim: dataFim, data: data, Max: M[0], Min: M[1], first: false, checked: false }) } } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch();
+            data => { if (data.length === undefined){this.setState({ first: false, checked: true, data: undefined,empty:false })}else{ if (data.length !== 0) { let M = services.calc.MaxMinPhum(data); if (M != null) { this.setState({ key: this.state.key + 1, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, oldInic: dataIni, oldFim: dataFim, data: data, Max: M[0], Min: M[1], first: false, checked: false }) } } else { this.setState({ first: false, checked: true, data: undefined,empty:true }) } }}).catch(this.setState({ first: false, checked: true, data: undefined,empty:false }));
     };
 
     calcPHume = (dIn, dFim, m_id) => {
         let dataIni = services.calc.formatedDate(dIn);
         let dataFim = services.calc.formatedDate(dFim);
         services.calc.pHume({ dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected }).then(
-            data => { if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, oldInic: dataIni, oldFim: dataFim, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined }) } }).catch();
+            data => {if (data.length === undefined){this.setState({ first: false, checked: true, data: undefined,empty:false })}else{ if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, oldInic: dataIni, oldFim: dataFim, data: data, first: false, checked: false }) } else { this.setState({ first: false, checked: true, data: undefined,empty:true }) }} }).catch();
     };
 
     calcHFito = (dIn, dFim, m_id) => {
@@ -347,7 +348,7 @@ class Compare extends React.Component {
             let dataIni = services.calc.formatedDate(f);
             let dataFim = services.calc.formatedDate(d);
             services.calc.pHum({ dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected, corte: this.state.corte }).then(
-                data => { if (data.length !== 0) { let M = services.calc.MaxMinPhum(data); if (M != null) { this.setState({ key: this.state.key + 1, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, oldInic: dataIni, oldFim: dataFim, data: data, Max: M[0], Min: M[1], first: false, checked: false }) } } else { this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }) } }).catch(this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }));
+                data => { if (data.length === undefined){this.setState({ first: true, checked: true, data: undefined })}else{if (data.length !== 0) { let M = services.calc.MaxMinPhum(data); if (M != null) { this.setState({ key: this.state.key + 1, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, oldInic: dataIni, oldFim: dataFim, data: data, Max: M[0], Min: M[1], first: false, checked: false }) } } else { this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }) } }}).catch(this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }));
         }
 
         if (newValue === 2) {
@@ -380,7 +381,7 @@ class Compare extends React.Component {
             let dataFim = services.calc.formatedDate(d);
 
             services.calc.pHum({ dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected, corte: this.state.corte }).then(
-                data => { if (data.length !== 0) { let M = services.calc.MaxMinPhum(data); if (M != null) { this.setState({ key: this.state.key + 1, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, oldInic: dataIni, oldFim: dataFim, data: data, Max: M[0], Min: M[1], first: false, checked: false }) } } else { this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }) } }).catch(this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }));
+                data => { if (data.length === undefined){this.setState({ first: true, checked: true, data: undefined })}else{if (data.length !== 0) { let M = services.calc.MaxMinPhum(data); if (M != null) { this.setState({ key: this.state.key + 1, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, oldInic: dataIni, oldFim: dataFim, data: data, Max: M[0], Min: M[1], first: false, checked: false }) } } else { this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }) } }}).catch(this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }));
 
 
         }
@@ -396,7 +397,7 @@ class Compare extends React.Component {
             let dataFim = services.calc.formatedDate(d);
 
             services.calc.pInf({ dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected }).then(
-                data => { if (data.length !== 0) { let M = services.calc.MaxMinPhum(data); if (M != null) { this.setState({ key: this.state.key + 1, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, oldInic: dataIni, oldFim: dataFim, data: data, Max: M[0], Min: M[1], first: false, checked: false }) } } else { this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }) } }).catch(this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }));
+                data => { if (data.length === undefined){this.setState({ first: true, checked: true, data: undefined })}else{if (data.length === undefined){this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true })}else{if (data.length !== 0) { console.log(data.length);let M = services.calc.MaxMinPhum(data); if (M != null) { this.setState({ key: this.state.key + 1, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, oldInic: dataIni, oldFim: dataFim, data: data, Max: M[0], Min: M[1], first: false, checked: false }) } } else { this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }) } }}}).catch(this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }));
 
         }
         if (newValue === 2) {
@@ -411,7 +412,7 @@ class Compare extends React.Component {
             let dataFim = services.calc.formatedDate(d);
 
             services.calc.pHume({ dataInic: dataIni, dataFim: dataFim, module_id: this.state.selected }).then(
-                data => { if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, oldInic: dataIni, oldFim: dataFim, data: data, first: false, checked: false }) } else { this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }) } }).catch(this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }));
+                data => {if (data.length === undefined){this.setState({ first: true, checked: true, data: undefined })}else{ if (data.length !== 0) { this.setState({ key: this.state.key + 1, oldModule:this.state.module, oldVinhaNome:this.state.vinhaNome, oldInic: dataIni, oldFim: dataFim, data: data, first: false, checked: false }) } else { this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }) } }}).catch(this.setState({ data: undefined, Max: undefined, Min: undefined, first: true, checked: true }));
 
         }
     };
@@ -566,8 +567,6 @@ class Compare extends React.Component {
                         createData('Coordenadas:', this.state.oldModule.lat + " " + this.state.oldModule.lng),
                         createData('Dia de Início:', this.state.oldInic),
                         createData('Dia de Término:', this.state.oldFim),
-                        createData('Temperatura máxima registada:', this.state.Max),
-                        createData('Temperatura mínima registada:', this.state.Min),
                     ];
                 }
                 if (this.state.value2 === 1) {
@@ -608,7 +607,7 @@ class Compare extends React.Component {
                             <MenuIcon />
                         </IconButton>
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                            Modulos
+                            Cálculos
                         </Typography>
                         <IconButton color="inherit" href="/#/alertas">
                             <Badge badgeContent={this.state.count} color="secondary">
@@ -771,7 +770,7 @@ class Compare extends React.Component {
                                     </div>
                                 )}
                             {this.state.first === true &&
-                                <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos, Por favor insira a data de inicio e Fim e o modulo.</h3>
+                                <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos, Por favor insira a data de Início e de Fim e a Estação.</h3>
                             }
                             {this.state.data !== undefined ? (
                                 <div>
@@ -915,7 +914,7 @@ class Compare extends React.Component {
                                                 </div>
                                             )}
                                         {this.state.first === true &&
-                                            <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos, Por favor insira a data de inicio e Fim e o modulo.</h3>
+                                            <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos, Por favor insira a data de Início e de Fim e a Estação.</h3>
                                         }
                                         {this.state.data !== undefined ? (
                                             <div>
@@ -955,15 +954,31 @@ class Compare extends React.Component {
 
                                                 <div>
                                                     {this.state.first !== true &&
+                                                    <div>
+                                                        {this.state.empty !== true ?(
                                                         <div style={cardAlert}>
                                                             <Card >
                                                                 <CardContent>
                                                                     <Typography variant="h5" component="h2">
                                                                         Não existem dados suficientes para fazer o cálculo dos períodos de humidade, se este erro persistir por favor entrar em contacto
-                                                                </Typography>
+                                                                    </Typography>
                                                                     <ErrorIcon fontSize="large" style={{ color: red[500] }} />
                                                                 </CardContent>
                                                             </Card>
+                                                        </div>
+                                                        ):(
+                                                            <div style={cardAlert}>
+                                                            <Card >
+                                                                <CardContent>
+                                                                    <Typography variant="h5" component="h2">
+                                                                        Não existem períodos de humidade.
+                                                                    </Typography>
+                                                                    <CheckCircleIcon fontSize="large" style={{ color: green[500] }} />
+                                                                </CardContent>
+                                                            </Card>
+                                                            </div> 
+                                                        )
+                                                        }
                                                         </div>
                                                     }
                                                 </div>
@@ -1056,7 +1071,7 @@ class Compare extends React.Component {
                                                 </div>
                                             )}
                                         {this.state.first === true &&
-                                            <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos, Por favor insira a data de inicio e Fim e o modulo.</h3>
+                                            <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos, Por favor insira a data de Início e de Fim e a Estação.</h3>
                                         }
                                         {this.state.data !== undefined ? (
                                             <div>
@@ -1093,9 +1108,10 @@ class Compare extends React.Component {
                         </Button>
                                             </div>
                                         ) : (
-
                                                 <div>
                                                     {this.state.first !== true &&
+                                                    <div>
+                                                        {this.state.empty !== true ?(
                                                         <div style={cardAlert}>
                                                             <Card >
                                                                 <CardContent>
@@ -1105,6 +1121,20 @@ class Compare extends React.Component {
                                                                     <ErrorIcon fontSize="large" style={{ color: red[500] }} />
                                                                 </CardContent>
                                                             </Card>
+                                                        </div>
+                                                        ):(
+                                                            <div style={cardAlert}>
+                                                            <Card >
+                                                                <CardContent>
+                                                                    <Typography variant="h5" component="h2">
+                                                                        Não existem períodos de infeção
+                                                                    </Typography>
+                                                                    <CheckCircleIcon fontSize="large" style={{ color: green[500] }} />
+                                                                </CardContent>
+                                                            </Card>
+                                                            </div> 
+                                                        )
+                                                        }
                                                         </div>
                                                     }
                                                 </div>
@@ -1196,7 +1226,7 @@ class Compare extends React.Component {
                                                 </div>
                                             )}
                                         {this.state.first === true &&
-                                            <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos, Por favor insira a data de inicio e Fim e o modulo.</h3>
+                                            <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos, Por favor insira a data de Início e de Fim e a Estação.</h3>
                                         }
                                         {this.state.data !== undefined ? (
                                             <div>
@@ -1249,6 +1279,8 @@ class Compare extends React.Component {
 
                                                 <div>
                                                     {this.state.first !== true &&
+                                                    <div>
+                                                        {this.state.empty !== true ?(
                                                         <div style={cardAlert}>
                                                             <Card >
                                                                 <CardContent>
@@ -1258,6 +1290,20 @@ class Compare extends React.Component {
                                                                     <ErrorIcon fontSize="large" style={{ color: red[500] }} />
                                                                 </CardContent>
                                                             </Card>
+                                                        </div>
+                                                        ):(
+                                                            <div style={cardAlert}>
+                                                            <Card >
+                                                                <CardContent>
+                                                                    <Typography variant="h5" component="h2">
+                                                                        Não existem períodos de humectação
+                                                                    </Typography>
+                                                                    <CheckCircleIcon fontSize="large" style={{ color: green[500] }} />
+                                                                </CardContent>
+                                                            </Card>
+                                                            </div> 
+                                                        )
+                                                        }
                                                         </div>
                                                     }
                                                 </div>
@@ -1354,7 +1400,7 @@ class Compare extends React.Component {
                                                 </div>
                                             )}
                                         {this.state.first === true &&
-                                            <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos, Por favor insira a data de inicio e Fim e o modulo.</h3>
+                                            <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos, Por favor insira a data de Início e de Fim e a Estação.</h3>
                                         }
                                         {this.state.data !== undefined ? (
                                             <div>
@@ -1500,7 +1546,7 @@ class Compare extends React.Component {
                                                 </div>
                                             )}
                                         {this.state.first === true &&
-                                            <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos, Por favor insira a data de inicio e Fim e o modulo.</h3>
+                                            <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos, Por favor insira a data de Início e de Fim e a Estação.</h3>
                                         }
                                         {this.state.data !== undefined ? (
                                             <div>
@@ -1653,7 +1699,7 @@ class Compare extends React.Component {
                                                 </div>
                                             )}
                                         {this.state.first === true &&
-                                            <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos, Por favor insira a data de inicio e Fim e o modulo.</h3>
+                                            <h3 style={{ textAlign: "center" }}>Está na Página de Cálculos, Por favor insira a data de Início e de Fim e a Estação.</h3>
                                         }
                                         {this.state.data !== undefined ? (
                                             <div>
