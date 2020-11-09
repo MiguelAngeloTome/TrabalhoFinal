@@ -312,27 +312,23 @@ class VinhasDetails extends React.Component {
         services.user.userSimple().then(data => this.setState({ users: data })).catch();
         services.vinha.getDonoVinha(window.location.hash.split("/")[3]).then(data => {
             if (data[0].dono === this.context.user.id) this.setState({ isDono: true });
+            services.avisos.getPrefsSingle({ vinha_id: window.location.hash.split("/")[3], user_id: data[0].dono }).then(data => {
+                rows.length = 0;
+                if(data.length > 0){
+                    this.setState({ prefs: data[0] })
+                    rows.push(
+                        createData('Temperatura', this.state.prefs.tempMin, this.state.prefs.tempMax),
+                        createData('Humidade do ar', this.state.prefs.airHumidityMin, this.state.prefs.airHumidityMax),
+                        createData('Humidade do solo', this.state.prefs.soloHumidityMin, this.state.prefs.soloHumidityMax),
+                        createData('Folha molhada', this.state.prefs.isWetMin, this.state.prefs.isWetMax),
+                        createData('Pluviosidade', this.state.prefs.pluviosidadeMin, this.state.prefs.pluviosidadeMax),
+                        createData('Velocidade do vento', this.state.prefs.velVentoMin, this.state.prefs.velVentoMax),
+                        createData('Direção do vento', this.state.prefs.dirVentoMin, this.state.prefs.dirVentoMax),
+                        createData('Radiação', this.state.prefs.radiacaoMin, this.state.prefs.radiacaoMax),
+                    );
+                }
+            });
         }).catch();
-
-        services.avisos.getPrefsSingle({ vinha_id: window.location.hash.split("/")[3], user_id: this.context.user.id }).then(data => {
-            rows.length = 0;
-            if(data.length > 0){
-                this.setState({ prefs: data[0] })
-                rows.push(
-                    createData('Temperatura', this.state.prefs.tempMin, this.state.prefs.tempMax),
-                    createData('Humidade do ar', this.state.prefs.airHumidityMin, this.state.prefs.airHumidityMax),
-                    createData('Humidade do solo', this.state.prefs.soloHumidityMin, this.state.prefs.soloHumidityMax),
-                    createData('Folha molhada', this.state.prefs.isWetMin, this.state.prefs.isWetMax),
-                    createData('Pluviosidade', this.state.prefs.pluviosidadeMin, this.state.prefs.pluviosidadeMax),
-                    createData('Velocidade do vento', this.state.prefs.velVentoMin, this.state.prefs.velVentoMax),
-                    createData('Direção do vento', this.state.prefs.dirVentoMin, this.state.prefs.dirVentoMax),
-                    createData('Radiação', this.state.prefs.radiacaoMin, this.state.prefs.radiacaoMax),
-                );
-            }
-        });
-
-
-
     }
 
     submitUsers(vinha_id, user_id) {
@@ -719,6 +715,7 @@ class VinhasDetails extends React.Component {
                                     </TableBody>
                                 </Table>
                             </TableContainer>
+                            {this.state.isDono &&
                             <Button
                                 variant="contained"
                                 color="primary"
@@ -729,6 +726,7 @@ class VinhasDetails extends React.Component {
                             >
                                 Preferências de alertas
                             </Button>
+                            }
                         </container>
                     }
                     {this.state.value === 4 &&
