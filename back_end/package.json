@@ -19,7 +19,7 @@
     "cors": "^2.8.5",
     "delay": "^4.4.0",
     "excel4node": "^1.7.2",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1",
     "nodemailer": "^6.4.11",
